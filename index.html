@@ -168,7 +168,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 .hud-tr{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:calc(env(safe-area-inset-right,0px) + 8px);display:flex;gap:6px;align-items:flex-start}
 #minimap{width:84px;height:84px;border:2px solid var(--line);background:#000}
 #btnPause{width:40px;height:40px;padding:0;font-size:16px}
-#sbx{position:absolute;left:calc(env(safe-area-inset-left,0px) + 8px);right:calc(env(safe-area-inset-right,0px) + 100px);top:calc(env(safe-area-inset-top,0px) + 74px);display:flex;gap:6px;overflow-x:auto;
+#sbx{position:absolute;left:calc(env(safe-area-inset-left,0px) + 8px);right:calc(env(safe-area-inset-right,0px) + 184px);top:calc(env(safe-area-inset-top,0px) + 124px);display:flex;gap:6px;overflow-x:auto;
   padding-bottom:4px;touch-action:pan-x}
 #sbx .btn{flex:none;font-size:12px;padding:6px 8px}
 #stick{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.05);border-radius:50%;pointer-events:none}
@@ -190,6 +190,8 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 #pw1{background:var(--sakura)}#pw2{background:#9fe8ff}
 #pw3{right:96px;bottom:90px;width:66px;height:66px;background:#b8f28a}#pw4{right:172px;bottom:64px;width:66px;height:66px;background:#d6b8ff}
 #btnSquad{position:absolute;right:20px;bottom:184px;width:62px;height:40px;padding:0;font-size:11px}
+#btnBuild{position:absolute;right:20px;bottom:232px;width:62px;height:40px;padding:0;font-size:11px}
+#buildBar{position:absolute;right:90px;bottom:184px;display:grid;gap:6px}#buildBar .btn{font-size:12px;white-space:nowrap}#buildBar b{color:var(--volt);font-weight:400}
 #banner{position:absolute;left:0;right:0;top:32%;text-align:center;pointer-events:none;opacity:0}
 #banner.show{animation:ban 2.2s ease-out forwards}
 #banner b{display:block;font-family:var(--display);font-size:clamp(26px,7vw,48px);color:var(--volt);text-shadow:3px 3px 0 #000}
@@ -199,8 +201,8 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
   font-size:18px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
 #toast.show{opacity:1}
 @media (max-width:640px){
-  #objective{left:calc(env(safe-area-inset-left,0px) + 8px);transform:none;top:calc(env(safe-area-inset-top,0px) + 66px);font-size:11px}
-  #sbx{top:calc(env(safe-area-inset-top,0px) + 96px)}
+  #objective{left:calc(env(safe-area-inset-left,0px) + 8px);transform:none;top:calc(env(safe-area-inset-top,0px) + 112px);font-size:11px}
+  #sbx{top:calc(env(safe-area-inset-top,0px) + 142px)}
   .hud-tl .info{min-width:0}.hpbar{width:96px}.hud-tl .sm{font-size:14px}.cam .hpbar{width:64px}#faceCam{width:60px;height:60px}
 }
 @media (prefers-reduced-motion:reduce){.lineup .h{animation:none}#banner.show{animation-duration:2.2s;animation-timing-function:steps(1)}}
@@ -231,6 +233,8 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
       <button class="pw" id="pw3" hidden><span></span></button>
       <button class="pw" id="pw4" hidden><span></span></button>
       <button class="btn" id="btnSquad">Follow</button>
+      <button class="btn" id="btnBuild">Build</button>
+      <div id="buildBar" hidden><button class="btn small" data-build="sand">Sandbags <b>0</b></button><button class="btn small" data-build="turret">Turret <b>0</b></button></div>
     </div>
     <div id="banner"><b></b><small></small></div>
   </div>
@@ -252,8 +256,9 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
         </div>
         <div class="row">
           <button class="btn" data-go="squad">Squad</button>
-          <button class="btn" data-go="god" style="color:var(--volt)">God Mode</button>
+          <button class="btn" data-go="armory">Armory</button>
         </div>
+        <button class="btn" data-go="god" style="color:var(--volt)">God Mode</button>
         <div class="row">
           <button class="btn ghost small" id="btnSound">Sound: on</button>
           <button class="btn ghost small" id="btnFull">Fullscreen</button>
@@ -272,6 +277,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
   <section class="screen" id="scr-heroines" hidden></section>
   <section class="screen" id="scr-powers" hidden></section>
   <section class="screen" id="scr-squad" hidden></section>
+  <section class="screen" id="scr-armory" hidden></section>
   <section class="screen" id="scr-god" hidden></section>
   <section class="screen" id="scr-pause" hidden></section>
   <section class="screen" id="scr-result" hidden></section>
@@ -394,7 +400,7 @@ const SAVE_KEY='himeblitz.save.v1';
 function defaultGod(){return{infHP:false,noCD:false,oneHit:false,infSup:false,unlock:false,dmg:1,size:1,speed:1,atk:1,cd:1,zDensity:1,zSpeed:1,squadBonus:0}}
 function defaultSave(){return{supplies:150,cleared:{},heroine:'raiko',loadouts:{},
   squad:[{cls:'rifle',name:'Aiko',hair:'#1b1424'},{cls:'rifle',name:'Mei',hair:'#7a4a2a'},{cls:'smg',name:'Rin',hair:'#d9b45a'}],
-  up:{power:0,vit:0,size:0,train:0,slots:0},god:defaultGod(),sound:true,autoFire:true}}
+  up:{power:0,vit:0,size:0,train:0,slots:0,turret:0,sandbag:0},kits:{sand:2,turret:1},god:defaultGod(),sound:true,autoFire:true}}
 function merge(base,s){for(const k in s){if(base[k]&&typeof base[k]==='object'&&!Array.isArray(base[k])&&s[k]&&typeof s[k]==='object')merge(base[k],s[k]);else base[k]=s[k]}return base}
 // three independent save slots; the pre-slots save becomes slot 1
 const SLOTS=3,SLOT_KEY=n=>'voltfall.slot.'+n,ACTIVE_KEY='voltfall.activeSlot';
@@ -1104,6 +1110,47 @@ function soldierSprite(rec){const k=rec.cls+rec.hair;if(SSPR[k])return SSPR[k];c
     if(!cache[q+'?']){cache[q+'?']=1;SQ.push(()=>{cache[q]=make(view,pose,f)})}
     return cache[view+'idle0']||get('front','idle',0,true)};
   return SSPR[k]={get}}
+/* ---------- fortifications: sandbag walls and auto-turrets, bought at the Armory and placed during missions ---------- */
+const BUILD={sand:{name:'Sandbags',cost:25,hp:320,d:'A waist-high wall the infected have to tear through'},turret:{name:'Turret',cost:120,hp:180,d:'Shoots the nearest infected on its own'}};
+// small props drawn with canvas shapes at native size, snapped to whole pixels and outlined, shown at PX like the characters
+function propSprite(w,h,draw){const c=document.createElement('canvas');c.width=w+2;c.height=h+2;const x=c.getContext('2d',{willReadFrequently:true});x.translate(1,1);draw(x);
+  const d=x.getImageData(0,0,w+2,h+2),a=d.data,src=new Uint8ClampedArray(a),W=w+2,H=h+2;for(let i=3;i<a.length;i+=4)a[i]=src[i]=src[i]>110?255:0;
+  for(let y=0;y<H;y++)for(let xx=0;xx<W;xx++){const i=(y*W+xx)*4;if(src[i+3])continue;
+    for(const[dx,dy]of[[0,-1],[-1,0],[0,1],[1,0]]){const u=xx+dx,v=y+dy;if(u<0||v<0||u>=W||v>=H)continue;const j=(v*W+u)*4;if(src[j+3]){a[i]=src[j]*.32;a[i+1]=src[j+1]*.32;a[i+2]=src[j+2]*.32;a[i+3]=255;break}}}
+  x.putImageData(d,0,0);const f=mkC(c,PX);f.foot=(h+1)*PX;return f}
+// one burlap sack: shadowed underside, the cloth, a light top and a stitched seam
+function sack(x,cx,cy,rx,ry){x.fillStyle='#7f6a40';x.beginPath();x.ellipse(cx+.6,cy+.8,rx,ry,0,0,7);x.fill();x.fillStyle='#c4aa72';x.beginPath();x.ellipse(cx-.3,cy-.3,rx-.6,ry-.7,0,0,7);x.fill();
+  x.fillStyle='#e0cc98';x.beginPath();x.ellipse(cx-rx*.35,cy-ry*.4,rx*.4,ry*.3,0,0,7);x.fill();x.fillStyle='#9a8350';x.fillRect(cx-rx*.6,cy,rx*1.2,1)}
+let SANDSPR=null;const TURSPR=[];
+function sandSprites(){if(SANDSPR)return SANDSPR;
+  return SANDSPR={h:propSprite(100,30,x=>{for(const[row,n,off]of[[0,6,0],[1,6,8],[2,5,16]]){const y=24-row*7.5;for(let i=0;i<n;i++)sack(x,8+off/2+i*16.5,y,8.6,5.4)}}),
+    v:propSprite(26,104,x=>{for(let i=0;i<11;i++)sack(x,13,8+i*8.8,11,6)})}}
+function turretSprite(k){if(TURSPR[k])return TURSPR[k];const a=k/16*Math.PI*2;
+  return TURSPR[k]=propSprite(34,34,x=>{x.strokeStyle='#2f323c';x.lineWidth=2.2;x.beginPath();for(const[tx,ty]of[[5,32],[29,32],[17,33]]){x.moveTo(17,24);x.lineTo(tx,ty)}x.stroke();
+    x.fillStyle='#3a3e4a';x.beginPath();x.ellipse(17,24,7,3.4,0,0,7);x.fill();x.fillStyle='#4a4f5e';x.fillRect(15,15,4,9);
+    x.save();x.translate(17,15);x.rotate(a);x.fillStyle='#56683f';x.fillRect(-5,2,6,4.6);x.fillStyle='#5a5f6e';x.fillRect(-6,-3.6,13,7.2);x.fillStyle='#ffd23f';x.fillRect(-2,-3.6,1.6,7.2);
+    x.fillStyle='#2f323c';x.fillRect(7,-1.4,10,2.8);x.fillRect(15,-2,2.4,4);x.restore()})}
+const kitCount=k=>G&&G.sandbox||save.god.infSup?Infinity:save.kits[k]||0;
+// place a kit in front of the heroine, walls turned across the way she faces
+function placeBuild(k){if(!G||G.ended)return;const p=G.p,B=BUILD[k];if(kitCount(k)<1){toast(`No ${B.name.toLowerCase()} left. Buy more at the Armory`);return}
+  const fx=p.view==='side'?p.face:0,fy=p.view==='back'?-1:p.view==='front'?1:0,o=k==='sand'?(fx?'v':'h'):null,ex=k==='turret'?3.5:o==='v'?3:12,ey=k==='turret'?3.5:o==='v'?12:3;
+  for(const d of[16,24,10,32]){const x=p.x+fx*d,y=p.y+fy*d;
+    if(blocked(x-ex,y-ey,1)||blocked(x+ex,y+ey,1)||blocked(x,y,Math.max(ex,ey)*.5))continue;if(G.builds.some(b=>!b.dead&&Math.abs(b.x-x)<b.ex+ex&&Math.abs(b.y-y)<b.ey+ey))continue;
+    const lv=k==='turret'?save.up.turret:save.up.sandbag,hp=B.hp*(1+(k==='turret'?.2:.3)*lv);
+    G.builds.push({kind:'b',k,o,x,y,ex,ey,r:Math.max(ex,ey),hp,max:hp,flash:0,aim:Math.atan2(fy,fx||(fy?0:1)),fireT:0,tT:0,tgt:null,muzzle:0,dmg:7*(1+.25*lv),range:115*(1+.1*lv),dead:false});
+    if(!(G.sandbox||save.god.infSup)){save.kits[k]--;persist()}sparks(x,y-4,'#e0cc98',8,40);Sfx.play('ui');updBuildBar();return}
+  toast('No room to build here')}
+function updBuild(b,dt){b.flash-=dt;b.muzzle-=dt;if(b.k!=='turret')return;b.fireT-=dt*save.god.atk;b.tT-=dt;
+  if(b.tT<=0||!b.tgt||b.tgt.dead){b.tT=.25;b.tgt=nearestEnemy(b.x,b.y,b.range,null,true)}
+  if(b.tgt&&!b.tgt.dead){b.aim=Math.atan2(b.tgt.y-b.y,b.tgt.x-b.x);if(b.fireT<=0){b.fireT=.2;b.muzzle=.05;const mx=b.x+Math.cos(b.aim)*7,my=b.y-4+Math.sin(b.aim)*5;
+    G.fx.push({k:'tracer',x1:mx,y1:my,x2:b.tgt.x,y2:b.tgt.y-5,c:'#ffe07a',t:.06,max:.06});hurt(b.tgt,b.dmg*save.god.dmg);Sfx.play('shot')}}}
+function wreckBuild(b){b.dead=true;sparks(b.x,b.y-3,b.k==='turret'?'#ffb35a':'#c4aa72',16,70);Sfx.play('boom');toast(`${BUILD[b.k].name} destroyed`)}
+// infected bump into fortifications: pushed out of the box, and they claw at whatever stops them
+function collideBuilds(z){for(const b of G.builds){if(b.dead)continue;const dx=z.x-b.x,dy=z.y-b.y;if(Math.abs(dx)>b.ex+z.r+1||Math.abs(dy)>b.ey+z.r+1)continue;
+  const cx=clamp(dx,-b.ex,b.ex),cy=clamp(dy,-b.ey,b.ey),ox=dx-cx,oy=dy-cy,d=Math.hypot(ox,oy);if(d>=z.r)continue;
+  if(d>.01){z.x=b.x+cx+ox/d*z.r;z.y=b.y+cy+oy/d*z.r}else if(Math.abs(dx)/b.ex>Math.abs(dy)/b.ey)z.x=b.x+Math.sign(dx||1)*(b.ex+z.r);else z.y=b.y+Math.sign(dy||1)*(b.ey+z.r);
+  if(z.atkT<=0&&!(z.charm>0)){z.atkT=.9;z.atkAnim=.36;z.lunge=.15;z.lx=b.x;z.ly=b.y;z.dir=dirOf(b.x-z.x,b.y-z.y);hurtAlly(b,z.dmg)}}}
+function updBuildBar(){for(const k in BUILD){const n=kitCount(k),el=$(`[data-build="${k}"] b`);if(el)el.textContent=n===Infinity?'∞':n}}
 function pumpSprites(t0){let n=0;for(;SQ.length&&(n<1||performance.now()-t0<6);n++)SQ.shift()();return n}
 
 /* ---------- infected ---------- */
@@ -1421,7 +1468,7 @@ function startMission(idx,sandbox){
   const map=genMap(city,seed);prepMapArt(map);map.mini=renderMini(map);
   const h=HMAP[save.heroine];
   const sx=map.spawn.x*TILE+8,sy=map.spawn.y*TILE+8;
-  G={city,idx,sandbox,map,hime:h,slots:slotCount(),zombies:[],nests:[],squad:[],clones:[],fx:[],parts:[],shots:[],pshots:[],corpses:[],timers:[],trail:[],ward:null,encore:0,regenT:0,speedT:0,
+  G={city,idx,sandbox,map,hime:h,slots:slotCount(),zombies:[],nests:[],squad:[],builds:[],clones:[],fx:[],parts:[],shots:[],pshots:[],corpses:[],timers:[],trail:[],ward:null,encore:0,regenT:0,speedT:0,
      time:0,kills:0,earned:0,nestsTotal:0,slowT:0,storm:null,orbs:null,shake:0,hurtFlash:0,ended:false,finalWave:false,flowT:0,flow:new Int16Array(map.W*map.H),
      tier:1+.12*Math.max(0,idx),squadMode:'follow',hold:{x:sx,y:sy},formA:0,holdFlow:null,heroSpd:h.spd,cam:{x:0,y:0},hudT:0,
      p:{x:sx,y:sy,r:4,hp:0,maxHp:0,spd:h.spd,face:-1,dirx:-1,diry:0,ax:0,ay:1,view:'front',hurtT:0,anim:0,moving:false,atkT:0,inv:0,cds:[0,0,0,0,0],cdMax:[1,1,1,1,1],locked:false,trailT:0,kind:'p'}};
@@ -1445,7 +1492,7 @@ function startMission(idx,sandbox){
   $('#hudName').textContent=h.name;FCAM.key='';FCAM.cache={};
   // face-cam frames she'll need first are drawn in the background
   for(const k of['calm|0|0','calm|0|1','calm|-1|0','calm|1|0','hurt|0|0','fierce|0|0','happy|0|0','smug|0|0','pain|0|0','pain|0|1','scared|0|0','victory|0|0','dead|0|0'])SQ.push(()=>faceFrame(k));
-  $('#sbx').hidden=!sandbox;$('#hint').hidden=false;$('#btnSquad').textContent='Follow';
+  $('#sbx').hidden=!sandbox;$('#hint').hidden=false;$('#buildBar').hidden=true;updBuildBar();$('#btnSquad').textContent='Follow';
   state='play';paused=false;showScreen(null);$('#hud').hidden=false;
   banner(city.name,sandbox?'Sandbox: spawn anything, nothing to lose':`Destroy ${G.nests.length} nests and clear the infected`);
   updateFlow();
@@ -1490,6 +1537,7 @@ function explode(x,y,r,dmg,hurtsAllies,col='#c6ff4a'){addRing(x,y,2,r,col,.4);sp
   for(const e of enemiesIn(x,y,r))if(!e.dead)hurt(e,dmg*1.5);
   if(hurtsAllies){if(dist2(x,y,G.p.x,G.p.y)<r*r)hurtAlly(G.p,dmg);for(const s of G.squad)if(dist2(x,y,s.x,s.y)<r*r)hurtAlly(s,dmg)}}
 function hurtAlly(a,d){if(save.god.infHP)return;
+  if(a.kind==='b'){a.hp-=d;a.flash=.08;if(a.hp<=0&&!a.dead)wreckBuild(a);return}
   if(a.kind==='p'){if(a.inv>0)return;a.hp-=d;a.hurtT=.28;G.faceHitT=.7;G.hurtFlash=.25;G.shake=Math.max(G.shake,2);Sfx.play('hurt');
     if(a.hp<=0&&!G.ended&&!G.sandbox){a.hp=0;endMission(false)}else if(a.hp<=0){a.hp=a.maxHp;toast('Sandbox: you got back up')}}
   else{a.hp-=d;a.flash=.08;if(a.hp<=0&&!a.dead){a.dead=true;blood(a.x,a.y-4,'#8a1020',10);toast(`${a.rec.name} is down`)}}}
@@ -1620,6 +1668,7 @@ function update(dt){
   // squad
   G.heroSpd=p.spd*g.speed*(G.speedT>0?1.45:1);squadFormation(dt);
   for(const s of G.squad)if(!s.dead)updSoldier(s,dt);
+  for(const b of G.builds)if(!b.dead)updBuild(b,dt);
   squadSpacing();
   // clones
   for(let i=G.clones.length-1;i>=0;i--){const c=G.clones[i];c.t-=dt;if(c.t<=0){G.clones.splice(i,1);continue}c.ang+=dt*2.2;c.x=p.x+Math.cos(c.ang)*30;c.y=p.y+Math.sin(c.ang)*22;c.atk-=dt*g.atk;
@@ -1647,7 +1696,7 @@ function update(dt){
   for(let i=G.parts.length-1;i>=0;i--){const q=G.parts[i];q.t-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vx*=.9;q.vy*=.9;if(q.t<=0)G.parts.splice(i,1)}
   for(let i=G.fx.length-1;i>=0;i--){G.fx[i].t-=dt;if(G.fx[i].t<=0)G.fx.splice(i,1)}
   G.shake=Math.max(0,G.shake-dt*14);G.hurtFlash=Math.max(0,G.hurtFlash-dt);
-  if((G.time*10|0)%20===0){G.zombies=G.zombies.filter(z=>!z.dead);G.nests=G.nests.filter(n=>!n.dead);G.squad=G.squad.filter(s=>!s.dead)}
+  if((G.time*10|0)%20===0){G.zombies=G.zombies.filter(z=>!z.dead);G.nests=G.nests.filter(n=>!n.dead);G.squad=G.squad.filter(s=>!s.dead);G.builds=G.builds.filter(b=>!b.dead)}
   if(Math.random()<dt*.3&&G.zombies.length)Sfx.play('groan');
   // objectives
   if(!G.sandbox&&!G.ended){const nl=G.nests.some(n=>!n.dead);
@@ -1673,6 +1722,7 @@ function updZombie(z,dt){
     const d=dist2(z.x,z.y,p.x,p.y);if(d<140*140)z.alert=true;else if(d<400*400)for(const s of G.squad)if(dist2(z.x,z.y,s.x,s.y)<90*90){z.alert=true;break}
     return}
   let tgt=p,bd=dist2(z.x,z.y,p.x,p.y);for(const s of G.squad){if(s.dead)continue;const d=dist2(z.x,z.y,s.x,s.y);if(d<bd){bd=d;tgt=s}}
+  for(const b of G.builds){if(b.dead||b.k!=='turret')continue;const d=dist2(z.x,z.y,b.x,b.y);if(d<bd){bd=d;tgt=b}}
   const d=Math.sqrt(bd);let mx=0,my=0;const sp=z.spd;
   // spitters wind up a cast and let go mid-animation
   if(z.spitPending&&z.castAnim<.2){z.spitPending=false;const a=Math.atan2(tgt.y-z.y,tgt.x-z.x);G.shots.push({x:z.x,y:z.y-6,vx:Math.cos(a)*85,vy:Math.sin(a)*85,t:2,dmg:z.dmg})}
@@ -1691,6 +1741,7 @@ function updZombie(z,dt){
   for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){const cell=grid[(gy+oy)*gridW+gx+ox];if(!cell||gx+ox<0||gx+ox>=gridW)continue;
     for(const o of cell){if(o===z)continue;const dx=z.x-o.x,dy=z.y-o.y,dd=dx*dx+dy*dy,mn=(z.r+o.r)*1.45;if(dd<mn*mn&&dd>.0001){const dl=Math.sqrt(dd),push=(mn-dl)/dl*.5;px+=dx*push;py+=dy*push}}}
   if(px||py)moveEntity(z,clamp(px,-2,2),clamp(py,-2,2));
+  if(G.builds.length)collideBuilds(z);
   if(d<z.r+tgt.r+3&&z.atkT<=0){z.atkT=.9;z.lunge=.15;z.atkAnim=.36;z.dir=dirOf(tgt.x-z.x,tgt.y-z.y);z.lx=tgt.x;z.ly=tgt.y;if(z.type==='bloater'){z.hp=0;killZombie(z)}else hurtAlly(tgt,z.dmg)}
   if(z.type==='boss'){z.slamT-=dt;if(z.slamT<=0&&d<90&&!z.slamPending){z.slamT=6;z.castAnim=z.castMax=.7;z.slamPending=true;addRing(z.x,z.y,2,55,'rgba(255,59,107,.5)',.55)}
     if(z.slamPending&&z.castAnim<.15){z.slamPending=false;addRing(z.x,z.y,4,55,'#ff3b6b',.6);G.shake=6;Sfx.play('boom');
@@ -1788,6 +1839,7 @@ function render(){if(state==='play'&&G)updFaceCam();
   const list=[];
   for(const z of G.zombies)if(!z.dead&&onScreen(z))list.push(z);
   for(const s of G.squad)if(!s.dead)list.push(s);
+  for(const b of G.builds)if(!b.dead&&onScreen(b))list.push(b);
   list.push(p);for(const c of G.clones)list.push({kind:'c',x:c.x,y:c.y});
   list.sort((a,b)=>a.y-b.y);
   const hs=himeSprite(h),hp=heroPose(p);
@@ -1818,6 +1870,10 @@ function render(){if(state==='play'&&G)updFaceCam();
       if(G.storm||G.slowT>0){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(h.bolt),SX(p.x)-90,SY(p.y-8)-90,180,180);ctx.globalCompositeOperation='source-over'}
       drawSpr(f,p.x,p.y,hp.face,p.inv>0&&((G.time*30|0)%2===0));
       if(Math.random()<.3)sparks(p.x+rand(-7,7),p.y-rand(3,15),h.bolt,1,20)}
+    else if(e.kind==='b'){if(e.k==='sand'){const f=sandSprites()[e.o];shadow(e.x,e.y+e.ey-1,e.o==='h'?190:70);drawSpr(f,e.x,e.y+e.ey+1,1,e.flash>0)}
+      else{const k=((Math.round(e.aim/(Math.PI*2)*16)%16)+16)%16;shadow(e.x,e.y,60);drawSpr(turretSprite(k),e.x,e.y+2,1,e.flash>0);
+        if(e.muzzle>0){const mx=SX(e.x+Math.cos(e.aim)*9),my=SY(e.y-4+Math.sin(e.aim)*6);ctx.fillStyle='#fff4c0';ctx.fillRect(mx-5,my-5,10,10);ctx.fillStyle='#ffb35a';ctx.fillRect(mx-2,my-9,4,18);ctx.fillRect(mx-9,my-2,18,4)}}
+      if(e.hp<e.max)hpBar(e.x,e.y-(e.k==='turret'?9:e.o==='v'?14:7),60,e.hp/e.max,'#ffd23f')}
     else if(e.kind==='c'){ctx.globalCompositeOperation='lighter';drawSpr(hs.get('side','walk',(G.time*10|0)%8),e.x,e.y,p.face,false,.5);ctx.globalCompositeOperation='source-over'}
   }
   if(G.orbs){const o=G.orbs,R=30*psz();ctx.globalCompositeOperation='lighter';for(let k=0;k<o.n;k++){const a=o.ang+k*6.283/o.n,ox=SX(p.x+Math.cos(a)*R),oy=SY(p.y-6+Math.sin(a)*R*.8);
@@ -1994,6 +2050,14 @@ const R={
       <div class="act"><span class="sup">${save.god.infSup?'Free':c.cost+' supplies'}</span><button class="btn small primary" data-recruit="${k}" ${save.squad.length>=cap||(!save.god.infSup&&save.supplies<c.cost)?'disabled':''}>Recruit</button></div></div>`).join('')}</div>
     <h2 class="label" style="font-size:14px;margin:8px 0 0">Upgrades</h2>
     <div class="grid">${upRow('size','Squad Size','+1 soldier slot')}${upRow('train','Training','+15% soldier damage, health and healing')}</div></div>`},
+  armory(){const kit=k=>{const B=BUILD[k],n=save.kits[k]||0,can=m=>save.god.infSup||save.supplies>=B.cost*m;
+      return`<div class="panel up"><div style="min-width:0"><h3>${B.name} <span class="label">${save.god.infSup?'∞':n} owned</span></h3><p class="muted">${B.d}</p>
+        <p class="sup" style="font-size:13px">${save.god.infSup?'Free':B.cost+' supplies each'}</p></div>
+        <div class="upbtns">${[1,5,10].map(m=>`<button class="btn small ${m===1?'primary':''}" data-kit="${k}" data-n="${m}" ${can(m)?'':'disabled'}>+${m}</button>`).join('')}</div></div>`};
+    $('#scr-armory').innerHTML=`<div class="wrap">${head('Armory')}<p class="muted">Kits you carry into every mission. In a mission, tap Build to set one down in front of you. Sandbags hold the infected back; turrets shoot them.</p>
+    <div class="grid">${kit('sand')}${kit('turret')}</div>
+    <h2 class="label" style="font-size:14px;margin:8px 0 0">Upgrades</h2>
+    <div class="grid">${upRow('turret','Turret Power','+25% turret damage, +10% range, +20% health')}${upRow('sandbag','Reinforced Sandbags','+30% sandbag health')}</div></div>`},
   god(){const g=save.god;
     const tog=(k,t,d)=>`<button class="panel tog ${g[k]?'on':''}" data-tog="${k}"><div style="text-align:left"><b>${t}</b><div class="muted" style="font-size:17px">${d}</div></div><span class="sw"></span></button>`;
     const sl=(k,t,min,max,step,fmt)=>`<div class="panel sl"><div class="top"><b>${t}</b><output id="o-${k}">${fmt(g[k])}</output></div><input type="range" id="r-${k}" data-sl="${k}" min="${min}" max="${max}" step="${step}" value="${g[k]}"></div>`;
@@ -2054,7 +2118,8 @@ gameEl.addEventListener('click',e=>{Sfx.init();const b=e.target.closest('button'
   if(b.dataset.slot!==undefined){selSlot=+b.dataset.slot;refresh('powers');return}
   if(b.dataset.power){const lo=[...loadout()],k=b.dataset.power,j=lo.indexOf(k);if(j>=0)lo[j]=lo[selSlot];lo[selSlot]=k;save.loadouts[save.heroine]=lo;persist();Sfx.play('ui');selSlot=(selSlot+1)%lo.length;refresh('powers');return}
   if(b.dataset.up){const k=b.dataset.up,q=upQuote(k,b.dataset.n==='max'?1e4:+b.dataset.n);if(!q.got)return;save.supplies-=q.cost;save.up[k]+=q.got;persist();Sfx.play('ui');
-    toast(`${k==='slots'?'Power slots':'Upgrade'} +${q.got} level${q.got>1?'s':''}`);refresh(k==='power'||k==='vit'||k==='slots'?'powers':'squad');return}
+    toast(`${k==='slots'?'Power slots':'Upgrade'} +${q.got} level${q.got>1?'s':''}`);refresh(k==='power'||k==='vit'||k==='slots'?'powers':k==='turret'||k==='sandbag'?'armory':'squad');return}
+  if(b.dataset.kit){const k=b.dataset.kit,m=+b.dataset.n,c=BUILD[k].cost*m;if(!save.god.infSup){if(save.supplies<c)return;save.supplies-=c}save.kits[k]=(save.kits[k]||0)+m;persist();Sfx.play('ui');toast(`+${m} ${BUILD[k].name.toLowerCase()}`);refresh('armory');return}
   if(b.dataset.recruit){const k=b.dataset.recruit,c=CLASSES[k];if(save.squad.length>=squadCap())return;if(!save.god.infSup){if(save.supplies<c.cost)return;save.supplies-=c.cost}
     const used=new Set(save.squad.map(s=>s.name)),free=NAMES.filter(n=>!used.has(n));save.squad.push({cls:k,name:free.length?pick(free):pick(NAMES)+' '+(save.squad.length+1),hair:pick(HAIRS)});persist();Sfx.play('ui');refresh('squad');return}
   if(b.dataset.dismiss!==undefined){save.squad.splice(+b.dataset.dismiss,1);persist();refresh('squad');return}
@@ -2072,6 +2137,8 @@ gameEl.addEventListener('click',e=>{Sfx.init();const b=e.target.closest('button'
 gameEl.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.sl;if(!k)return;save.god[k]=+e.target.value;persist();const o=$('#o-'+k);const v=save.god[k];
   if(o)o.textContent=k==='squadBonus'?'+'+v:'×'+(+v).toFixed(v<10?(v%1?2:0):0)});
 $('#btnPause').addEventListener('click',()=>{if(state!=='play'||G.ended)return;paused=true;held.fill(false);stick.id=null;$('#stick').hidden=true;stick.dx=stick.dy=0;$('#hud').hidden=true;returnTo='pause';showScreen('pause')});
+$('#btnBuild').addEventListener('click',()=>{if(!G)return;const bar=$('#buildBar');bar.hidden=!bar.hidden;updBuildBar()});
+$('#buildBar').addEventListener('click',e=>{const b=e.target.closest('[data-build]');if(!b)return;placeBuild(b.dataset.build);$('#buildBar').hidden=true});
 $('#btnSquad').addEventListener('click',()=>{if(!G)return;G.squadMode=G.squadMode==='follow'?'hold':'follow';G.hold={x:G.p.x,y:G.p.y};if(G.squadMode==='hold'){G.holdFlow=G.holdFlow||new Int16Array(G.flow.length);bfsFrom(G.hold.x,G.hold.y,G.holdFlow)}$('#btnSquad').textContent=G.squadMode==='follow'?'Follow':'Hold';toast(G.squadMode==='follow'?'Squad: follow me':'Squad: hold this position')});
 $('#btnSound').addEventListener('click',()=>{save.sound=!save.sound;persist();R.title()});
 $('#btnFull').addEventListener('click',()=>{const d=document.documentElement;try{const r=document.fullscreenElement?document.exitFullscreen():(d.requestFullscreen||d.webkitRequestFullscreen).call(d);if(r&&r.catch)r.catch(()=>toast('Fullscreen is not available here'))}catch(e){toast('Fullscreen is not available here')}});
@@ -2126,7 +2193,7 @@ function frame(t){const raw=(t-last)/1000,dt=Math.min(.05,raw);last=t;
   // squad frames not drawn yet; those frames don't count toward the resolution check
   pumped=pumpSprites(t);requestAnimationFrame(frame)}
 showScreen('title');requestAnimationFrame(frame);
-window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite};
+window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite,spawnZombie,placeBuild};
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/claude|anthropic/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>

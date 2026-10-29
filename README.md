@@ -38,6 +38,7 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
 - **Face cam:** a portrait in the HUD with the health bar above it. Her expression reacts to the fight (calm, fierce when casting, a yelp when hit, beaming on a kill streak, scared or in pain at low health), her eyes follow where she runs, and injuries build up as her health drops: scratches, a band-aid, bruises, blood and a bandaged forehead.
 - **Squads:** recruit Riflers, Gunners, Breachers, Marksmen, Grenadiers and Medics. Each one gets a name and hair color. They march in formation behind you, path around buildings and keep pace with you. Upgrade squad size and training.
 - **12 cities:** downtown, suburbs, harbor, ironworks, shrine town, neon district, snowfield, hospital, desert, military base and the Hive. Each has its own layout and look. Destroy every nest, then survive the final wave. Three cities have bosses.
+- **Armory and fortifications:** buy sandbag and turret kits at base and carry them into missions. Tap Build to set one down in front of you: sandbag walls stop the infected until they claw through, and turrets shoot the nearest infected on their own. Upgrade turret power and sandbag strength.
 - **Sandbox:** any map, a fresh layout every time, and you can't lose. Spawn hordes, brutes, bosses, nests and extra soldiers.
 - **God Mode:** infinite health, no cooldowns, one-hit kills, infinite supplies, all cities unlocked, plus sliders for damage (up to ×100), power size, move speed, attack speed, cooldowns, infected density and speed, and bonus squad slots.
 
