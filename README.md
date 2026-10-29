@@ -29,11 +29,13 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
 
 ## Art
 
-All art is pixel art generated in code, so the game stays a single HTML file:
+All art is pixel art generated in code, so the game stays a single HTML file. It renders at your screen's real resolution, with two levels of detail:
 
-- Characters are drawn as material maps and baked with four-tone, hue-shifted color ramps, automatic rim light and selective outlines. Heroines have front and back views and four-frame walk cycles.
-- Menus show 56×60 anime portraits with hime cuts and each heroine's hair ornament.
-- Cities render at 32 px per tile, with cracked asphalt, crosswalks, curbs, detailed rooftops (AC units, water tanks, skylights, shrine tiles, neon), layered trees and cars.
+- **128 px: main characters.** The four heroines and the Boss. Heroines are built from a parametric figure with blunt hime-cut bangs, sidelocks and long hair, layered anime eyes, a sailor uniform with a pleated skirt, and a personal hair ornament. They have front and back views, four-frame walk cycles and 128×128 menu portraits.
+- **64 px: everything else.** Infected, soldiers (with guns that rotate to aim), nests and the 64px city tiles, drawn at 2× next to the main characters.
+- Colors use four-tone, hue-shifted ramps with dithered transitions, rim light and selective outlines.
+- The city is built in 8×8-tile chunks as you approach them: cracked asphalt, manholes, crosswalks, curbs, detailed rooftops, layered trees and cars.
 - Night lighting: the city is dark except around your heroine, muzzle flashes and lightning.
+- If a device can't keep the frame rate up, the game lowers its render resolution automatically.
 
 Progress is saved in the browser.
