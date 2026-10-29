@@ -3,6 +3,7 @@ name: Build Android APK
 on:
   push:
     branches: [main, master, 'claude/**']
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
 
@@ -61,7 +62,7 @@ jobs:
           path: Voltfall.apk
 
       - name: Publish APK to the "apk-latest" release
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: (github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')) || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-latest
@@ -71,4 +72,24 @@ jobs:
           body: |
             Download **Voltfall.apk** on your Android phone and open it to install.
             Android will ask you to allow installs from your browser or file manager the first time.
+            Built from ${{ github.sha }}.
+
+      # a version tag (v1.0.0, v1.1.0, ...) becomes a full release with its own APK
+      - name: Publish a versioned release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Voltfall ${{ github.ref_name }}
+          prerelease: false
+          make_latest: true
+          files: Voltfall.apk
+          body: |
+            Download **Voltfall.apk** on your Android phone and open it to install.
+            Android will ask you to allow installs from your browser or file manager the first time.
+
+            Voltfall is a pixel-art zombie apocalypse: lightning and speedster heroines, a squad of
+            soldiers, adjustable God Mode, and 18 infected cities to take back, from the streets to
+            the metro, the sewers and the rooftops.
+
             Built from ${{ github.sha }}.
