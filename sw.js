@@ -1,5 +1,5 @@
 // Offline cache so the installed game runs without a connection.
-const CACHE = 'voltfall-v6';
+const CACHE = 'voltfall-v7';
 const INFECTED = ['walker1', 'walker2', 'walker3', 'walker4', 'runner', 'spitter', 'bloater', 'brute', 'boss'].map(n => './assets/infected/' + n + '.png');
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', ...INFECTED];
 self.addEventListener('install', e => {

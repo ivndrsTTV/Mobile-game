@@ -26,10 +26,6 @@ The infected sprites in `assets/infected/` are composited from the Liberated Pix
   Authors: bluecarrot16, Evert, TheraHedwig, Benjamin K. Smith (BenCreating), MuffinElZangano, Durrani, Pierre Vigier (pvigier), Eliza Wyatt (ElizaWy), Matthew Krohn (makrohn), Johannes Sjölund (wulax), Stephen Challener (Redshrike)  
   Licenses: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0  
   Sources: https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles https://opengameart.org/content/lpc-medieval-fantasy-character-sprites https://opengameart.org/content/lpc-ladies https://opengameart.org/content/lpc-teen-unisex-base-clothes https://opengameart.org/content/lpc-jump-expanded https://opengameart.org/content/lpc-revised-character-basics https://opengameart.org/content/lpc-be-seated https://gitlab.com/vagabondgame/lpc-characters https://opengameart.org/content/lpc-male-jumping-animation-by-durrani https://opengameart.org/content/lpc-jump-expanded
-- **body/bodies/zombie**  
-  Authors: Stephen Challener (Redshrike), Johannes Sjölund (wulax), Sander Frenken (castelonia), Benjamin K. Smith (BenCreating), bluecarrot16  
-  Licenses: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0  
-  Sources: https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles https://opengameart.org/content/lpc-medieval-fantasy-character-sprites https://opengameart.org/content/lpc-zombie https://opengameart.org/content/lpc-character-bases
 - **body/wound/arm**  
   Authors: Benjamin K. Smith (BenCreating), Sander Frenken (castelonia)  
   Licenses: CC-BY-SA 3.0, GPL 3.0  
