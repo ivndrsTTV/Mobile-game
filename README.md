@@ -37,8 +37,13 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
 - **Save slots:** three separate saves.
 - **Face cam:** a portrait in the HUD with the health bar above it. Her expression reacts to the fight (calm, fierce when casting, a yelp when hit, beaming on a kill streak, scared or in pain at low health), her eyes follow where she runs, and injuries build up as her health drops: scratches, a band-aid, bruises, blood and a bandaged forehead.
 - **Squads:** recruit Riflers, Gunners, Breachers, Marksmen, Grenadiers and Medics. Each one gets a name and hair color. They march in formation behind you, path around buildings and keep pace with you. Upgrade squad size and training.
-- **12 cities:** downtown, suburbs, harbor, ironworks, shrine town, neon district, snowfield, hospital, desert, military base and the Hive. Each has its own layout and look. Destroy every nest, then survive the final wave. Three cities have bosses.
-- **Armory and fortifications:** buy sandbag and turret kits at base and carry them into missions. Tap Build to set one down in front of you: sandbag walls stop the infected until they claw through, and turrets shoot the nearest infected on their own. Upgrade turret power and sandbag strength.
+- **18 missions:** downtown, suburbs, harbor, ironworks, shrine town, neon district, snowfield, hospital, desert, military base and the Hive, plus metro tunnels, sewers, a bunker and rooftops high above the city. Early missions are nest hunts; later ones stack quests:
+  - **Rescue survivors:** find them, and they follow you back to the extraction point.
+  - **Recover supply crates**, **restore a generator** (hold it while the infected swarm you; underground, it turns the lights back on), **kill the boss**, **destroy the nests**.
+  - **Shelter defense:** protect civilians until a helicopter lands. You get a build phase and the shelter's own stockpile of fences, traps, sandbags and a turret; stranded soldiers stand guard, and you can put your squad on Hold to guard too.
+  - Each mission ends with a final wave, an exit to reach (underground), or a helicopter to meet. A quest list sits at the top of the screen and an arrow points to the next objective.
+- **Underground and rooftops:** generated tunnels with rail tracks, sewage channels, pillared platforms and flickering lamps, or rooftops joined by walkways with the city's lights far below.
+- **Armory and fortifications:** buy sandbag, fence, spike trap and turret kits at base and carry them into missions. Tap Build to set one down in front of you: sandbag walls and fences stop the infected until they claw through, spike traps hurt and slow them, and turrets shoot them on their own. Upgrade turret power and barricade strength.
 - **Sandbox:** any map, a fresh layout every time, and you can't lose. Spawn hordes, brutes, bosses, nests and extra soldiers.
 - **God Mode:** infinite health, no cooldowns, one-hit kills, infinite supplies, all cities unlocked, plus sliders for damage (up to ×100), power size, move speed, attack speed, cooldowns, infected density and speed, and bonus squad slots.
 
