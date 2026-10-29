@@ -911,7 +911,11 @@ function renderGirl(L,p,o){
       // the inseam crease between the legs, and a fold at each knee, so the trousers read as two legs
       if(!side){const[l0,l1]=J.legs,mid=k=>(l0[k][0]+l1[k][0])/2;
         tint([pid],x=>{x.lineWidth=Math.max(1.3,1.5/S);x.beginPath();x.moveTo(GCX,J.crotch-1);x.lineTo(mid('knee'),(l0.knee[1]+l1.knee[1])/2);x.lineTo(mid('ankle'),Math.max(l0.ankle[1],l1.ankle[1]));x.stroke()},-2);
-        tint([pid],x=>{const t=Math.max(1.2,1.2/S);for(const l of J.legs)x.fillRect(l.knee[0]-2.6,l.knee[1]-t/2,5.2,t)},-1)}}
+        tint([pid],x=>{const t=Math.max(1.2,1.2/S);for(const l of J.legs)x.fillRect(l.knee[0]-2.6,l.knee[1]-t/2,5.2,t)},-1)}
+      // in profile the far leg sits in shadow behind the near one
+      else{const far=J.legs.find(l=>!l.near),near=J.legs.find(l=>l.near);
+        if(far&&near)tint([pid],x=>{x.save();x.beginPath();x.rect(-50,J.crotch,GW+100,GH);x.clip();cap(x,far.hip,lerp(far.knee,far.ankle,.85),B.thigh+.7,4.2);
+          x.globalCompositeOperation='destination-out';cap(x,near.hip,lerp(near.knee,near.ankle,.85),B.thigh+.7,4.2);x.restore()},-2)}}
     // collars, ribbons, belts and details on the top
     if(O==='sailor'){
       if(front){const c=part(66,colC,x=>{x.beginPath();x.moveTo(GCX-5,T-3.6);x.lineTo(GCX,T+9);x.lineTo(GCX+5,T-3.6);x.lineTo(GCX+B.sh+1,T-.4);x.lineTo(GCX+2.4,T+12);x.lineTo(GCX-2.4,T+12);x.lineTo(GCX-B.sh-1,T-.4);x.closePath();x.fill()},{band:1.4});
