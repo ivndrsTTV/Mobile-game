@@ -61,5 +61,6 @@ Heroines and squad girls are pixel art generated in code; the infected are artis
 - **Infected** are artist-made sprites from the [Liberated Pixel Cup](https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles) collection, composited into nine types: four walker looks, a runner, a spitter, a bloater, a brute and a horned troll boss. They walk in four directions, swipe when they attack and collapse when they die. See `CREDITS.md` for every artist and license; the sheets in `assets/infected/` are CC-BY-SA 3.0.
 - **Nests and the city** use 64px art drawn at 2×. Tiles are built in 8×8-tile chunks as you approach them.
 - Night lighting, and render resolution that drops automatically on slower phones.
+- **Fonts** ship with the game in `assets/fonts/` (Pixelify Sans, VT323 and Tiny5 for numbers, all SIL OFL), so the APK and the offline web app look the same without a connection.
 
 Progress is saved in the browser.

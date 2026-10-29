@@ -12,15 +12,17 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap">
 <style>
+/* Fonts ship with the game (SIL OFL, see assets/fonts/OFL.txt) so the APK and offline PWA look the same.
+   Pixelify Sans' 2 and 5 read as 8 and S at HUD sizes, so its digits come from Tiny5. */
+@font-face{font-family:'VF Display';src:url(assets/fonts/pixelify-sans.woff2) format('woff2');font-weight:400 700;font-display:swap}
+@font-face{font-family:'VF Display';src:url(assets/fonts/tiny5.woff2) format('woff2');font-weight:400 700;font-display:swap;unicode-range:U+30-39}
+@font-face{font-family:'VF Body';src:url(assets/fonts/vt323.woff2) format('woff2');font-display:swap}
 /* Layout: one full-bleed pixel canvas; HUD pinned to safe-area corners; menus are scrolling overlay sheets. */
 :root{
   --night:#0e0b16; --panel:#1a1426; --panel2:#261d38; --line:#3d3157;
   --ink:#f1ecff; --muted:#a49ac0; --volt:#ffe14d; --sakura:#ff5c8a; --toxic:#8fd14f; --danger:#ff4d5e;
-  --display:'Pixelify Sans','Courier New',monospace; --body:'VT323','Courier New',monospace;
+  --display:'VF Display','Courier New',monospace; --body:'VF Body','Courier New',monospace;
   color-scheme:dark;
 }
 html,body{height:100%;margin:0;background:var(--night);color:var(--ink);overflow:hidden;overscroll-behavior:none}
@@ -54,7 +56,7 @@ canvas.px{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 .bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .bar h2{font-family:var(--display);font-size:28px;margin:0;flex:1;min-width:0;text-wrap:balance}
 .sup{font-family:var(--display);color:var(--volt);font-size:16px;font-variant-numeric:tabular-nums}
-.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}.grid.wide{grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))}
 .muted{color:var(--muted)}
 p{margin:0}
 
@@ -98,7 +100,7 @@ p{margin:0}
 .hcard{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;text-align:left;cursor:pointer}
 .hcard.sel{border-color:var(--volt);box-shadow:4px 4px 0 #000,0 0 0 2px var(--volt)}
 .hcard .pf{background:#0b0912;border:2px solid var(--line);display:block;line-height:0}
-.hcard h3{font-family:var(--display);margin:0;font-size:22px}
+.hcard h3{font-family:var(--display);margin:0;font-size:22px}.hcard .chip{justify-self:start}
 .stat{display:grid;grid-template-columns:62px 1fr;gap:6px;align-items:center;font-size:16px;color:var(--muted)}
 .meter{height:8px;background:#0b0912;border:1px solid var(--line)}
 .meter i{display:block;height:100%;background:var(--volt)}
@@ -205,6 +207,8 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
   #objective{left:calc(env(safe-area-inset-left,0px) + 8px);transform:none;top:calc(env(safe-area-inset-top,0px) + 112px);font-size:11px}
   #sbx{top:calc(env(safe-area-inset-top,0px) + 142px)}
   .hud-tl .info{min-width:0}.hpbar{width:96px}.hud-tl .sm{font-size:14px}.cam .hpbar{width:64px}#faceCam{width:60px;height:60px}
+  /* portrait: the controls hint sits under the objectives, clear of the power buttons and the heroine */
+  #hint{left:calc(env(safe-area-inset-left,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);bottom:auto;top:calc(env(safe-area-inset-top,0px) + 196px);font-size:16px;padding:10px 12px;text-align:center}
 }
 @media (prefers-reduced-motion:reduce){.lineup .h{animation:none}#banner.show{animation-duration:2.2s;animation-timing-function:steps(1)}}
 </style>
@@ -903,7 +907,11 @@ function renderGirl(L,p,o){
           x.quadraticCurveTo(c+9,J.hip,fx,hem);x.lineTo(bx,hem);x.quadraticCurveTo(c-12,J.hip+6,c-8.4,J.waist-4);x.closePath();x.fill()}});
       for(let k=0;k<4;k++){const t=(k+.5)/4;tint([skId],x=>{x.lineWidth=1.2;x.beginPath();x.moveTo(GCX-B.waist+t*B.waist*2,J.waist);x.lineTo(GCX-(B.hip+8)+t*(B.hip+8)*2+sw*1.5,hem);x.stroke()},-1)}
       if(!back)part(58,p.rib,x=>{const c=side?GCX+5:GCX,y=J.waist-2;x.beginPath();x.moveTo(c,y);x.lineTo(c-5.4,y-3);x.lineTo(c-5.4,y+3);x.closePath();x.moveTo(c,y);x.lineTo(c+5.4,y-3);x.lineTo(c+5.4,y+3);x.closePath();x.fill();cap(x,[c-1,y],[c-3,y+11],1.1,1.1);cap(x,[c+1,y],[c+3,y+10],1.1,1.1)},{band:1})}
-    if(B2==='pants'){part(55,outC,x=>{yclip(x,J.waist-2,J.crotch+6,()=>torsoPath(x,.9));for(const l of J.legs)cap(x,l.hip,lerp(l.knee,l.ankle,.85),B.thigh+.7,4.2)})}
+    if(B2==='pants'){const pid=part(55,outC,x=>{yclip(x,J.waist-2,J.crotch+6,()=>torsoPath(x,.9));for(const l of J.legs)cap(x,l.hip,lerp(l.knee,l.ankle,.85),B.thigh+.7,4.2)});
+      // the inseam crease between the legs, and a fold at each knee, so the trousers read as two legs
+      if(!side){const[l0,l1]=J.legs,mid=k=>(l0[k][0]+l1[k][0])/2;
+        tint([pid],x=>{x.lineWidth=Math.max(1.3,1.5/S);x.beginPath();x.moveTo(GCX,J.crotch-1);x.lineTo(mid('knee'),(l0.knee[1]+l1.knee[1])/2);x.lineTo(mid('ankle'),Math.max(l0.ankle[1],l1.ankle[1]));x.stroke()},-2);
+        tint([pid],x=>{const t=Math.max(1.2,1.2/S);for(const l of J.legs)x.fillRect(l.knee[0]-2.6,l.knee[1]-t/2,5.2,t)},-1)}}
     // collars, ribbons, belts and details on the top
     if(O==='sailor'){
       if(front){const c=part(66,colC,x=>{x.beginPath();x.moveTo(GCX-5,T-3.6);x.lineTo(GCX,T+9);x.lineTo(GCX+5,T-3.6);x.lineTo(GCX+B.sh+1,T-.4);x.lineTo(GCX+2.4,T+12);x.lineTo(GCX-2.4,T+12);x.lineTo(GCX-B.sh-1,T-.4);x.closePath();x.fill()},{band:1.4});
@@ -1324,7 +1332,11 @@ function genMap(city,seed){
     if(at(x,y)!==T.ROAD)continue;const rx=isRoadX(x),ry=isRoadY(y);if(rx&&ry)continue;
     if(rx&&((x-1)%B)===0&&rng()<.06){set(x,y,T.CAR);cars.push({x,y,h:false})}
     else if(ry&&((y-1)%B)===0&&rng()<.06){set(x,y,T.CAR);cars.push({x,y,h:true})}}
-  if(th.waterEdge){for(let y=1;y<H-1;y++)for(let x=1;x<=th.waterEdge;x++)set(x,y,T.WATER)}
+  if(th.waterEdge){const we=th.waterEdge;for(let y=1;y<H-1;y++)for(let x=1;x<=we;x++)set(x,y,T.WATER);
+    // the quay cuts through whatever stood there: buildings are trimmed back to dry land and trees in the water go
+    for(let i=buildings.length-1;i>=0;i--){const b=buildings[i];if(b.x>we)continue;const nx=we+1,w=b.x+b.w-nx;
+      if(w<2){for(let j=b.y;j<b.y+b.h;j++)for(let k=nx;k<b.x+b.w;k++)set(k,j,T.GROUND);buildings.splice(i,1)}else{b.x=nx;b.w=w}}
+    for(let i=trees.length-1;i>=0;i--)if(at(trees[i].x,trees[i].y)!==T.TREE)trees.splice(i,1)}
   const spawn={x:W-3,y:H-3};
   for(let y=spawn.y-3;y<=spawn.y+1;y++)for(let x=spawn.x-3;x<=spawn.x+1;x++)if(x>0&&y>0&&x<W-1&&y<H-1&&at(x,y)===T.CAR)set(x,y,T.ROAD);
   for(let i=cars.length-1;i>=0;i--)if(at(cars[i].x,cars[i].y)!==T.CAR)cars.splice(i,1);
@@ -1431,9 +1443,17 @@ function drawGround(x,m,tx,ty){const th=m.th,C=m.cols,rng=mulberry32(hash3(m.see
   else if(t===T.WALL&&th.under){const face=!SOLID[tAt(m,tx,ty+1)];R(px,py,64,64,shade(th.rock,-22));noise(px,py,64,64,160,[shade(th.rock,-30),shade(th.rock,-14)]);
     if(face){R(px,py+30,64,34,th.rock);for(let j=30;j<64;j+=8)R(px,py+j,64,1,shade(th.rock,-18));for(let j=30,o=0;j<64;j+=8,o^=1)for(let k=o*16;k<64;k+=32)R(px+k,py+j,1,8,shade(th.rock,-18));
       R(px,py+30,64,2,shade(th.rock,24));R(px,py+62,64,2,'#0c0a10');noise(px,py+32,64,30,40,[shade(th.rock,12),shade(th.rock,-8)])}}
-  else if(t===T.WALL){R(px,py,64,64,C.bd[1]);R(px,py,64,26,C.bd[3]);noise(px,py,64,26,60,[C.bd[2],shade(th.border,30)]);R(px,py,64,1,shade(th.border,50));R(px,py+26,64,2,C.bd[0]);
-    R(px,py+30,64,22,'#1a1612');for(let s=-22;s<64;s+=16)for(let j=0;j<22;j++){const sx=s+j;if(sx>=-6&&sx<64)R(px+Math.max(0,sx),py+30+j,Math.min(8,64-Math.max(0,sx),sx+8),1,'#d8b02a')}
-    R(px,py+30,64,1,'#ffe68a');R(px,py+52,64,12,C.bd[0]);for(const a of[10,52])R(px+a,py+12,3,3,C.bd[0])}
+  else if(t===T.WALL){const w=(i,j)=>i>=0&&j>=0&&i<m.W&&j<m.H&&m.tiles[j*m.W+i]===T.WALL,hz=w(tx-1,ty)||w(tx+1,ty);
+    // a barrier running north-south is seen from above: one long cap with the hazard stripes along its top, continuous from tile to tile
+    const vstrip=(y0,h)=>{R(px+6,py+y0,52,h,C.bd[3]);noise(px+6,py+y0,52,h,h*2,[C.bd[2],shade(th.border,30)]);R(px+6,py+y0,1,h,shade(th.border,50));R(px+57,py+y0,1,h,C.bd[0]);
+      R(px+20,py+y0,24,h,'#1a1612');for(let j=y0;j<y0+h;j++){const o=(py+j)&15;for(let k=-o;k<22;k+=16){const a=Math.max(0,k),b=Math.min(22,k+8);if(b>a)R(px+21+a,py+j,b-a,1,'#d8b02a')}}
+      R(px+20,py+y0,1,h,'#ffe68a');R(px+43,py+y0,1,h,C.bd[0])};
+    if(!hz&&(w(tx,ty-1)||w(tx,ty+1))){R(px,py,64,64,C.bd[0]);vstrip(0,64)}
+    else{R(px,py,64,64,C.bd[1]);R(px,py,64,26,C.bd[3]);noise(px,py,64,26,60,[C.bd[2],shade(th.border,30)]);R(px,py,64,1,shade(th.border,50));R(px,py+26,64,2,C.bd[0]);
+      R(px,py+30,64,22,'#1a1612');for(let s=-22;s<64;s+=16)for(let j=0;j<22;j++){const sx=s+j;if(sx>=-6&&sx<64)R(px+Math.max(0,sx),py+30+j,Math.min(8,64-Math.max(0,sx),sx+8),1,'#d8b02a')}
+      R(px,py+30,64,1,'#ffe68a');R(px,py+52,64,12,C.bd[0]);for(const a of[10,52])R(px+a,py+12,3,3,C.bd[0]);
+      // a corner where the barrier turns south: the north-south run starts out of this cap
+      if(w(tx,ty+1)){vstrip(26,38);if(!w(tx+1,ty))R(px+58,py+26,6,38,C.bd[0]);if(!w(tx-1,ty))R(px,py+26,6,38,C.bd[0])}}}
   else{R(px,py,64,64,th.ground);noise(px,py,64,64,220,[C.gd[1],C.gd[3],shade(th.ground,-5)]);
     for(let k=0;k<4;k++)if(rng()<.5){const a=px+(rng()*58|0),b=py+(rng()*58|0);R(a,b,4,3,C.gd[1]);R(a,b,3,1,C.gd[3])}}
 }
@@ -2024,6 +2044,12 @@ function pxLine(x0,y0,x1,y1,s){let dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<
   for(let n=0;n<4000;n++){ctx.fillRect(x0-o,y0-o,s,s);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx}if(e2<=dx){e+=dx;y0+=sy}}}
 function blitMap(m){const cs=CPX*2,cx0=Math.max(0,Math.floor(OX/cs)),cy0=Math.max(0,Math.floor(OY/cs)),cx1=Math.min(Math.ceil(m.W/CK)-1,Math.floor((OX+LW)/cs)),cy1=Math.min(Math.ceil(m.H/CK)-1,Math.floor((OY+LH)/cs));
   for(let cy=cy0;cy<=cy1;cy++)for(let cx=cx0;cx<=cx1;cx++){const c=getChunk(m,cx,cy,true);ctx.drawImage(c,cx*cs-OX,cy*cs-OY,cs,cs)}
+  // past the map's edge: the border ground carries on and fades into the night instead of ending in a hard cut
+  const L=-OX,Tp=-OY,Rt=m.W*cs/CK-OX,Bm=m.H*cs/CK-OY;
+  if(L>0||Tp>0||Rt<LW||Bm<LH){const th=m.th,F=220;ctx.fillStyle=m.roof?(th.sky||'#0c0f1e'):th.under?shade(th.rock,-22):shade(th.ground,-18);
+    if(L>0)ctx.fillRect(0,0,L,LH);if(Rt<LW)ctx.fillRect(Rt,0,LW-Rt,LH);if(Tp>0)ctx.fillRect(0,0,LW,Tp);if(Bm<LH)ctx.fillRect(0,Bm,LW,LH-Bm);
+    const fade=(x0,y0,x1,y1,rx,ry,rw,rh)=>{const g=ctx.createLinearGradient(x0,y0,x1,y1);g.addColorStop(0,'rgba(11,8,18,.45)');g.addColorStop(1,'#0b0812');ctx.fillStyle=g;ctx.fillRect(rx,ry,rw,rh)};
+    if(L>0)fade(L,0,L-F,0,0,0,L,LH);if(Rt<LW)fade(Rt,0,Rt+F,0,Rt,0,LW-Rt,LH);if(Tp>0)fade(0,Tp,0,Tp-F,0,0,LW,Tp);if(Bm<LH)fade(0,Bm,0,Bm+F,0,Bm,LW,LH-Bm)}
   // prefetch one chunk around the view per frame
   for(let cy=cy0-1;cy<=cy1+1;cy++)for(let cx=cx0-1;cx<=cx1+1;cx++){if(cx<0||cy<0||cx*CK>=m.W||cy*CK>=m.H)continue;if(!m.chunks.has(cy*4096+cx)){getChunk(m,cx,cy,true);return}}}
 function hpBar(wx,wy,w,r,c){const x=SX(wx)-(w>>1),y=SY(wy);ctx.fillStyle='#000';ctx.fillRect(x-2,y-2,w+4,9);ctx.fillStyle='#3a1020';ctx.fillRect(x,y,w,5);ctx.fillStyle=c;ctx.fillRect(x,y,Math.max(0,Math.round(w*r)),5);ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(x,y,Math.max(0,Math.round(w*r)),2)}
@@ -2035,7 +2061,8 @@ function render(){if(state==='play'&&G)updFaceCam();
   const m=G.map,sh=G.shake,p=G.p,h=G.hime;OX=Math.round((G.cam.x+(sh?rand(-sh,sh):0))*RZ);OY=Math.round((G.cam.y+(sh?rand(-sh,sh):0))*RZ);
   blitMap(m);
   for(const n of G.nests){if(n.dead||!onScreen(n))continue;const f=NEST[((G.time*4+n.x)|0)%4];shadow(n.x,n.y+3,f.w*f.sc*.9);
-    ctx.drawImage(n.flash>0?f.wr:f.r,SX(n.x)-(f.w>>1),SY(n.y)-f.h+40);hpBar(n.x,n.y-17,120,n.hp/n.max,'#ff5c8a')}
+    // the whole squad shoots at nests, so a full white flash would hide them: flash a half-strength overlay instead
+    const nx=SX(n.x)-(f.w>>1),ny=SY(n.y)-f.h+40;ctx.drawImage(f.r,nx,ny);if(n.flash>0){ctx.globalAlpha=.55;ctx.drawImage(f.wr,nx,ny);ctx.globalAlpha=1}hpBar(n.x,n.y-17,120,n.hp/n.max,'#ff5c8a')}
   drawQuestProps();
   const list=[];
   for(const z of G.zombies)if(!z.dead&&onScreen(z))list.push(z);
@@ -2243,9 +2270,9 @@ const R={
     <div class="grid">${CITIES.map((c,i)=>cityCard(c,i,'map')).join('')}</div></div>`},
   sandbox(){$('#scr-sandbox').innerHTML=`<div class="wrap">${head('Sandbox')}<p class="muted">Every map is open, the layout is new each time and you can't lose. Spawn hordes, bosses and nests from the bar at the top.</p>
     <div class="grid">${cityCard(FIELD,-1,'sandbox').replace('District 00','Arena')}${CITIES.map((c,i)=>cityCard(c,i,'sandbox')).join('')}</div></div>`},
-  heroines(){$('#scr-heroines').innerHTML=`<div class="wrap">${head('Heroines')}<div class="grid">${HEROINES.map(h=>`
+  heroines(){$('#scr-heroines').innerHTML=`<div class="wrap">${head('Heroines')}<div class="grid wide">${HEROINES.map(h=>`
     <button class="panel hcard ${save.heroine===h.id?'sel':''}" data-hero="${h.id}"><span class="pf" data-spr="p:${h.id}:1"></span>
-      <div style="display:grid;gap:6px;min-width:0"><span class="label" style="color:${h.bolt}">${h.title}</span><h3>${h.name} <span class="label" style="color:var(--muted)">Age ${h.age}</span></h3><p class="muted">${h.blurb}</p>
+      <div style="display:grid;gap:6px;min-width:0"><span class="label" style="color:${h.bolt}">${h.title}</span><h3>${h.name} <span class="label" style="color:var(--muted);white-space:nowrap">Age ${h.age}</span></h3><p class="muted">${h.blurb}</p>
       <div class="stat">Health<div class="meter"><i style="width:${h.hp/1.4}%"></i></div></div>
       <div class="stat">Speed<div class="meter"><i style="width:${h.spd}%"></i></div></div>
       <div class="stat">Bolt<div class="meter"><i style="width:${h.atk*6}%"></i></div></div>
@@ -2268,7 +2295,7 @@ const R={
     <h2 class="label" style="font-size:14px;margin:8px 0 0">Upgrades</h2>
     <div class="grid">${upRow('size','Squad Size','+1 soldier slot')}${upRow('train','Training','+15% soldier damage, health and healing')}</div></div>`},
   armory(){const kit=k=>{const B=BUILD[k],n=save.kits[k]||0,can=m=>save.god.infSup||save.supplies>=B.cost*m;
-      return`<div class="panel up"><div style="min-width:0"><h3>${B.name} <span class="label">${save.god.infSup?'∞':n} owned</span></h3><p class="muted">${B.d}</p>
+      return`<div class="panel up"><div style="min-width:0"><h3>${B.name} <span class="label" style="white-space:nowrap">${save.god.infSup?'∞':n} owned</span></h3><p class="muted">${B.d}</p>
         <p class="sup" style="font-size:13px">${save.god.infSup?'Free':B.cost+' supplies each'}</p></div>
         <div class="upbtns">${[1,5,10].map(m=>`<button class="btn small ${m===1?'primary':''}" data-kit="${k}" data-n="${m}" ${can(m)?'':'disabled'}>+${m}</button>`).join('')}</div></div>`};
     $('#scr-armory').innerHTML=`<div class="wrap">${head('Armory')}<p class="muted">Kits you carry into every mission. In a mission, tap Build to set one down in front of you. Sandbags and fences hold the infected back, spike traps shred them, turrets shoot them. Shelters you defend keep a small stockpile of their own.</p>
@@ -2299,7 +2326,9 @@ const R={
     <div class="panel" style="display:grid;gap:10px"><h3 class="label" style="font-size:14px;margin:0">Game</h3><p>Voltfall: design, code, heroines, squad, city and effects are generated in code for this game.</p></div>
     <div class="panel" style="display:grid;gap:10px"><h3 class="label" style="font-size:14px;margin:0">Infected sprites</h3>
       <p>Composited from the <b>Liberated Pixel Cup</b> collection with the Universal LPC Spritesheet Generator. Used under CC-BY-SA 3.0 (sources also offer OGA-BY 3.0 / CC-BY 3.0).</p>
-      <p class="muted">Artists: ${LPC_AUTHORS}.</p><p class="muted">The full per-file list with licenses and source links is in CREDITS.md in the game's repository.</p></div></div>`},
+      <p class="muted">Artists: ${LPC_AUTHORS}.</p><p class="muted">The full per-file list with licenses and source links is in CREDITS.md in the game's repository.</p></div>
+    <div class="panel" style="display:grid;gap:10px"><h3 class="label" style="font-size:14px;margin:0">Fonts</h3>
+      <p><b>Pixelify Sans</b> by Stefie Justprince, <b>VT323</b> by Peter Hull and <b>Tiny5</b> by Stefan Schmidt. All under the SIL Open Font License 1.1.</p></div></div>`},
   pause(){$('#scr-pause').innerHTML=`<div class="wrap" style="max-width:420px;margin-top:10vh"><h2 style="font-family:var(--display);font-size:40px;margin:0">Paused</h2>
     <p class="muted">${G.city.name} · ${G.kills} kills</p>
     <button class="btn primary" data-act="resume">Resume</button><button class="btn" data-act="pgod">God Mode</button>
@@ -2410,7 +2439,7 @@ function frame(t){const raw=(t-last)/1000,dt=Math.min(.05,raw);last=t;
   // squad frames not drawn yet; those frames don't count toward the resolution check
   pumped=pumpSprites(t);requestAnimationFrame(frame)}
 showScreen('title');requestAnimationFrame(frame);
-window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite,spawnZombie,placeBuild};
+window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite,spawnZombie,placeBuild,step:dt=>update(dt)};
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/claude|anthropic/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>

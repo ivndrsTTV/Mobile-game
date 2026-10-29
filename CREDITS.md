@@ -1,4 +1,14 @@
-# Art credits
+# Credits
+
+## Fonts
+
+Bundled in `assets/fonts/` under the SIL Open Font License 1.1 (full text in `assets/fonts/OFL.txt`):
+
+- **Pixelify Sans** by Stefie Justprince (https://github.com/eifetx/Pixelify-Sans)
+- **VT323** by Peter Hull
+- **Tiny5** by Stefan Schmidt (https://github.com/Gissio/font_tiny5), used for digits
+
+## Infected sprites
 
 The infected sprites in `assets/infected/` are composited from the Liberated Pixel Cup (LPC) collection via the Universal LPC Spritesheet Generator (https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator). The composited sheets are distributed under **CC-BY-SA 3.0**. Every source asset is listed below with its authors, licenses and source pages.
 
