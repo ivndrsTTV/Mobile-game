@@ -106,7 +106,7 @@ p{margin:0}
 .ptags span{font-family:var(--display);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:#0b0912;padding:2px 6px;border:1px solid var(--line)}
 
 /* powers */
-.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
 .slot{display:grid;gap:4px;text-align:left;cursor:pointer;min-width:0}
 .slot.sel{border-color:var(--volt);box-shadow:4px 4px 0 #000,0 0 0 2px var(--volt)}
 .slot b{font-family:var(--display);font-size:16px;overflow-wrap:anywhere}
@@ -115,11 +115,15 @@ p{margin:0}
 .pcard.on{border-color:var(--sakura)}
 .up{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
 .up h3{font-family:var(--display);font-size:17px;margin:0}
+.upbtns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.upbtns .btn{font-size:12px;padding:6px 8px}
 
 /* squad */
 .roster{display:grid;gap:8px}
 .rrow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 10px}
 .rrow b{font-family:var(--display);font-size:17px}
+.slotcard{display:grid;gap:10px}.slotcard.sel{border-color:var(--volt)}.slotcard .top{display:flex;justify-content:space-between;align-items:center}
+.slotbody{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}.slotbody b{font-family:var(--display);font-size:18px}.slotcard .pf{background:#0b0912;border:2px solid var(--line);line-height:0}
 .ccard{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
 .ccard h3{font-family:var(--display);font-size:18px;margin:0}
 .ccard .act{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -166,9 +170,12 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 #sbx .btn{flex:none;font-size:12px;padding:6px 8px}
 #stick{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.05);border-radius:50%;pointer-events:none}
 #knob{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,225,77,.35);border:2px solid var(--volt)}
+#aimstick{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border:2px solid rgba(255,92,138,.45);background:rgba(255,92,138,.06);border-radius:50%;pointer-events:none}
+#aimknob{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,92,138,.4);border:2px solid var(--sakura)}
 #hint{position:absolute;left:calc(env(safe-area-inset-left,0px) + 24px);bottom:calc(env(safe-area-inset-bottom,0px) + 30px);color:var(--muted);font-size:18px;pointer-events:none;
   border:2px dashed var(--line);padding:18px 16px;background:rgba(14,11,22,.4)}
-#powers{position:absolute;right:calc(env(safe-area-inset-right,0px) + 12px);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:200px;height:190px}
+#powers{position:absolute;right:calc(env(safe-area-inset-right,0px) + 12px);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:260px;height:236px;pointer-events:none}
+#powers > *{pointer-events:auto}
 .pw{position:absolute;width:74px;height:74px;padding:0;font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.06em;border:3px solid #000;cursor:pointer;
   clip-path:polygon(25% 0,75% 0,100% 25%,100% 75%,75% 100%,25% 100%,0 75%,0 25%);background:var(--volt);color:#1a1426;--p:0;display:grid;place-items:center;text-align:center;line-height:1.05}
 .pw::after{content:"";position:absolute;inset:0;background:conic-gradient(rgba(10,8,16,.78) calc(var(--p)*1turn),transparent 0)}
@@ -178,7 +185,8 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 #pw1{right:96px;bottom:4px}
 #pw2{right:14px;bottom:96px}
 #pw1{background:var(--sakura)}#pw2{background:#9fe8ff}
-#btnSquad{position:absolute;right:104px;bottom:96px;width:62px;height:44px;padding:0;font-size:11px}
+#pw3{right:96px;bottom:90px;width:66px;height:66px;background:#b8f28a}#pw4{right:172px;bottom:64px;width:66px;height:66px;background:#d6b8ff}
+#btnSquad{position:absolute;right:20px;bottom:184px;width:62px;height:40px;padding:0;font-size:11px}
 #banner{position:absolute;left:0;right:0;top:32%;text-align:center;pointer-events:none;opacity:0}
 #banner.show{animation:ban 2.2s ease-out forwards}
 #banner b{display:block;font-family:var(--display);font-size:clamp(26px,7vw,48px);color:var(--volt);text-shadow:3px 3px 0 #000}
@@ -211,12 +219,15 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
     <div id="objective">Nests 0</div>
     <div class="hud-tr"><canvas id="minimap" width="84" height="84"></canvas><button class="btn" id="btnPause" aria-label="Pause">II</button></div>
     <div id="sbx" hidden></div>
-    <div id="hint">Drag on the left side to move.<br>Your attack fires on its own.</div>
+    <div id="hint">Left side: drag to move.<br>Right side: drag to aim, release to fire.</div>
     <div id="stick" hidden><div id="knob"></div></div>
+    <div id="aimstick" hidden><div id="aimknob"></div></div>
     <div id="powers">
       <button class="pw" id="pw0"><span>CHAIN</span></button>
       <button class="pw" id="pw1"><span>STORM</span></button>
       <button class="pw" id="pw2"><span>JUDGE</span></button>
+      <button class="pw" id="pw3" hidden><span></span></button>
+      <button class="pw" id="pw4" hidden><span></span></button>
       <button class="btn" id="btnSquad">Follow</button>
     </div>
     <div id="banner"><b></b><small></small></div>
@@ -245,7 +256,10 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
           <button class="btn ghost small" id="btnSound">Sound: on</button>
           <button class="btn ghost small" id="btnFull">Fullscreen</button>
         </div>
-        <button class="btn ghost small" data-go="credits">Credits</button>
+        <div class="row">
+          <button class="btn ghost small" data-go="slots">Save slots</button>
+          <button class="btn ghost small" data-go="credits">Credits</button>
+        </div>
         <div class="foot"><span id="titleSup"></span><span id="titleProg"></span></div>
       </div>
     </div>
@@ -260,6 +274,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
   <section class="screen" id="scr-pause" hidden></section>
   <section class="screen" id="scr-result" hidden></section>
   <section class="screen" id="scr-credits" hidden></section>
+  <section class="screen" id="scr-slots" hidden></section>
 </div>
 
 <script>
@@ -377,14 +392,25 @@ const SAVE_KEY='himeblitz.save.v1';
 function defaultGod(){return{infHP:false,noCD:false,oneHit:false,infSup:false,unlock:false,dmg:1,size:1,speed:1,atk:1,cd:1,zDensity:1,zSpeed:1,squadBonus:0}}
 function defaultSave(){return{supplies:150,cleared:{},heroine:'raiko',loadouts:{},
   squad:[{cls:'rifle',name:'Aiko',hair:'#1b1424'},{cls:'rifle',name:'Mei',hair:'#7a4a2a'},{cls:'smg',name:'Rin',hair:'#d9b45a'}],
-  up:{power:0,vit:0,size:0,train:0},god:defaultGod(),sound:true}}
+  up:{power:0,vit:0,size:0,train:0,slots:0},god:defaultGod(),sound:true,autoFire:true}}
 function merge(base,s){for(const k in s){if(base[k]&&typeof base[k]==='object'&&!Array.isArray(base[k])&&s[k]&&typeof s[k]==='object')merge(base[k],s[k]);else base[k]=s[k]}return base}
-function loadSave(){try{const s=JSON.parse(localStorage.getItem(SAVE_KEY));if(s)return merge(defaultSave(),s)}catch(e){}return defaultSave()}
-function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save))}catch(e){}}
+// three independent save slots; the pre-slots save becomes slot 1
+const SLOTS=3,SLOT_KEY=n=>'voltfall.slot.'+n,ACTIVE_KEY='voltfall.activeSlot';
+let activeSlot=1;
+function readSlot(n){try{const s=JSON.parse(localStorage.getItem(SLOT_KEY(n)));if(s)return merge(defaultSave(),s)}catch(e){}return null}
+function loadSave(){try{activeSlot=clamp(+localStorage.getItem(ACTIVE_KEY)||1,1,SLOTS);
+    if(!localStorage.getItem(SLOT_KEY(1))){const old=localStorage.getItem(SAVE_KEY);if(old)localStorage.setItem(SLOT_KEY(1),old)}}catch(e){}
+  return readSlot(activeSlot)||defaultSave()}
+function persist(){save.lastPlayed=Date.now();try{localStorage.setItem(SLOT_KEY(activeSlot),JSON.stringify(save));localStorage.setItem(ACTIVE_KEY,String(activeSlot))}catch(e){}}
+function useSlot(n){persist();activeSlot=n;save=readSlot(n)||defaultSave();persist()}
+function deleteSlot(n){try{localStorage.removeItem(SLOT_KEY(n))}catch(e){}if(n===activeSlot){save=defaultSave();persist()}}
 let save=loadSave();
 const squadCap=()=>4+save.up.size+save.god.squadBonus;
 const upCost=l=>Math.round(80*Math.pow(1.5,l));
-const loadout=()=>save.loadouts[save.heroine]||HMAP[save.heroine].loadout;
+const slotCount=()=>3+(save.up.slots||0);
+// the heroine's chosen powers, padded with unused ones when extra slots are unlocked
+const loadout=()=>{const lo=(save.loadouts[save.heroine]||HMAP[save.heroine].loadout).slice(0,slotCount());
+  for(const k of Object.keys(POWERS)){if(lo.length>=slotCount())break;if(!lo.includes(k))lo.push(k)}return lo};
 
 /* ---------------- PIXEL ART ENGINE ---------------- */
 // Sprites are drawn into material maps (one letter = material + tone) and baked with hue-shifted
@@ -1153,7 +1179,7 @@ function renderMini(m){const c=document.createElement('canvas');c.width=m.W;c.he
 
 /* ---------------- GAME STATE ---------------- */
 let state='menu',paused=false,G=null;
-const keys=new Set(),held=[false,false,false];
+const keys=new Set(),held=[false,false,false,false,false],heldT=[0,0,0,0,0];
 const stick={id:null,ox:0,oy:0,dx:0,dy:0};
 
 function blocked(x,y,r){const m=G.map,x0=Math.floor((x-r)/TILE),x1=Math.floor((x+r)/TILE),y0=Math.floor((y-r)/TILE),y1=Math.floor((y+r)/TILE);
@@ -1172,10 +1198,10 @@ function startMission(idx,sandbox){
   const map=genMap(city,seed);prepMapArt(map);map.mini=renderMini(map);
   const h=HMAP[save.heroine];
   const sx=map.spawn.x*TILE+8,sy=map.spawn.y*TILE+8;
-  G={city,idx,sandbox,map,hime:h,zombies:[],nests:[],squad:[],clones:[],fx:[],parts:[],shots:[],pshots:[],corpses:[],timers:[],trail:[],ward:null,encore:0,regenT:0,speedT:0,
+  G={city,idx,sandbox,map,hime:h,slots:slotCount(),zombies:[],nests:[],squad:[],clones:[],fx:[],parts:[],shots:[],pshots:[],corpses:[],timers:[],trail:[],ward:null,encore:0,regenT:0,speedT:0,
      time:0,kills:0,earned:0,nestsTotal:0,slowT:0,storm:null,orbs:null,shake:0,hurtFlash:0,ended:false,finalWave:false,flowT:0,flow:new Int16Array(map.W*map.H),
      tier:1+.12*Math.max(0,idx),squadMode:'follow',hold:{x:sx,y:sy},cam:{x:0,y:0},hudT:0,
-     p:{x:sx,y:sy,r:4,hp:0,maxHp:0,spd:h.spd,face:-1,dirx:-1,diry:0,anim:0,moving:false,atkT:0,inv:0,cds:[0,0,0],locked:false,trailT:0,kind:'p'}};
+     p:{x:sx,y:sy,r:4,hp:0,maxHp:0,spd:h.spd,face:-1,dirx:-1,diry:0,anim:0,moving:false,atkT:0,inv:0,cds:[0,0,0,0,0],cdMax:[1,1,1,1,1],locked:false,trailT:0,kind:'p'}};
   const p=G.p;p.maxHp=p.hp=h.hp*(1+.2*save.up.vit);
   // nests: spread far from spawn
   const W=map.W,cand=[];for(let i=0;i<W*map.H;i++){if(map.reach[i]>18&&map.tiles[i]!==T.ROAD)cand.push(i)}
@@ -1191,7 +1217,7 @@ function startMission(idx,sandbox){
   // squad
   save.squad.slice(0,squadCap()).forEach((rec,i)=>G.squad.push(makeSoldier(rec,i)));
   // HUD prep
-  const lo=loadout();[0,1,2].forEach(i=>{$('#pw'+i).firstElementChild.textContent=POWERS[lo[i]].short});
+  const lo=loadout();[0,1,2,3,4].forEach(i=>{const b=$('#pw'+i);b.hidden=!lo[i];if(lo[i])b.firstElementChild.textContent=POWERS[lo[i]].short});
   $('#hudName').textContent=h.name;const face=$('#hudFace');face.textContent='';face.appendChild(cropCanvas(himeSprite(h).portrait,20,30,88,88,.55));
   $('#sbx').hidden=!sandbox;$('#hint').hidden=false;$('#btnSquad').textContent='Follow';
   state='play';paused=false;showScreen(null);$('#hud').hidden=false;
@@ -1243,7 +1269,10 @@ function hurtAlly(a,d){if(save.god.infHP)return;
   else{a.hp-=d;a.flash=.08;if(a.hp<=0&&!a.dead){a.dead=true;blood(a.x,a.y-4,'#8a1020',10);toast(`${a.rec.name} is down`)}}}
 
 /* ---------------- POWERS ---------------- */
-function aimDir(range){const p=G.p;if(p.moving)return[p.dirx,p.diry];const t=nearestEnemy(p.x,p.y,range);if(t){const dx=t.x-p.x,dy=t.y-p.y,l=Math.hypot(dx,dy)||1;return[dx/l,dy/l]}return[p.face,0]}
+// manual aim: right-side stick (or mouse) and drag-to-aim on power buttons
+const aim={id:null,ox:0,oy:0,dx:0,dy:0,mag:0,heldT:0,mouse:false,pw:-1,castDir:null};
+const aimVec=()=>aim.mag>.3?[aim.dx/aim.mag,aim.dy/aim.mag]:null;
+function aimDir(range){const p=G.p;if(aim.castDir)return aim.castDir;const v=aimVec();if(aim.id!==null&&v)return v;if(p.moving)return[p.dirx,p.diry];const t=nearestEnemy(p.x,p.y,range);if(t){const dx=t.x-p.x,dy=t.y-p.y,l=Math.hypot(dx,dy)||1;return[dx/l,dy/l]}return[p.face,0]}
 const CAST={
   chain(){const p=G.p,h=G.hime,s=psz();let cur=nearestEnemy(p.x,p.y,170*s);if(!cur)return false;let fx=p.x,fy=p.y-9;const hit=new Set();
     for(let i=0;i<Math.round(8*s)&&cur;i++){hit.add(cur);addBolt(fx,fy,cur.x,cur.y-6,h.bolt,2,.22,5);sparks(cur.x,cur.y-6,h.bolt,5);fx=cur.x;fy=cur.y-6;const nx=cur.x,ny=cur.y;hurt(cur,42*pm());cur=nearestEnemy(nx,ny,85*s,hit)}
@@ -1274,7 +1303,7 @@ const CAST={
     for(let i=1;i<=6;i++)after(i*.025,()=>{const t=i/6,nx=sx+(tx-sx)*t,ny=sy+(ty-sy)*t;if(!blocked(nx,ny,p.r)){p.x=nx;p.y=ny}G.trail.push({x:p.x,y:p.y,t:.3,f:p.face})});
     after(.17,()=>{p.locked=false;addRing(p.x,p.y,4,42*s,G.hime.bolt,.35);for(const e of enemiesIn(p.x,p.y,42*s)){hurt(e,75*pm());if(e.kind==='z')e.stun=.8}G.shake=Math.max(G.shake,4);sparks(p.x,p.y-4,G.hime.bolt,16,90);Sfx.play('boom')});
     Sfx.play('power');return true},
-  claws(){const p=G.p,s=psz(),t=nearestEnemy(p.x,p.y,90*s),a0=t?Math.atan2(t.y-p.y,t.x-p.x):(p.face<0?Math.PI:0);
+  claws(){const p=G.p,s=psz(),[ax,ay]=aimDir(90*s),a0=Math.atan2(ay,ax);
     for(let k=0;k<3;k++)after(k*.11,()=>{const R=55*s;G.fx.push({k:'claw',x:p.x+Math.cos(a0)*R*.45,y:p.y-6+Math.sin(a0)*R*.45,a:a0,c:G.hime.bolt,t:.2,max:.2,big:2});
       for(const e of enemiesIn(p.x,p.y,R)){const ea=Math.atan2(e.y-p.y,e.x-p.x),da=Math.abs(((ea-a0+Math.PI*3)%(Math.PI*2))-Math.PI);if(da<1.1){hurt(e,48*pm());sparks(e.x,e.y-5,'#ffffff',3)}}Sfx.play('hit')});
     return true},
@@ -1296,14 +1325,24 @@ const CAST={
 };
 function strike(x,y){const h=G.hime,s=psz();addBolt(x,y-180,x,y-2,h.bolt,4,.3,10);addBolt(x,y-180,x,y-2,'#ffffff',1,.2,6);addRing(x,y,2,26*s,h.bolt,.3);sparks(x,y,h.bolt,10,80);
   for(const e of enemiesIn(x,y,26*s))hurt(e,80*pm());G.shake=Math.max(G.shake,2.5);Sfx.play('zap');Sfx.play('hit')}
+// fire the basic attack along (dx,dy): a lightning hitscan, a claw arc, or a straight projectile
+function fireAimed(p,dx,dy){const h=G.hime,ak=h.auto||'bolt',dmg=h.atk*pm()*1.1;p.castT=Math.max(p.castT,.16);if(Math.abs(dx)>.1)p.face=dx<0?-1:1;
+  if(ak==='bolt'){p.atkT=.32;const R=150;let best=null,bt=R;
+    for(const e of enemiesIn(p.x,p.y,R+10)){const ex=e.x-p.x,ey=e.y-p.y,t=ex*dx+ey*dy;if(t<0||t>bt)continue;const off=Math.abs(ex*dy-ey*dx);if(off<(e.kind==='n'?12:8)&&los(p.x,p.y-4,e.x,e.y-4)){bt=t;best=e}}
+    const ex=best?best.x:p.x+dx*R,ey=best?best.y-6:p.y-9+dy*R;addBolt(p.x+p.face*4,p.y-9,ex,ey,h.bolt,1.4,.12,3);if(best){hurt(best,dmg);sparks(best.x,best.y-5,h.bolt,4)}Sfx.play('zap')}
+  else if(ak==='claw'){p.atkT=.2;const a0=Math.atan2(dy,dx),cx=p.x+dx*30,cy=p.y+dy*30;G.fx.push({k:'claw',x:cx,y:cy-6,a:a0,c:h.bolt,t:.18,max:.18});
+    for(const e of enemiesIn(p.x,p.y,64)){const da=Math.abs(((Math.atan2(e.y-p.y,e.x-p.x)-a0+Math.PI*3)%(Math.PI*2))-Math.PI);if(da<.9)hurt(e,dmg)}Sfx.play('hit')}
+  else{const sp=ak==='knife'?320:ak==='note'?220:200;p.atkT=ak==='knife'?.26:.3;
+    G.pshots.push({x:p.x+dx*6,y:p.y-9+dy*6,vx:dx*sp,vy:dy*sp,t:.75,dmg,kind:ak,home:0,pierce:ak==='knife'?1:0,hit:new Set(),c:h.bolt});Sfx.play(ak==='knife'?'shot':'zap')}}
 function autoAttack(p){const h=G.hime,ak=h.auto||'bolt',t=nearestEnemy(p.x,p.y,ak==='claw'?62:135,null,true);if(!t){p.atkT=.06;return}
   const dmg=h.atk*pm();p.castT=Math.max(p.castT,.16);if(Math.abs(t.x-p.x)>2&&!p.moving)p.face=t.x<p.x?-1:1;
   if(ak==='bolt'){p.atkT=.32;addBolt(p.x+p.face*4,p.y-9,t.x,t.y-(t.kind==='n'?2:6),h.bolt,1,.1,3);hurt(t,dmg);sparks(t.x,t.y-5,h.bolt,3);Sfx.play('zap')}
   else if(ak==='claw'){p.atkT=.2;G.fx.push({k:'claw',x:t.x,y:t.y-6,a:Math.atan2(t.y-p.y,t.x-p.x),c:h.bolt,t:.18,max:.18});for(const e of enemiesIn(t.x,t.y,16))hurt(e,e===t?dmg:dmg*.6);sparks(t.x,t.y-5,'#ffffff',4);Sfx.play('hit')}
   else{const a=Math.atan2(t.y-6-(p.y-9),t.x-p.x),sp=ak==='knife'?300:ak==='note'?190:170;p.atkT=ak==='knife'?.26:.3;
     G.pshots.push({x:p.x+p.face*4,y:p.y-9,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:1.2,dmg,kind:ak,home:ak==='knife'?0:ak==='note'?3:6,pierce:0,hit:new Set(),c:h.bolt});Sfx.play(ak==='knife'?'shot':'zap')}}
-function tryCast(i){if(!G||G.ended||G.p.locked)return;const p=G.p;if(p.cds[i]>0)return;const id=loadout()[i];
-  if(CAST[id]()!==false){p.castT=Math.max(p.castT||0,.35);p.cds[i]=save.god.noCD?.15:POWERS[id].cd*save.god.cd;p.cdMax=p.cdMax||[1,1,1];p.cdMax[i]=p.cds[i]}else p.cds[i]=.25}
+function tryCast(i,dir){if(!G||G.ended||G.p.locked)return;const p=G.p;if(p.cds[i]>0)return;const id=loadout()[i];aim.castDir=dir||null;if(dir&&Math.abs(dir[0])>.1)p.face=dir[0]<0?-1:1;
+  const ok=CAST[id]();aim.castDir=null;
+  if(ok!==false){p.castT=Math.max(p.castT||0,.35);p.cds[i]=save.god.noCD?.15:POWERS[id].cd*save.god.cd;p.cdMax[i]=p.cds[i]}else p.cds[i]=.25}
 
 /* ---------------- UPDATE ---------------- */
 function updateFlow(){const m=G.map,W=m.W,f=G.flow;f.fill(-1);const q=new Int32Array(W*m.H);let h=0,t=0;
@@ -1332,12 +1371,14 @@ function update(dt){
   if((G.hime.trail&&p.moving)||G.slowT>0&&p.moving){p.trailT-=dt;if(p.trailT<=0){p.trailT=.05;G.trail.push({x:p.x,y:p.y,t:.25,f:p.face})}}
   for(let i=G.trail.length-1;i>=0;i--){G.trail[i].t-=dt;if(G.trail[i].t<=0)G.trail.splice(i,1)}
   p.atkT-=dt*g.atk*(G.encore>0?2:1);p.castT=Math.max(0,(p.castT||0)-dt);
-  if(p.atkT<=0&&!p.locked)autoAttack(p);
+  const av=aimVec();if(aim.id!==null)aim.heldT+=dt;
+  if(aim.id!==null&&aim.mouse)updateMouseAim();
+  if(p.atkT<=0&&!p.locked){if(aim.id!==null&&av&&aim.pw<0){if(aim.heldT>.3)fireAimed(p,av[0],av[1])}else if(save.autoFire&&aim.id===null)autoAttack(p);else p.atkT=Math.max(p.atkT,0)}
   for(const k of['encore','regenT','speedT'])G[k]=Math.max(0,G[k]-dt);
   if(G.encore>0||G.regenT>0){const r=(G.regenT>0?.15:0)+(G.encore>0?.05:0);p.hp=Math.min(p.maxHp,p.hp+p.maxHp*r*dt);for(const q of G.squad)if(!q.dead)q.hp=Math.min(q.max,q.hp+q.max*r*dt);
     if(Math.random()<dt*8)G.parts.push({x:p.x+rand(-12,12),y:p.y-rand(4,20),vx:rand(-6,6),vy:-18,t:.8,c:G.encore>0?G.hime.bolt:'#9ff0d8',s:2})}
   if(G.ward){G.ward.t-=dt;if(G.ward.t<=0)G.ward=null}
-  for(let i=0;i<3;i++){p.cds[i]=Math.max(0,p.cds[i]-dt);if(held[i]||keys.has(String(i+1))||keys.has('jkl'[i]))tryCast(i)}
+  for(let i=0;i<G.slots;i++){p.cds[i]=Math.max(0,p.cds[i]-dt);if((held[i]&&heldT[i]>.3&&save.god.noCD)||keys.has(String(i+1))||keys.has('jkl;\''[i]))tryCast(i);if(held[i])heldT[i]+=dt}
   // world time
   const zdt=dt*(G.slowT>0?.18:1)*g.zSpeed;G.slowT=Math.max(0,G.slowT-dt);
   G.flowT-=dt;if(G.flowT<=0){G.flowT=.35;updateFlow()}
@@ -1512,6 +1553,12 @@ function render(){
     else if(s.kind==='fox'){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf('#7ad8ff'),x-48,y-48,96,96);ctx.fillStyle='#bff0ff';ctx.beginPath();ctx.ellipse(x,y,7,9,0,0,7);ctx.fill();
       ctx.fillStyle='#ffffff';ctx.beginPath();ctx.ellipse(x,y+2,4,5,0,0,7);ctx.fill();ctx.fillStyle='#7ad8ff';ctx.fillRect(x-2,y-18,4,10);ctx.fillRect(x-6,y-12,3,6);ctx.globalCompositeOperation='source-over'}}
   for(const q of G.parts){ctx.fillStyle=q.c;const s=(q.s||2)*3;ctx.fillRect(SX(q.x),SY(q.y),s,s)}
+  const av=aim.id!==null?aimVec():null;
+  if(av&&!G.ended){const ak=h.auto||'bolt',R=(aim.pw>=0?120:ak==='claw'?60:ak==='bolt'?150:160)*RZ,x0=SX(p.x),y0=SY(p.y-9),a=Math.atan2(av[1],av[0]);ctx.save();ctx.globalAlpha=.55;
+    if(ak==='claw'&&aim.pw<0){ctx.fillStyle=h.bolt;ctx.globalAlpha=.22;ctx.beginPath();ctx.moveTo(x0,y0);ctx.arc(x0,y0,R,a-.9,a+.9);ctx.closePath();ctx.fill()}
+    else{ctx.strokeStyle='#ffffff';ctx.globalAlpha=.16;ctx.lineWidth=34;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x0+av[0]*30,y0+av[1]*30);ctx.lineTo(x0+av[0]*R,y0+av[1]*R);ctx.stroke();ctx.lineCap='butt';ctx.globalAlpha=.6;
+      ctx.strokeStyle=aim.pw>=0?'#ffffff':h.bolt;ctx.lineWidth=10;ctx.setLineDash([24,14]);ctx.lineDashOffset=-G.time*80;ctx.beginPath();ctx.moveTo(x0+av[0]*30,y0+av[1]*30);ctx.lineTo(x0+av[0]*R,y0+av[1]*R);ctx.stroke();ctx.setLineDash([]);
+      ctx.globalAlpha=.8;ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(x0+av[0]*R,y0+av[1]*R,12,0,7);ctx.fill()}ctx.restore()}
   drawFx();
   // night layer (lower resolution, soft) with light cut out around the heroine, lightning and fire
   const dk=m.th.dark||.35;
@@ -1578,7 +1625,7 @@ function updHud(){const p=G.p;$('#hpFill').style.width=(p.hp/p.maxHp*100)+'%';$(
   $('#hudSquad').textContent=G.squad.filter(s=>!s.dead).length;
   const zl=G.zombies.filter(z=>!z.dead).length,nl=G.nests.filter(n=>!n.dead).length;
   $('#objective').textContent=G.sandbox?`Sandbox · ${zl} infected`:G.finalWave?`Final wave · ${zl} left`:`Nests ${nl}/${G.nestsTotal} · Infected ${zl}`;
-  for(let i=0;i<3;i++){const b=$('#pw'+i),mx=(p.cdMax&&p.cdMax[i])||1;b.style.setProperty('--p',(p.cds[i]/mx).toFixed(3));b.classList.toggle('cd',p.cds[i]>0)}}
+  for(let i=0;i<G.slots;i++){const b=$('#pw'+i),mx=p.cdMax[i]||1;b.style.setProperty('--p',(p.cds[i]/mx).toFixed(3));b.classList.toggle('cd',p.cds[i]>0)}}
 
 function endMission(win){if(G.ended)return;G.ended=true;held.fill(false);
   if(win){const reward=200+50*G.idx;if(!save.god.infSup)save.supplies+=reward;G.earned+=reward;save.cleared[G.city.id]=true;Sfx.play('win');banner('CITY LIBERATED',`+${reward} supplies`)}
@@ -1594,8 +1641,10 @@ function hydrate(root){root.querySelectorAll('[data-spr]').forEach(n=>{const[k,i
   n.appendChild(sprCanvas(img,+sc||3))})}
 const head=(title,back='title')=>`<div class="bar"><button class="btn small" data-go="${back}">Back</button><h2>${title}</h2><span class="sup">${save.god.infSup?'∞':save.supplies} supplies</span></div>`;
 let returnTo='title';
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.hidden=true);if(!id)return;
-  if(R[id])R[id]();const el=$('#scr-'+id);el.hidden=false;el.scrollTop=0;hydrate(el)}
+function showScreen(id,keep){const prev=keep?$('#scr-'+id).scrollTop:0;document.querySelectorAll('.screen').forEach(s=>s.hidden=true);if(!id)return;
+  if(R[id])R[id]();const el=$('#scr-'+id);el.hidden=false;el.scrollTop=prev;hydrate(el)}
+// re-render the screen in place (after a purchase or a toggle) without jumping back to the top
+const refresh=id=>showScreen(id,true);
 const unlocked=i=>save.god.unlock||i===0||!!save.cleared[CITIES[i-1].id]||!!save.cleared[CITIES[i].id];
 function cityCard(c,i,mode){const th=THEMES[c.theme],cl=!!save.cleared[c.id],lock=mode==='map'&&!unlocked(i);const threat=Math.min(5,1+Math.floor(i/2.4));
   const st=lock?'locked':cl?'cleared':'infected';
@@ -1606,7 +1655,7 @@ function cityCard(c,i,mode){const th=THEMES[c.theme],cl=!!save.cleared[c.id],loc
     <div class="meta"><span>${th.label}</span><span>${c.nests} nests</span>${c.boss?'<span style="color:var(--sakura)">Boss</span>':''}</div>
     <span class="pips">THREAT ${'■'.repeat(threat)}${'□'.repeat(5-threat)}</span></button>`}
 const R={
-  title(){$('#titleSup').textContent=`${save.god.infSup?'∞':save.supplies} supplies`;$('#titleProg').textContent=`${CITIES.filter(c=>save.cleared[c.id]).length}/${CITIES.length} cities liberated`;
+  title(){$('#titleSup').textContent=`Slot ${activeSlot} · ${save.god.infSup?'∞':save.supplies} supplies`;$('#titleProg').textContent=`${CITIES.filter(c=>save.cleared[c.id]).length}/${CITIES.length} cities liberated`;
     $('#btnSound').textContent='Sound: '+(save.sound?'on':'off');
     const l=$('#lineup');l.innerHTML=HEROINES.map(h=>`<div class="h"><span data-spr="h:${h.id}:.46"></span><span class="n">${h.name}</span></div>`).join('')},
   map(){$('#scr-map').innerHTML=`<div class="wrap">${head('Liberate the cities')}<p class="muted">Destroy every nest, then survive the final wave. Each city unlocks the next.</p>
@@ -1626,7 +1675,7 @@ const R={
     <div class="slots">${lo.map((k,i)=>`<button class="panel slot ${selSlot===i?'sel':''}" data-slot="${i}"><span class="label">Slot ${i+1}</span><b>${POWERS[k].name}</b></button>`).join('')}</div>
     <div class="grid">${Object.entries(POWERS).map(([k,p])=>`<button class="panel pcard ${lo.includes(k)?'on':''}" data-power="${k}"><h3>${p.name}<span class="label">${p.cd}s</span></h3><p class="muted">${p.desc}</p></button>`).join('')}</div>
     <h2 class="label" style="font-size:14px;margin:8px 0 0">Upgrades</h2>
-    <div class="grid">${upRow('power','Power Level','+15% damage for every power and bolt')}${upRow('vit','Vitality','+20% heroine health')}</div></div>`},
+    <div class="grid">${upRow('power','Power Level','+15% damage for every power and attack')}${upRow('vit','Vitality','+20% heroine health')}${upRow('slots','Power Slots','Equip a 4th, then a 5th power at once')}</div></div>`},
   squad(){const cap=squadCap();
     $('#scr-squad').innerHTML=`<div class="wrap">${head('Squad')}
     <div class="bar"><span class="label">Roster ${save.squad.length}/${cap}</span><span class="muted" style="font-size:18px">The first ${cap} deploy with you. Fallen soldiers return after each mission.</span></div>
@@ -1647,6 +1696,16 @@ const R={
     <div class="grid gm">${sl('dmg','Power Damage',1,100,1,x)}${sl('size','Power Size',1,4,.25,x)}${sl('speed','Move Speed',.5,3,.25,x)}${sl('atk','Attack Speed',1,10,.5,x)}
       ${sl('cd','Cooldown Length',.1,1,.05,x)}${sl('zDensity','Infected Density',.25,4,.25,x)}${sl('zSpeed','Infected Speed',.25,2,.25,x)}${sl('squadBonus','Bonus Squad Slots',0,40,1,v=>'+'+v)}</div>
     <div class="bar"><button class="btn small" data-act="resetgod">Reset to normal</button><button class="btn small primary" data-act="maxgod">Max everything</button></div></div>`},
+  slots(){const cards=[];for(let n=1;n<=SLOTS;n++){const s=n===activeSlot?save:readSlot(n),act=n===activeSlot;
+      if(!s){cards.push(`<div class="panel slotcard"><div class="top"><span class="label">Slot ${n}</span><span class="chip">Empty</span></div><p class="muted">No game saved here yet.</p>
+        <button class="btn small primary" data-slotuse="${n}">Start new game</button></div>`);continue}
+      const h=HMAP[s.heroine]||HEROINES[0],lib=CITIES.filter(c=>s.cleared[c.id]).length,when=s.lastPlayed?'Last played '+new Date(s.lastPlayed).toLocaleString([], {dateStyle:'medium',timeStyle:'short'}):'New save';
+      cards.push(`<div class="panel slotcard ${act?'sel':''}"><div class="top"><span class="label">Slot ${n}</span>${act?'<span class="chip" style="color:var(--volt)">Playing</span>':''}</div>
+        <div class="slotbody"><span class="pf" data-spr="p:${h.id}:.6"></span><div style="display:grid;gap:4px;min-width:0"><b>${h.name}</b>
+        <span class="muted">${lib}/${CITIES.length} cities liberated</span><span class="muted">${s.god.infSup?'∞':s.supplies} supplies · ${s.squad.length} in squad</span><span class="muted" style="font-size:16px">${when}</span></div></div>
+        <div class="bar">${act?'':`<button class="btn small primary" data-slotuse="${n}">Play this slot</button>`}
+        <button class="btn small ghost" data-slotdel="${n}">${delConfirm===n?'Tap again to delete':'Delete'}</button></div></div>`)}
+    $('#scr-slots').innerHTML=`<div class="wrap" style="max-width:760px">${head('Save slots')}<p class="muted">Each slot keeps its own heroine, squad, supplies, upgrades, liberated cities and God Mode settings.</p><div class="grid">${cards.join('')}</div></div>`},
   credits(){$('#scr-credits').innerHTML=`<div class="wrap" style="max-width:760px">${head('Credits')}
     <div class="panel" style="display:grid;gap:10px"><h3 class="label" style="font-size:14px;margin:0">Game</h3><p>Voltfall: design, code, heroines, squad, city and effects are generated in code for this game.</p></div>
     <div class="panel" style="display:grid;gap:10px"><h3 class="label" style="font-size:14px;margin:0">Infected sprites</h3>
@@ -1655,11 +1714,19 @@ const R={
   pause(){$('#scr-pause').innerHTML=`<div class="wrap" style="max-width:420px;margin-top:10vh"><h2 style="font-family:var(--display);font-size:40px;margin:0">Paused</h2>
     <p class="muted">${G.city.name} · ${G.kills} kills</p>
     <button class="btn primary" data-act="resume">Resume</button><button class="btn" data-act="pgod">God Mode</button>
-    <button class="btn" data-act="sound">Sound: ${save.sound?'on':'off'}</button><button class="btn ghost" data-act="quit">${G.sandbox?'Leave sandbox':'Retreat to base'}</button></div>`},
+    <button class="btn" data-act="sound">Sound: ${save.sound?'on':'off'}</button><button class="btn" data-act="autofire">Auto-fire: ${save.autoFire?'on':'off'}</button><button class="btn ghost" data-act="quit">${G.sandbox?'Leave sandbox':'Retreat to base'}</button></div>`},
 };
-function upRow(k,t,d){const l=save.up[k],c=upCost(l),can=save.god.infSup||save.supplies>=c;
-  return`<div class="panel up"><div style="min-width:0"><h3>${t} <span class="label">Lv ${l}</span></h3><p class="muted">${d}</p></div><button class="btn small primary" data-up="${k}" ${can?'':'disabled'}>${save.god.infSup?'Free':c}</button></div>`}
-let selSlot=0;
+const UPMAX={slots:2};
+const upCostOf=(k,l)=>k==='slots'?[600,1500][l]:upCost(l);
+// how many levels of k can be bought (up to n), and what they cost in total
+function upQuote(k,n){let l=save.up[k],cost=0,got=0;const cap=UPMAX[k]??Infinity;
+  while(got<n&&l<cap){const c=upCostOf(k,l);if(!save.god.infSup&&cost+c>save.supplies)break;cost+=c;l++;got++}return{got,cost:save.god.infSup?0:cost}}
+function upRow(k,t,d){const l=save.up[k],cap=UPMAX[k]??Infinity,maxed=l>=cap,one=upQuote(k,1),five=upQuote(k,5),ten=upQuote(k,10),all=upQuote(k,1e4);
+  const btn=(n,q,label)=>`<button class="btn small ${n===1?'primary':''}" data-up="${k}" data-n="${n}" ${q.got?'':'disabled'}>${label}</button>`;
+  return`<div class="panel up"><div style="min-width:0"><h3>${t} <span class="label">Lv ${l}${cap<Infinity?' / '+cap:''}</span></h3><p class="muted">${d}</p>
+    <p class="sup" style="font-size:13px">${maxed?'Maxed out':save.god.infSup?'Free':'Next level: '+upCostOf(k,l)}</p></div>
+    <div class="upbtns">${maxed?'':btn(1,one,'+1')+btn(5,five,'+5')+btn(10,ten,'+10')+btn('max',all,'Max'+(all.got>1?' +'+all.got:''))}</div></div>`}
+let selSlot=0,delConfirm=0;
 function showResult(win){state='menu';$('#hud').hidden=true;const el=$('#scr-result'),t=Math.round(G.time);
   el.innerHTML=`<div class="wrap result"><span class="label">${G.city.name}</span><h2 style="color:${win?'var(--volt)':'var(--danger)'}">${win?'City liberated':'You fell'}</h2>
     <p class="muted">${win?'The streets are quiet. Your squad regroups.':'Your squad pulled you out. Regroup and try again.'}</p>
@@ -1671,20 +1738,24 @@ function showResult(win){state='menu';$('#hud').hidden=true;const el=$('#scr-res
 /* ---------------- INPUT ---------------- */
 const gameEl=$('#game');
 gameEl.addEventListener('click',e=>{Sfx.init();const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.go){Sfx.play('ui');const go=b.dataset.go;if(go==='god'&&state!=='play')returnTo='title';if(go==='pause'){showScreen('pause');return}if(go==='title'||state!=='play'){G=state==='play'?G:null}showScreen(go);return}
+  if(b.dataset.go){Sfx.play('ui');const go=b.dataset.go;if(go==='slots')delConfirm=0;if(go==='god'&&state!=='play')returnTo='title';if(go==='pause'){showScreen('pause');return}if(go==='title'||state!=='play'){G=state==='play'?G:null}showScreen(go);return}
   if(b.dataset.city!==undefined){const i=+b.dataset.city;if(b.dataset.mode==='map'&&!unlocked(i)){toast('Liberate the previous city first');return}startMission(i,b.dataset.mode==='sandbox');return}
-  if(b.dataset.hero){save.heroine=b.dataset.hero;persist();Sfx.play('ui');showScreen('heroines');return}
-  if(b.dataset.slot!==undefined){selSlot=+b.dataset.slot;showScreen('powers');return}
-  if(b.dataset.power){const lo=[...loadout()],k=b.dataset.power,j=lo.indexOf(k);if(j>=0)lo[j]=lo[selSlot];lo[selSlot]=k;save.loadouts[save.heroine]=lo;persist();Sfx.play('ui');selSlot=(selSlot+1)%3;showScreen('powers');return}
-  if(b.dataset.up){const k=b.dataset.up,c=upCost(save.up[k]);if(!save.god.infSup){if(save.supplies<c)return;save.supplies-=c}save.up[k]++;persist();Sfx.play('ui');showScreen(k==='power'||k==='vit'?'powers':'squad');return}
+  if(b.dataset.hero){save.heroine=b.dataset.hero;persist();Sfx.play('ui');refresh('heroines');return}
+  if(b.dataset.slotuse){const n=+b.dataset.slotuse;useSlot(n);delConfirm=0;Sfx.play('ui');toast(`Playing slot ${n}`);showScreen('title');return}
+  if(b.dataset.slotdel){const n=+b.dataset.slotdel;if(delConfirm!==n){delConfirm=n;refresh('slots');return}deleteSlot(n);delConfirm=0;toast(`Slot ${n} deleted`);refresh('slots');return}
+  if(b.dataset.slot!==undefined){selSlot=+b.dataset.slot;refresh('powers');return}
+  if(b.dataset.power){const lo=[...loadout()],k=b.dataset.power,j=lo.indexOf(k);if(j>=0)lo[j]=lo[selSlot];lo[selSlot]=k;save.loadouts[save.heroine]=lo;persist();Sfx.play('ui');selSlot=(selSlot+1)%lo.length;refresh('powers');return}
+  if(b.dataset.up){const k=b.dataset.up,q=upQuote(k,b.dataset.n==='max'?1e4:+b.dataset.n);if(!q.got)return;save.supplies-=q.cost;save.up[k]+=q.got;persist();Sfx.play('ui');
+    toast(`${k==='slots'?'Power slots':'Upgrade'} +${q.got} level${q.got>1?'s':''}`);refresh(k==='power'||k==='vit'||k==='slots'?'powers':'squad');return}
   if(b.dataset.recruit){const k=b.dataset.recruit,c=CLASSES[k];if(save.squad.length>=squadCap())return;if(!save.god.infSup){if(save.supplies<c.cost)return;save.supplies-=c.cost}
-    const used=new Set(save.squad.map(s=>s.name)),free=NAMES.filter(n=>!used.has(n));save.squad.push({cls:k,name:free.length?pick(free):pick(NAMES)+' '+(save.squad.length+1),hair:pick(HAIRS)});persist();Sfx.play('ui');showScreen('squad');return}
-  if(b.dataset.dismiss!==undefined){save.squad.splice(+b.dataset.dismiss,1);persist();showScreen('squad');return}
+    const used=new Set(save.squad.map(s=>s.name)),free=NAMES.filter(n=>!used.has(n));save.squad.push({cls:k,name:free.length?pick(free):pick(NAMES)+' '+(save.squad.length+1),hair:pick(HAIRS)});persist();Sfx.play('ui');refresh('squad');return}
+  if(b.dataset.dismiss!==undefined){save.squad.splice(+b.dataset.dismiss,1);persist();refresh('squad');return}
   if(b.dataset.tog){save.god[b.dataset.tog]=!save.god[b.dataset.tog];persist();Sfx.play('ui');b.classList.toggle('on');$('.screen:not([hidden]) .sup')&&($('.screen:not([hidden]) .sup').textContent=(save.god.infSup?'∞':save.supplies)+' supplies');return}
   const a=b.dataset.act;if(!a)return;
   if(a==='resume'){paused=false;showScreen(null);$('#hud').hidden=false}
   else if(a==='pgod'){returnTo='pause';showScreen('god')}
   else if(a==='sound'){save.sound=!save.sound;persist();showScreen('pause')}
+  else if(a==='autofire'){save.autoFire=!save.autoFire;persist();toast(save.autoFire?'Auto-fire on: it shoots when you are not aiming':'Auto-fire off: aim with the right side to shoot');showScreen('pause')}
   else if(a==='quit'){persist();paused=false;state='menu';$('#hud').hidden=true;G=null;showScreen('title')}
   else if(a==='retry'){startMission(G.idx,G.sandbox)}
   else if(a==='resetgod'){save.god=defaultGod();persist();showScreen('god')}
@@ -1696,9 +1767,13 @@ $('#btnPause').addEventListener('click',()=>{if(state!=='play'||G.ended)return;p
 $('#btnSquad').addEventListener('click',()=>{if(!G)return;G.squadMode=G.squadMode==='follow'?'hold':'follow';G.hold={x:G.p.x,y:G.p.y};$('#btnSquad').textContent=G.squadMode==='follow'?'Follow':'Hold';toast(G.squadMode==='follow'?'Squad: follow me':'Squad: hold this position')});
 $('#btnSound').addEventListener('click',()=>{save.sound=!save.sound;persist();R.title()});
 $('#btnFull').addEventListener('click',()=>{const d=document.documentElement;try{const r=document.fullscreenElement?document.exitFullscreen():(d.requestFullscreen||d.webkitRequestFullscreen).call(d);if(r&&r.catch)r.catch(()=>toast('Fullscreen is not available here'))}catch(e){toast('Fullscreen is not available here')}});
-for(let i=0;i<3;i++){const b=$('#pw'+i);
-  b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();Sfx.init();held[i]=true;tryCast(i)});
-  for(const ev of['pointerup','pointercancel','pointerleave'])b.addEventListener(ev,()=>{held[i]=false})}
+for(let i=0;i<5;i++){const b=$('#pw'+i);
+  b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();Sfx.init();held[i]=true;heldT[i]=0;try{b.setPointerCapture(e.pointerId)}catch(_){}
+    if(aim.id===null){aim.id=e.pointerId;aim.ox=e.clientX;aim.oy=e.clientY;aim.dx=aim.dy=aim.mag=0;aim.heldT=0;aim.mouse=false;aim.pw=i}});
+  b.addEventListener('pointermove',e=>{if(aim.pw!==i||e.pointerId!==aim.id)return;setAim(e.clientX-aim.ox,e.clientY-aim.oy,70)});
+  // released after a drag: cast along it; tapped while the right stick aims: cast along the stick
+  b.addEventListener('pointerup',e=>{if(!held[i])return;held[i]=false;if(aim.pw===i){const v=aim.mag>.35?aimVec():null;clearAim();tryCast(i,v)}else tryCast(i,aim.id!==null&&aim.pw<0?aimVec():null)});
+  b.addEventListener('pointercancel',()=>{held[i]=false;if(aim.pw===i)clearAim()})}
 // sandbox spawner
 const SBX=[['+10 Walkers',()=>spawnAround('walker',10)],['+10 Runners',()=>spawnAround('runner',10)],['+5 Spitters',()=>spawnAround('spitter',5)],['+5 Bloaters',()=>spawnAround('bloater',5)],
   ['+3 Brutes',()=>spawnAround('brute',3)],['+Boss',()=>spawnAround('boss',1)],['Horde ×60',()=>{['walker','runner','walker','spitter','bloater','walker'].forEach(t=>spawnAround(t,10))}],
@@ -1713,14 +1788,24 @@ function spawnAround(type,n){for(let i=0;i<n;i++){const s=freeSpot(130,230);if(s
 
 // joystick
 gameEl.addEventListener('pointerdown',e=>{if(state!=='play'||paused||!G||G.ended)return;if(e.target.closest('button,#sbx,canvas#minimap'))return;
+  if(aim.id===null&&(e.pointerType==='mouse'||e.clientX>=innerWidth*.6)){aim.id=e.pointerId;aim.ox=e.clientX;aim.oy=e.clientY;aim.dx=aim.dy=aim.mag=0;aim.heldT=0;aim.pw=-1;aim.mouse=e.pointerType==='mouse';aim.mx=e.clientX;aim.my=e.clientY;
+    if(!aim.mouse){const a=$('#aimstick');a.hidden=false;a.style.left=e.clientX+'px';a.style.top=e.clientY+'px';$('#aimknob').style.transform=''}else updateMouseAim();$('#hint').hidden=true;return}
   if(stick.id===null&&e.clientX<innerWidth*.6){stick.id=e.pointerId;stick.ox=e.clientX;stick.oy=e.clientY;stick.dx=stick.dy=0;const s=$('#stick');s.hidden=false;s.style.left=e.clientX+'px';s.style.top=e.clientY+'px';$('#knob').style.transform='';}});
-addEventListener('pointermove',e=>{if(e.pointerId!==stick.id)return;let dx=e.clientX-stick.ox,dy=e.clientY-stick.oy;const l=Math.hypot(dx,dy),mx=50;if(l>mx){dx=dx/l*mx;dy=dy/l*mx}
+function setAim(dx,dy,max){const l=Math.hypot(dx,dy);if(l>max){dx=dx/l*max;dy=dy/l*max}aim.dx=dx/max;aim.dy=dy/max;aim.mag=Math.min(1,l/max);if(aim.pw<0&&!aim.mouse)$('#aimknob').style.transform=`translate(${dx}px,${dy}px)`}
+function updateMouseAim(){if(!G)return;const sc=innerWidth/(CW/K),px=(G.p.x*RZ-OX)*sc,py=((G.p.y-9)*RZ-OY)*sc;setAim(aim.mx-px,aim.my-py,40)}
+function clearAim(){aim.id=null;aim.dx=aim.dy=aim.mag=0;aim.pw=-1;$('#aimstick').hidden=true}
+addEventListener('pointermove',e=>{if(e.pointerId===aim.id&&aim.pw<0){if(aim.mouse){aim.mx=e.clientX;aim.my=e.clientY;updateMouseAim()}else setAim(e.clientX-aim.ox,e.clientY-aim.oy,60);return}
+  if(e.pointerId!==stick.id)return;let dx=e.clientX-stick.ox,dy=e.clientY-stick.oy;const l=Math.hypot(dx,dy),mx=50;if(l>mx){dx=dx/l*mx;dy=dy/l*mx}
   stick.dx=dx/mx;stick.dy=dy/mx;$('#knob').style.transform=`translate(${dx}px,${dy}px)`});
+const endAim=e=>{if(e.pointerId!==aim.id||aim.pw>=0)return;const v=aimVec(),quick=aim.heldT<.25;clearAim();if(!G||G.ended||G.p.locked)return;
+  // release fires along the aim; a quick tap fires at the nearest infected
+  if(v&&G.p.atkT<=.15)fireAimed(G.p,v[0],v[1]);else if(quick&&!v){const t=nearestEnemy(G.p.x,G.p.y,140,null,true);if(t){const dx=t.x-G.p.x,dy=t.y-G.p.y,l=Math.hypot(dx,dy)||1;fireAimed(G.p,dx/l,dy/l)}}};
+addEventListener('pointerup',endAim);addEventListener('pointercancel',e=>{if(e.pointerId===aim.id&&aim.pw<0)clearAim()});
 const endStick=e=>{if(e.pointerId!==stick.id)return;stick.id=null;stick.dx=stick.dy=0;$('#stick').hidden=true};
 addEventListener('pointerup',endStick);addEventListener('pointercancel',endStick);
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys.add(k);if(k==='escape'&&state==='play'&&!paused)$('#btnPause').click();if(k==='f'&&state==='play')$('#btnSquad').click()});
 addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
-addEventListener('blur',()=>{keys.clear();held.fill(false)});
+addEventListener('blur',()=>{keys.clear();held.fill(false);clearAim()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='play'&&!paused&&G&&!G.ended)$('#btnPause').click()});
 gameEl.addEventListener('contextmenu',e=>e.preventDefault());
 
