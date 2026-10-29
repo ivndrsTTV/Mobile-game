@@ -44,12 +44,13 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
 
 Heroines and squad girls are pixel art generated in code; the infected are artist-made sprites.
 
-- **Heroines and squad girls** are drawn from a posable skeleton as smooth shapes (hair, face, outfits, limbs), then snapped to crisp pixels and cel-shaded per part, with rim light, contact lines and selective outlines.
-  - Anime proportions with five body builds (petite, slim, athletic, curvy, tall) that change height, shoulders, waist, hips and legs.
-  - Front, back and side views (mirrored for left), idle, walk, attack and hurt poses.
-  - Eyes are drawn as shapes too: lash line with a flick, shaded iris, pupil, catchlights, and variants for star pupils, cat slits and blinking.
-  - The hair is one connected mass: cap, bangs, side locks, back hair and animal ears.
-  - Because every feature is a shape, the same girl renders as a sprite or a large illustration. `tools/bake_heroines.js` pre-renders each heroine's sprite sheet, portrait and full-body art into `assets/heroines/` so the game loads them instantly. Run it again after changing the renderer.
+- **Heroines and squad girls** are true pixel art: drawn from a posable skeleton at a low native resolution (about 110px tall) and shown at 2×, like the city tiles. Shapes are snapped to pixels and cel-shaded per part, with contact lines, selective outlines and a pass that removes stray pixels.
+  - Anime proportions with five feminine builds (petite, slim, athletic, curvy, tall): narrow shoulders, a defined waist, wider hips, and different heights.
+  - Front, back and side views (mirrored for left). Heroines idle, walk (8 frames), attack, cast powers with both hands, flinch, celebrate with a peace sign when a city is won, and sink to their knees when they fall.
+  - Eyes are hand-placed pixels with white sclera around the iris, catchlights, and blink, wink, hurt, star and cat-slit variants.
+  - The hair is one connected mass: cap, bangs, side locks, back hair, twin tails and animal ears.
+  - Squad girls carry their class weapon (rifle, SMG, shotgun, sniper rifle, rocket launcher or pistol) in both hands, aim it at targets, and fire from the muzzle.
+  - `tools/bake_heroines.js` pre-renders each heroine's sprite sheet, pixel portrait and full-body art into `assets/heroines/` so the game loads them instantly. Run it again after changing the renderer.
 - **Infected** are artist-made sprites from the [Liberated Pixel Cup](https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles) collection, composited into nine types: four walker looks, a runner, a spitter, a bloater, a brute and a horned troll boss. They walk in four directions, swipe when they attack and collapse when they die. See `CREDITS.md` for every artist and license; the sheets in `assets/infected/` are CC-BY-SA 3.0.
 - **Nests and the city** use 64px art drawn at 2×. Tiles are built in 8×8-tile chunks as you approach them.
 - Night lighting, and render resolution that drops automatically on slower phones.
