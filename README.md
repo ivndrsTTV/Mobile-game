@@ -6,6 +6,7 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
 
 - **In a browser:** open `index.html` from any web host, or locally.
 - **Android APK:** every push builds `Voltfall.apk` and attaches it to the **apk-latest** release on this repo's Releases page. Download it on your phone and open it to install. The first time, Android asks you to allow installs from that app.
+- **Versioned releases:** pushing a tag like `v1.0.0` builds the APK and publishes it as a full release named after the tag, marked as the latest release.
 - **iPhone or Android without the APK:** host the folder (for example with GitHub Pages: Settings → Pages → deploy from branch) and open it in the browser, then choose **Add to Home Screen**. It runs fullscreen and works offline after the first load.
 
 ## Controls
