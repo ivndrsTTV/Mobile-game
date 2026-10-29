@@ -1,11 +1,11 @@
-# Hime Blitz
+# Voltfall
 
-A pixel-art zombie game for phones. You play as one of four lightning-powered heroines with hime cuts, lead a squad of soldiers, and clear the infected out of 12 cities. It also has a sandbox mode and a God Mode panel where you can set your power as high as you like.
+A detailed pixel-art zombie game for phones. You play as one of four lightning-powered heroines with hime cuts, lead a squad of soldiers, and clear the infected out of 12 cities. It also has a sandbox mode and a God Mode panel where you can set your power as high as you like.
 
 ## Play it
 
 - **In a browser:** open `index.html` from any web host, or locally.
-- **Android APK:** every push builds `HimeBlitz.apk` and attaches it to the **apk-latest** release on this repo's Releases page. Download it on your phone and open it to install. The first time, Android asks you to allow installs from that app.
+- **Android APK:** every push builds `Voltfall.apk` and attaches it to the **apk-latest** release on this repo's Releases page. Download it on your phone and open it to install. The first time, Android asks you to allow installs from that app.
 - **iPhone or Android without the APK:** host the folder (for example with GitHub Pages: Settings → Pages → deploy from branch) and open it in the browser, then choose **Add to Home Screen**. It runs fullscreen and works offline after the first load.
 
 ## Controls
@@ -27,4 +27,13 @@ A pixel-art zombie game for phones. You play as one of four lightning-powered he
 - **Sandbox:** any map, a fresh layout every time, and you can't lose. Spawn hordes, brutes, bosses, nests and extra soldiers.
 - **God Mode:** infinite health, no cooldowns, one-hit kills, infinite supplies, all cities unlocked, plus sliders for damage (up to ×100), power size, move speed, attack speed, cooldowns, infected density and speed, and bonus squad slots.
 
-Everything is one HTML file. All sprites are drawn in code as pixel art, and progress is saved in the browser.
+## Art
+
+All art is pixel art generated in code, so the game stays a single HTML file:
+
+- Characters are drawn as material maps and baked with four-tone, hue-shifted color ramps, automatic rim light and selective outlines. Heroines have front and back views and four-frame walk cycles.
+- Menus show 56×60 anime portraits with hime cuts and each heroine's hair ornament.
+- Cities render at 32 px per tile, with cracked asphalt, crosswalks, curbs, detailed rooftops (AC units, water tanks, skylights, shrine tiles, neon), layered trees and cars.
+- Night lighting: the city is dark except around your heroine, muzzle flashes and lightning.
+
+Progress is saved in the browser.
