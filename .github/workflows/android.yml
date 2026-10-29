@@ -33,6 +33,7 @@ jobs:
         run: |
           mkdir -p build/www
           cp index.html manifest.webmanifest sw.js icon-192.png icon-512.png build/www/
+          cp -r assets build/www/
           cd build
           npm init -y > /dev/null
           npm install --no-audit --no-fund @capacitor/core@6.2.0 @capacitor/cli@6.2.0 @capacitor/android@6.2.0

@@ -245,6 +245,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
           <button class="btn ghost small" id="btnSound">Sound: on</button>
           <button class="btn ghost small" id="btnFull">Fullscreen</button>
         </div>
+        <button class="btn ghost small" data-go="credits">Credits</button>
         <div class="foot"><span id="titleSup"></span><span id="titleProg"></span></div>
       </div>
     </div>
@@ -258,6 +259,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
   <section class="screen" id="scr-god" hidden></section>
   <section class="screen" id="scr-pause" hidden></section>
   <section class="screen" id="scr-result" hidden></section>
+  <section class="screen" id="scr-credits" hidden></section>
 </div>
 
 <script>
@@ -895,6 +897,17 @@ function nestGrid(f,S=2){const g=new Grid(Math.ceil(42*S),Math.ceil(32*S)),D=dra
   for(let k=0;k<11;k++){const px=8+rng()*26,py=11+rng()*14,r=.9+rng()*1.8;D.sphere(px,py,r,r,'pPPf')}
   for(let k=0;k<5;k++){let vx=10+rng()*22,vy=12+rng()*12;for(let s=0;s<14;s++){D.px(vx,vy,'k');vx+=rng()-.5;vy+=rng()-.5}}
   D.line(9,21,15,17,'k');D.line(33,21,27,17,'k');return g}
+/* ---------- artist-made infected: Liberated Pixel Cup sprites (see CREDITS.md) ---------- */
+// each sheet: walk at y=0 (9 frames x 4 rows: up, left, down, right), slash at y=256 (6x4), hurt/collapse at y=512 (6 frames)
+const LPC_INFECTED={walker:['walker1','walker2','walker3','walker4'],runner:['runner'],spitter:['spitter'],bloater:['bloater'],brute:['brute'],boss:['boss']};
+const LPC_SCALE={walker:3,runner:3,spitter:3,bloater:3,brute:4,boss:5};
+const LPC_AUTHORS='Stephen Challener (Redshrike), Johannes Sjölund (wulax), Sander Frenken (castelonia), Benjamin K. Smith (BenCreating), bluecarrot16, JaidynReiman, Joe White, Eliza Wyatt (ElizaWy), Matthew Krohn (makrohn), Evert, TheraHedwig, MuffinElZangano, Durrani, Pierre Vigier (pvigier), dalonedrau, Nila122, kheftel, Ahmad3366, Mandi Paugh, Manuel Riecke (MrBeast), Thane Brimhall (pennomi), laetissima, AntumDeluge, Tuomo Untinen (reemax)';
+const ZART={};
+function loadInfectedArt(){for(const n of new Set(Object.values(LPC_INFECTED).flat())){const img=new Image(),a=ZART[n]={img,white:null,ready:false};
+  img.onload=()=>{a.white=whiteOf(img);a.ready=true};img.src='assets/infected/'+n+'.png'}}
+const dirOf=(x,y)=>Math.abs(x)>Math.abs(y)?(x<0?1:3):(y<0?0:2);
+function drawInfected(art,type,wx,wy,frame,row,white,alpha){const a=ZART[art];if(!a||!a.ready)return false;const s=LPC_SCALE[type]||3;
+  if(alpha!==undefined)ctx.globalAlpha=alpha;ctx.drawImage(white?a.white:a.img,frame*64,row,64,64,SX(wx)-32*s,SY(wy)-61*s,64*s,64*s);ctx.globalAlpha=1;return true}
 const ZSPR={};let NEST=null;
 function buildZombieSprites(){
   const base={hair:'#2a2a22',skin:'#7aa860',flesh:'#7aa860',out:'#3a3a4a',boot:'#2a2228',wound:'#8a1a2a',bone:'#e6dcc0',glow:'#ff3b3b',pus:'#c8d24a',cloth:'#5a5470',white:'#ffffff'};
@@ -1188,7 +1201,7 @@ function startMission(idx,sandbox){
 function rollType(mix){let r=Math.random(),acc=0;for(const k in mix){acc+=mix[k];if(r<acc)return k}return'walker'}
 function spawnZombie(type,x,y,alert){const d=ZT[type],tier=G?G.tier:1,variants=ZSPR[type];
   const z={kind:'z',type,x,y,r:d.r,hp:d.hp*tier,max:d.hp*tier,spd:d.spd*rand(.85,1.15),dmg:d.dmg,alert:!!alert,atkT:0,flash:0,stun:0,wT:0,wx:0,wy:0,
-    seed:Math.random()*10,fr:variants[(Math.random()*variants.length)|0],face:1,spitT:rand(1,2.5),slamT:6,orbT:0,dead:false};
+    seed:Math.random()*10,fr:variants[(Math.random()*variants.length)|0],art:pick(LPC_INFECTED[type]),dir:2,mv:false,atkAnim:0,face:1,spitT:rand(1,2.5),slamT:6,orbT:0,dead:false};
   G.zombies.push(z);return z}
 function makeSoldier(rec,i){const c=CLASSES[rec.cls],tr=1+.15*save.up.train,p=G.p;
   return{kind:'s',rec,c,x:p.x,y:p.y,r:4,hp:c.hp*tr,max:c.hp*tr,dmgMul:tr,fireT:rand(0,.6),aim:0,face:-1,anim:0,tgt:null,tgtT:0,healT:1,fr:soldierSprite(rec),i,muzzle:0,flash:0,dead:false}}
@@ -1213,7 +1226,7 @@ function enemiesIn(x,y,r){const out=[],r2=r*r;for(const z of G.zombies)if(!z.dea
 function hurt(e,dmg){if(e.dead)return;if(save.god.oneHit)dmg=1e9;e.hp-=dmg;e.flash=.08;
   if(e.kind==='z'){e.alert=true;if(e.hp<=0)killZombie(e)}else if(e.hp<=0)killNest(e)}
 function killZombie(z){z.dead=true;G.kills++;const rw=ZT[z.type].reward;gain(rw);
-  G.corpses.push({x:z.x,y:z.y,fr:z.fr[0],face:z.face,t:0,dir:Math.random()<.5?-1:1});if(G.corpses.length>70)G.corpses.shift();
+  G.corpses.push({x:z.x,y:z.y,fr:z.fr[0],art:z.art,type:z.type,face:z.face,t:0,dir:Math.random()<.5?-1:1});if(G.corpses.length>70)G.corpses.shift();
   blood(z.x,z.y-3,z.type==='boss'?'#5e1030':'#3f6a2a',z.type==='boss'?30:8);if(Math.random()<.5)blood(z.x,z.y-2,'#6a0f1c',4);
   if(z.type==='bloater')explode(z.x,z.y,34,40,true);
   if(z.type==='boss'){banner('BOSS DOWN','+150 supplies');G.shake=8;Sfx.play('boom');for(let i=0;i<6;i++)sparks(z.x+rand(-12,12),z.y-10+rand(-12,12),'#ffe14d',10,90)}
@@ -1375,35 +1388,35 @@ function update(dt){
 }
 
 function updZombie(z,dt){
-  const p=G.p,m=G.map;z.flash-=dt;z.atkT-=dt;z.lunge=Math.max(0,(z.lunge||0)-dt);
+  const p=G.p,m=G.map;z.flash-=dt;z.atkT-=dt;z.lunge=Math.max(0,(z.lunge||0)-dt);z.atkAnim=Math.max(0,z.atkAnim-dt);z.mv=false;
   if(z.seal>0){z.seal-=dt;if(z.seal<=0){z.seal=0;explode(z.x,z.y,30,60*pm(),false,'#ffb03a');if(z.dead)return}}
   if(z.stun>0){z.stun-=dt;return}
   if(z.charm>0){z.charm-=dt;let o=null,bd2=160*160;for(const q of G.zombies){if(q===z||q.dead||q.charm>0)continue;const d2=dist2(z.x,z.y,q.x,q.y);if(d2<bd2){bd2=d2;o=q}}
-    if(o){const d=Math.sqrt(bd2);if(d>z.r+o.r+2){moveEntity(z,(o.x-z.x)/d*z.spd*1.5*dt,(o.y-z.y)/d*z.spd*1.5*dt);z.face=o.x<z.x?-1:1}
-      else if(z.atkT<=0){z.atkT=.6;z.lunge=.15;z.lx=o.x;z.ly=o.y;hurt(o,z.dmg*3+10)}}
+    if(o){const d=Math.sqrt(bd2);z.dir=dirOf(o.x-z.x,o.y-z.y);if(d>z.r+o.r+2){moveEntity(z,(o.x-z.x)/d*z.spd*1.5*dt,(o.y-z.y)/d*z.spd*1.5*dt);z.mv=true;z.face=o.x<z.x?-1:1}
+      else if(z.atkT<=0){z.atkT=.6;z.lunge=.15;z.atkAnim=.36;z.lx=o.x;z.ly=o.y;hurt(o,z.dmg*3+10)}}
     return}
   if(G.ward){const w=G.ward,wd=Math.hypot(z.x-w.x,z.y-w.y);if(wd<w.r){moveEntity(z,(z.x-w.x)/(wd||1)*(w.r-wd)*.5,(z.y-w.y)/(wd||1)*(w.r-wd)*.5);z.wardT=(z.wardT||0)-dt;
     if(z.wardT<=0){z.wardT=.4;hurt(z,14*pm());sparks(z.x,z.y-6,'#ffd84a',3);if(z.dead)return}}}
   if(!z.alert){z.wT-=dt;if(z.wT<=0){z.wT=rand(1.5,4);if(Math.random()<.4){z.wx=z.wy=0}else{const a=rand(0,6.283);z.wx=Math.cos(a);z.wy=Math.sin(a);if(z.wx)z.face=z.wx<0?-1:1}}
-    if(z.wx||z.wy)moveEntity(z,z.wx*z.spd*.3*dt,z.wy*z.spd*.3*dt);
+    if(z.wx||z.wy){moveEntity(z,z.wx*z.spd*.3*dt,z.wy*z.spd*.3*dt);z.mv=true;z.dir=dirOf(z.wx,z.wy)}
     const d=dist2(z.x,z.y,p.x,p.y);if(d<140*140)z.alert=true;else if(d<400*400)for(const s of G.squad)if(dist2(z.x,z.y,s.x,s.y)<90*90){z.alert=true;break}
     return}
   let tgt=p,bd=dist2(z.x,z.y,p.x,p.y);for(const s of G.squad){if(s.dead)continue;const d=dist2(z.x,z.y,s.x,s.y);if(d<bd){bd=d;tgt=s}}
   const d=Math.sqrt(bd);let mx=0,my=0;const sp=z.spd;
-  if(z.type==='spitter'&&d<115&&d>28&&los(z.x,z.y-4,tgt.x,tgt.y-4)){z.spitT-=dt;if(z.spitT<=0){z.spitT=rand(2,3);const a=Math.atan2(tgt.y-z.y,tgt.x-z.x);G.shots.push({x:z.x,y:z.y-6,vx:Math.cos(a)*85,vy:Math.sin(a)*85,t:2,dmg:z.dmg})}}
+  if(z.type==='spitter'&&d<115&&d>28&&los(z.x,z.y-4,tgt.x,tgt.y-4)){z.dir=dirOf(tgt.x-z.x,tgt.y-z.y);z.spitT-=dt;if(z.spitT<=0){z.spitT=rand(2,3);z.atkAnim=.36;const a=Math.atan2(tgt.y-z.y,tgt.x-z.x);G.shots.push({x:z.x,y:z.y-6,vx:Math.cos(a)*85,vy:Math.sin(a)*85,t:2,dmg:z.dmg})}}
   else if(d<100&&los(z.x,z.y-3,tgt.x,tgt.y-3)){mx=(tgt.x-z.x)/(d||1);my=(tgt.y-z.y)/(d||1)}
   else{const W=m.W,tx=(z.x/TILE)|0,ty=(z.y/TILE)|0,c=ty*W+tx,f=G.flow;let best=f[c],bx=-1,by=-1;
     if(best<0){mx=(p.x-z.x)/(d||1);my=(p.y-z.y)/(d||1)}else{
       for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){if(!ox&&!oy)continue;const nx=tx+ox,ny=ty+oy;if(nx<0||ny<0||nx>=W||ny>=m.H)continue;const n=ny*W+nx;
         if(f[n]<0||f[n]>=best)continue;if(ox&&oy&&(SOLID[m.tiles[ty*W+nx]]||SOLID[m.tiles[ny*W+tx]]))continue;best=f[n];bx=nx;by=ny}
       if(bx>=0){const gx=bx*TILE+8-z.x,gy=by*TILE+8-z.y,gl=Math.hypot(gx,gy)||1;mx=gx/gl;my=gy/gl}else{mx=(tgt.x-z.x)/(d||1);my=(tgt.y-z.y)/(d||1)}}}
-  if(mx||my){moveEntity(z,mx*sp*dt,my*sp*dt);if(Math.abs(mx)>.2)z.face=mx<0?-1:1}
+  if(mx||my){moveEntity(z,mx*sp*dt,my*sp*dt);z.mv=true;z.dir=dirOf(mx,my);if(Math.abs(mx)>.2)z.face=mx<0?-1:1}
   // separation
   const gx=(z.x/CELL)|0,gy=(z.y/CELL)|0;let px=0,py=0;
   for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){const cell=grid[(gy+oy)*gridW+gx+ox];if(!cell||gx+ox<0||gx+ox>=gridW)continue;
-    for(const o of cell){if(o===z)continue;const dx=z.x-o.x,dy=z.y-o.y,dd=dx*dx+dy*dy,mn=(z.r+o.r)*.9;if(dd<mn*mn&&dd>.0001){const dl=Math.sqrt(dd),push=(mn-dl)/dl*.5;px+=dx*push;py+=dy*push}}}
+    for(const o of cell){if(o===z)continue;const dx=z.x-o.x,dy=z.y-o.y,dd=dx*dx+dy*dy,mn=(z.r+o.r)*1.45;if(dd<mn*mn&&dd>.0001){const dl=Math.sqrt(dd),push=(mn-dl)/dl*.5;px+=dx*push;py+=dy*push}}}
   if(px||py)moveEntity(z,clamp(px,-2,2),clamp(py,-2,2));
-  if(d<z.r+tgt.r+3&&z.atkT<=0){z.atkT=.9;z.lunge=.15;z.lx=tgt.x;z.ly=tgt.y;if(z.type==='bloater'){z.hp=0;killZombie(z)}else hurtAlly(tgt,z.dmg)}
+  if(d<z.r+tgt.r+3&&z.atkT<=0){z.atkT=.9;z.lunge=.15;z.atkAnim=.36;z.dir=dirOf(tgt.x-z.x,tgt.y-z.y);z.lx=tgt.x;z.ly=tgt.y;if(z.type==='bloater'){z.hp=0;killZombie(z)}else hurtAlly(tgt,z.dmg)}
   if(z.type==='boss'){z.slamT-=dt;if(z.slamT<=0&&d<90){z.slamT=6;addRing(z.x,z.y,4,55,'#ff3b6b',.6);G.shake=6;Sfx.play('boom');
     for(const a of[p,...G.squad])if(!a.dead&&dist2(z.x,z.y,a.x,a.y)<55*55)hurtAlly(a,25);
     for(let i=0;i<3;i++)spawnZombie('runner',z.x+rand(-14,14),z.y+rand(-14,14),true)}}
@@ -1465,14 +1478,16 @@ function render(){
   for(const t of G.trail)drawSpr(hs.get('front','walk',0),t.x,t.y,t.f,true,t.t*1.3);
   if(G.ward){const w=G.ward,R=w.r*RZ,cx=SX(w.x),cy=SY(w.y);ctx.globalAlpha=.18;ctx.fillStyle='#ffd84a';ctx.beginPath();ctx.ellipse(cx,cy,R,R*.8,0,0,7);ctx.fill();ctx.globalAlpha=.8;ctx.strokeStyle='#ffd84a';ctx.lineWidth=4;ctx.setLineDash([18,10]);ctx.lineDashOffset=-G.time*60;ctx.stroke();ctx.setLineDash([]);
     for(let k=0;k<8;k++){const a=k/8*6.283+G.time*.6,x=cx+Math.cos(a)*R,y=cy+Math.sin(a)*R*.8;ctx.fillStyle='#f8f2e0';ctx.fillRect(x-6,y-12,12,22);ctx.fillStyle='#d42a3a';ctx.fillRect(x-3,y-8,6,2);ctx.fillRect(x-1,y-6,2,12)}ctx.globalAlpha=1}
-  for(const c of G.corpses){if(!onScreen(c))continue;const k=Math.min(1,c.t/.3),f=c.fr,img=c.face<0?f.l:f.r;ctx.globalAlpha=c.t<.7?1:Math.max(0,1-(c.t-.7)/.6);
+  for(const c of G.corpses){if(!onScreen(c))continue;if(drawInfected(c.art,c.type,c.x,c.y,Math.min(5,c.t/.07|0),512,false,c.t<.8?1:Math.max(0,1-(c.t-.8)/.5)))continue;const k=Math.min(1,c.t/.3),f=c.fr,img=c.face<0?f.l:f.r;ctx.globalAlpha=c.t<.7?1:Math.max(0,1-(c.t-.7)/.6);
     ctx.save();ctx.translate(SX(c.x),SY(c.y));ctx.rotate(c.dir*k*1.45);ctx.drawImage(img,-(f.w>>1),-f.h+4);ctx.restore();ctx.globalAlpha=1}
   for(const e of list){
-    if(e.kind==='z'){const fr=e.fr,big=e.type==='boss'||e.type==='brute';const f=fr[e.stun>0?0:((G.time*(e.type==='runner'?7:3.5)+e.seed)|0)%fr.length];
-      shadow(e.x,e.y,f.w*f.sc*.7);const lk=e.lunge>0?e.lunge/.15*3/(Math.hypot(e.lx-e.x,e.ly-e.y)||1):0;drawSpr(f,e.x+(e.lx-e.x)*lk,e.y+(e.ly-e.y)*lk+(big||e.stun>0?0:(Math.sin(G.time*7+e.seed)>0?0:-.25)),e.face,e.flash>0);
-      if(e.charm>0){const hx=SX(e.x),hy2=SY(e.y)-f.h-6+Math.sin(G.time*6)*4;ctx.fillStyle='#ff5c8a';ctx.fillRect(hx-9,hy2,6,6);ctx.fillRect(hx+3,hy2,6,6);ctx.fillRect(hx-9,hy2+3,18,6);ctx.fillRect(hx-6,hy2+9,12,3);ctx.fillRect(hx-3,hy2+12,6,3);ctx.fillStyle='#ffd0e0';ctx.fillRect(hx-6,hy2+3,3,3)}
-      if(e.seal>0&&(e.seal>.3||(G.time*20|0)%2)){const tx=SX(e.x)-7,tyy=SY(e.y)-f.h*.55;ctx.fillStyle='#f8f2e0';ctx.fillRect(tx,tyy,14,24);ctx.fillStyle='#d42a3a';ctx.fillRect(tx+3,tyy+3,8,2);ctx.fillRect(tx+6,tyy+5,2,14);ctx.fillRect(tx+3,tyy+12,8,2)}
-      if(big)hpBar(e.x,e.y-f.h*f.sc/RZ-2,e.type==='boss'?150:80,e.hp/e.max,e.type==='boss'?'#ff3b6b':'#8fd14f')}
+    if(e.kind==='z'){const big=e.type==='boss'||e.type==='brute',s3=LPC_SCALE[e.type]||3,lk=e.lunge>0?e.lunge/.15*3/(Math.hypot(e.lx-e.x,e.ly-e.y)||1):0,zx=e.x+(e.lx-e.x)*lk,zy=e.y+(e.ly-e.y)*lk;
+      const atk=e.atkAnim>0,fr=atk?Math.min(5,(1-e.atkAnim/.36)*6|0):(e.mv&&e.stun<=0?1+((G.time*(e.type==='runner'?14:8)+e.seed)|0)%8:0);
+      shadow(e.x,e.y,22*s3);let H=48*s3;
+      if(!drawInfected(e.art,e.type,zx,zy,fr,(atk?256:0)+e.dir*64,e.flash>0)){const f=e.fr[((G.time*3.5+e.seed)|0)%e.fr.length];H=f.h;drawSpr(f,zx,zy,e.face,e.flash>0)}
+      if(e.charm>0){const hx=SX(e.x),hy2=SY(e.y)-H-6+Math.sin(G.time*6)*4;ctx.fillStyle='#ff5c8a';ctx.fillRect(hx-9,hy2,6,6);ctx.fillRect(hx+3,hy2,6,6);ctx.fillRect(hx-9,hy2+3,18,6);ctx.fillRect(hx-6,hy2+9,12,3);ctx.fillRect(hx-3,hy2+12,6,3);ctx.fillStyle='#ffd0e0';ctx.fillRect(hx-6,hy2+3,3,3)}
+      if(e.seal>0&&(e.seal>.3||(G.time*20|0)%2)){const tx=SX(e.x)-7,tyy=SY(e.y)-H*.6;ctx.fillStyle='#f8f2e0';ctx.fillRect(tx,tyy,14,24);ctx.fillStyle='#d42a3a';ctx.fillRect(tx+3,tyy+3,8,2);ctx.fillRect(tx+6,tyy+5,2,14);ctx.fillRect(tx+3,tyy+12,8,2)}
+      if(big)hpBar(e.x,e.y-H/RZ-3,e.type==='boss'?150:80,e.hp/e.max,e.type==='boss'?'#ff3b6b':'#8fd14f')}
     else if(e.kind==='s'){const view=Math.sin(e.aim)<-.6&&e.tgt?e.fr.back:e.fr.front,f=view[e.anim?(e.anim|0)%4:0],gs=gunSprites(e.rec.cls);
       const k=((Math.round(e.aim/(Math.PI*2)*16)%16)+16)%16,gi=gs[k],gw=gi.width,gx=SX(e.x+Math.cos(e.aim)*2.5)-(gw>>1),gy=SY(e.y-6)-(gw>>1);
       shadow(e.x,e.y,60);const rc=e.muzzle>0?-1.2:0,rx=Math.cos(e.aim)*rc*RZ,ry=Math.sin(e.aim)*rc*RZ,behind=Math.sin(e.aim)<-.2;if(behind)ctx.drawImage(gi,gx+rx,gy+ry,gw,gw);drawSpr(f,e.x+Math.cos(e.aim)*rc,e.y+Math.sin(e.aim)*rc,e.face,e.flash>0);if(!behind)ctx.drawImage(gi,gx+rx,gy+ry,gw,gw);
@@ -1546,14 +1561,14 @@ function renderMenu(){
   if(!menuScene){const map=genMap(CITIES[5],777);prepMapArt(map);const ws=[];
     for(let i=0;i<46;i++){const t=pick(['walker','walker','walker','runner','brute','spitter','bloater']);let x,y,tries=0;
       do{x=rand(20,map.W*16-20);y=rand(20,map.H*16-20);tries++}while(SOLID[map.tiles[((y/16)|0)*map.W+((x/16)|0)]]&&tries<50);
-      ws.push({x,y,vx:rand(-7,7),vy:rand(-5,5),fr:pick(ZSPR[t]),face:1,s:Math.random()*10})}
+      ws.push({x,y,vx:rand(-7,7),vy:rand(-5,5),fr:pick(ZSPR[t]),art:pick(LPC_INFECTED[t]),type:t,face:1,s:Math.random()*10})}
     menuScene={map,x:200,y:200,t:0,ws,flash:0,last:performance.now()}}
   const s=menuScene,now=performance.now(),dt=Math.min(.05,(now-s.last)/1000);s.last=now;s.t+=dt;
   const mw=s.map.W*16,mh=s.map.H*16;s.x=(mw-VW)/2+Math.cos(s.t*.04)*(mw-VW)/3;s.y=(mh-VH)/2+Math.sin(s.t*.03)*(mh-VH)/3;
   OX=Math.round(s.x*RZ);OY=Math.round(s.y*RZ);blitMap(s.map);
   s.ws.sort((a,b)=>a.y-b.y);
   for(const w of s.ws){w.x+=w.vx*dt;w.y+=w.vy*dt;if(Math.random()<.004){w.vx=rand(-7,7);w.vy=rand(-5,5)}w.face=w.vx<0?-1:1;
-    if(w.x<s.x-30||w.x>s.x+VW+30||w.y<s.y-30||w.y>s.y+VH+40)continue;drawSpr(w.fr[((s.t*3+w.s)|0)%w.fr.length],w.x,w.y,w.face)}
+    if(w.x<s.x-30||w.x>s.x+VW+30||w.y<s.y-30||w.y>s.y+VH+40)continue;const dr=dirOf(w.vx,w.vy);if(!drawInfected(w.art,w.type,w.x,w.y,1+((s.t*7+w.s)|0)%8,dr*64))drawSpr(w.fr[((s.t*3+w.s)|0)%w.fr.length],w.x,w.y,w.face)}
   ctx.fillStyle='rgba(8,3,24,.5)';ctx.fillRect(0,0,LW,LH);
   if(Math.random()<.004)s.flash=1;if(s.flash>0){ctx.fillStyle=`rgba(255,240,190,${s.flash*.35})`;ctx.fillRect(0,0,LW,LH);s.flash-=dt*3}
   ctx.imageSmoothingEnabled=true;ctx.drawImage(vignette,0,0,LW,LH);ctx.imageSmoothingEnabled=K!==1}
@@ -1632,6 +1647,11 @@ const R={
     <div class="grid gm">${sl('dmg','Power Damage',1,100,1,x)}${sl('size','Power Size',1,4,.25,x)}${sl('speed','Move Speed',.5,3,.25,x)}${sl('atk','Attack Speed',1,10,.5,x)}
       ${sl('cd','Cooldown Length',.1,1,.05,x)}${sl('zDensity','Infected Density',.25,4,.25,x)}${sl('zSpeed','Infected Speed',.25,2,.25,x)}${sl('squadBonus','Bonus Squad Slots',0,40,1,v=>'+'+v)}</div>
     <div class="bar"><button class="btn small" data-act="resetgod">Reset to normal</button><button class="btn small primary" data-act="maxgod">Max everything</button></div></div>`},
+  credits(){$('#scr-credits').innerHTML=`<div class="wrap" style="max-width:760px">${head('Credits')}
+    <div class="panel" style="display:grid;gap:10px"><h3 class="label" style="font-size:14px;margin:0">Game</h3><p>Voltfall: design, code, heroines, squad, city and effects are generated in code for this game.</p></div>
+    <div class="panel" style="display:grid;gap:10px"><h3 class="label" style="font-size:14px;margin:0">Infected sprites</h3>
+      <p>Composited from the <b>Liberated Pixel Cup</b> collection with the Universal LPC Spritesheet Generator. Used under CC-BY-SA 3.0 (sources also offer OGA-BY 3.0 / CC-BY 3.0).</p>
+      <p class="muted">Artists: ${LPC_AUTHORS}.</p><p class="muted">The full per-file list with licenses and source links is in CREDITS.md in the game's repository.</p></div></div>`},
   pause(){$('#scr-pause').innerHTML=`<div class="wrap" style="max-width:420px;margin-top:10vh"><h2 style="font-family:var(--display);font-size:40px;margin:0">Paused</h2>
     <p class="muted">${G.city.name} · ${G.kills} kills</p>
     <button class="btn primary" data-act="resume">Resume</button><button class="btn" data-act="pgod">God Mode</button>
@@ -1705,7 +1725,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='p
 gameEl.addEventListener('contextmenu',e=>e.preventDefault());
 
 /* ---------------- BOOT ---------------- */
-buildZombieSprites();
+buildZombieSprites();loadInfectedArt();
 let last=performance.now(),pfN=0,pfT=0;
 function frame(t){const raw=(t-last)/1000,dt=Math.min(.05,raw);last=t;
   // adaptive resolution: if the device can't hold ~38fps, render fewer pixels
