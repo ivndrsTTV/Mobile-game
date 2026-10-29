@@ -20,8 +20,19 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
 
 ## What's in it
 
-- **4 heroines:** Raiko (storm caller), Hayate (speedster), Shiden (railgun), Kurenai (afterimage blitzer).
-- **9 powers** you can put in any slot on any heroine: Chain Lightning, Thunder Dash, Storm Field, Speed Force (slow time), Afterimages, Heaven's Judgment, Railgun, Blitz Barrage and Ball Lightning.
+- **8 heroines**, each with her own look, basic attack and starting powers:
+  - Raiko (storm caller), Hayate (speedster), Shiden (railgun) and Kurenai (afterimages): hime-cut schoolgirls with lightning bolts
+  - Mikan, a cat girl in a hoodie whose attack is a fast claw swipe
+  - Shizuku, a battle maid who throws knives
+  - Hoshimi, a star-eyed twin-tail idol who fires music notes
+  - Kohaku, a fox-eared shrine maiden with homing foxfire
+- **21 powers** you can put in any slot on any heroine:
+  - Lightning and speed: Chain Lightning, Thunder Dash, Storm Field, Speed Force, Afterimages, Heaven's Judgment, Railgun, Blitz Barrage, Ball Lightning
+  - Mikan: Static Pounce, Thunder Claws, Nine Lives
+  - Shizuku: Knife Storm, Broom Sweep, Tea Time
+  - Hoshimi: Encore!, Star Shower, Fan Club (charmed infected fight for you)
+  - Kohaku: Fox Fire, Talisman Seal, Sacred Ward
+- **Animation:** heroines breathe and blink while idle, raise a hand to cast, and their hair, skirts and tails sway as they walk. The infected lunge when they attack and collapse when they die, and soldiers' guns kick back when they fire.
 - **Squads:** recruit Riflers, Gunners, Breachers, Marksmen, Grenadiers and Medics. Each one gets a name and hair color. Upgrade squad size and training.
 - **12 cities:** downtown, suburbs, harbor, ironworks, shrine town, neon district, snowfield, hospital, desert, military base and the Hive. Each has its own layout and look. Destroy every nest, then survive the final wave. Three cities have bosses.
 - **Sandbox:** any map, a fresh layout every time, and you can't lose. Spawn hordes, brutes, bosses, nests and extra soldiers.
