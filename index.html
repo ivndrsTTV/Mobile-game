@@ -1055,7 +1055,7 @@ function renderGirl(L,p,o){
       else part(97,colC,x=>{x.beginPath();x.ellipse(hx+R*.05,hy-R*1.12,R*.22,R*.5,1.15,0,7);x.fill();for(let k=0;k<4;k++)ell(x,hx-R*.3+k*R*.2,hy-R*1.2-k*R*.04,R*.1,R*.1)},{band:1})}
     if(hw==='idol'){const st=(cx,cy,r)=>x=>{x.beginPath();for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,rr=k%2?r*.45:r;k?x.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr):x.moveTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr)}x.closePath();x.fill()};
       const cx=back?hx-R*.6:side?hx+R*.1:hx+R*.62;part(97,p.acc,st(cx,hy-R*.62,R*.34),{band:1});part(98,p.acc,st(cx+R*.36,hy-R*.2,R*.2),{band:1})}
-    if(hw==='miko'){if(back||side)part(97,p.rib,x=>{const c=side?hx-R*1.05:hx,y=side?hy+R*.4:hy+R*.9;x.beginPath();x.moveTo(c,y);x.lineTo(c-5,y-4);x.lineTo(c-5,y+4);x.closePath();x.moveTo(c,y);x.lineTo(c+5,y-4);x.lineTo(c+5,y+4);x.closePath();x.fill()},{band:1});
+    if(hw==='miko'){if(back||side)part(97,p.rib,x=>{const c=side?hx-R*.72:hx,y=side?hy+R*.5:hy+R*.9;x.beginPath();x.moveTo(c,y);x.lineTo(c-5,y-4);x.lineTo(c-5,y+4);x.closePath();x.moveTo(c,y);x.lineTo(c+5,y-4);x.lineTo(c+5,y+4);x.closePath();x.fill()},{band:1});
       if(!back)part(97,p.rib,x=>{const c=side?hx+R*.05:hx+R*.7,y=hy-R*.45;x.beginPath();x.moveTo(c,y);x.lineTo(c+4,y-3.4);x.lineTo(c+4,y+3.4);x.closePath();x.moveTo(c,y);x.lineTo(c-4,y-3.4);x.lineTo(c-4,y+3.4);x.closePath();x.fill();cap(x,[c,y],[c+1,y+9],.8,.8)},{band:1})}
     const orn=L.orn;if(orn&&!back){const c=side?hx+R*.1:hx+R*.72,y=hy-R*.55;
       if(orn==='raiko')part(97,p.rib,x=>{x.beginPath();x.moveTo(c+1,y-7);x.lineTo(c-3,y+1);x.lineTo(c,y+1);x.lineTo(c-2.4,y+7);x.lineTo(c+4.6,y-1.6);x.lineTo(c+1.4,y-1.6);x.lineTo(c+4,y-7);x.closePath();x.fill()},{band:1});
@@ -1084,8 +1084,9 @@ function renderGirl(L,p,o){
     const strands=front?[-.62,-.3,.02,.34,.66]:back?[-.8,-.4,0,.4,.8]:[-.5,-.1,.3];
     tint([hairId],x=>{x.lineWidth=Math.max(1/S,R*.05);for(const t of strands){x.beginPath();if(back){x.moveTo(hx+t*R*.5,hy-R*.6);x.quadraticCurveTo(hx+t*R*1.2,hy+R*.6,hx+t*R*1.05,hy+R*(hs==='hime'||hs==='long'?3.4:1))}
       else{x.moveTo(hx+t*R*.6,hy-R*.75);x.quadraticCurveTo(hx+t*R*.9,hy-R*.3,hx+t*R*.95,hy-R*.05)}x.stroke()}},-1);
-    if(L.ears){const fox=L.ears==='fox';part(85,fox?'#fbf3e6':'#ffb3c6',x=>earsPath(x,true),{band:1.2});
-      if(fox)tint([hairId],x=>{for(const s of(side?[1]:[-1,1])){const bx=side?hx-R*.15:hx+s*R*.62,tipX=side?bx-R*.18:bx+s*R*.28,tipY=hy-R*2.05;x.beginPath();x.moveTo(tipX,tipY);x.lineTo(tipX-R*.22,tipY+R*.4);x.lineTo(tipX+R*.22,tipY+R*.4);x.closePath();x.fill()}},-2)}}
+    // fox ears: a warm inner ear and dark tips, the same on both sides whatever the light
+    if(L.ears){const fox=L.ears==='fox';part(85,fox?'#f4b47c':'#ffb3c6',x=>earsPath(x,true),fox?{flat:true,tone:2}:{band:1.2});
+      if(fox)tint([hairId],x=>{for(const s of(side?[1]:[-1,1])){const bx=side?hx-R*.15:hx+s*R*.62,tipX=side?bx-R*.18:bx+s*R*.28,tipY=hy-R*2.05;x.beginPath();x.moveTo(tipX,tipY);x.lineTo(tipX-R*.22,tipY+R*.4);x.lineTo(tipX+R*.22,tipY+R*.4);x.closePath();x.fill()}},-3)}}
   headwear();
   // ---------- pixel cleanup ----------
   // a lone shade pixel inside a part takes the tone of the neighbours around it
@@ -1113,7 +1114,8 @@ const HROWS=[['front','idle',4],['front','idle',4,1],['front','walk',8],['front'
 const heroLook=h=>({...h.look,kind:'hero',orn:h.look.hs==='hime'?h.id:undefined}),heroGirlPal=h=>({...heroPal(h),out:h.outfit,glow:h.bolt});
 // portrait: the head drawn at a larger pixel size and shown at 3x; full: the sprite itself at 3x
 function heroPortrait(h){const c=renderGirl(heroLook(h),heroGirlPal(h),{view:'front',pose:'idle',S:POR_S}),p=document.createElement('canvas');p.width=p.height=126;const x=p.getContext('2d');x.imageSmoothingEnabled=false;
-  x.drawImage(c,Math.round(c.hx-21),Math.round(c.hy-20),42,42,0,0,126,126);return p}
+  // heroines with animal ears are framed a little higher so the ears show above the hair
+  x.drawImage(c,Math.round(c.hx-21),Math.round(c.hy-(h.look.ears?25:20)),42,42,0,0,126,126);return p}
 const heroFull=h=>upscale(renderGirl(heroLook(h),heroGirlPal(h),{view:'front',pose:'idle',S:HS_S}),3);
 const HSPR={};
 function himeSprite(h){if(HSPR[h.id])return HSPR[h.id];const look=heroLook(h),pal=heroGirlPal(h),cache={},img={};
