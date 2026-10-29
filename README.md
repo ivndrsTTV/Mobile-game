@@ -32,21 +32,24 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
   - Shizuku: Knife Storm, Broom Sweep, Tea Time
   - Hoshimi: Encore!, Star Shower, Fan Club (charmed infected fight for you)
   - Kohaku: Fox Fire, Talisman Seal, Sacred Ward
-- **Animation:** heroines breathe and blink while idle, raise a hand to cast, and their hair, skirts and tails sway as they walk. The infected lunge when they attack and collapse when they die, and soldiers' guns kick back when they fire.
-- **Squads:** recruit Riflers, Gunners, Breachers, Marksmen, Grenadiers and Medics. Each one gets a name and hair color. Upgrade squad size and training.
+- **Animation:** heroines face four directions, breathe and blink while idle, walk on an 8-frame cycle, reach out when they attack and flinch when hit. Squad girls walk, idle and aim. The infected idle, walk, swipe, spit, charge, slam and collapse.
+- **Controls:** drag the left side to move. Drag the right side to aim and release to fire, Brawl Stars style, or leave auto-fire on. Drag a power button to aim that power.
+- **Save slots:** three separate saves.
+- **Squads:** recruit Riflers, Gunners, Breachers, Marksmen, Grenadiers and Medics. Each one gets a name and hair color. They march in formation behind you, path around buildings and keep pace with you. Upgrade squad size and training.
 - **12 cities:** downtown, suburbs, harbor, ironworks, shrine town, neon district, snowfield, hospital, desert, military base and the Hive. Each has its own layout and look. Destroy every nest, then survive the final wave. Three cities have bosses.
 - **Sandbox:** any map, a fresh layout every time, and you can't lose. Spawn hordes, brutes, bosses, nests and extra soldiers.
 - **God Mode:** infinite health, no cooldowns, one-hit kills, infinite supplies, all cities unlocked, plus sliders for damage (up to ×100), power size, move speed, attack speed, cooldowns, infected density and speed, and bonus squad slots.
 
 ## Art
 
-All art is pixel art generated in code, so the game stays a single HTML file.
+Heroines and squad girls are pixel art generated in code; the infected are artist-made sprites.
 
-- **Heroines and squad girls (about 170px tall)** are drawn as smooth shapes (hair, face, outfits, limbs), then snapped to crisp pixels and cel-shaded per part, with rim light, contact lines and selective outlines.
-  - Eyes are hand-placed pixel templates: a thick upper lash, a five-tone iris, pupil, sclera, two highlights and a lower lash, with variants for star pupils, cat slits and blinking.
-  - Animal ears grow out of the crown and tails come from the hip.
-  - Front and back views, four-frame walks, idle breathing, blinks and a cast pose.
-- **Portraits** are each heroine's own head scaled 2× with no smoothing, so they stay true pixel art.
+- **Heroines and squad girls** are drawn from a posable skeleton as smooth shapes (hair, face, outfits, limbs), then snapped to crisp pixels and cel-shaded per part, with rim light, contact lines and selective outlines.
+  - Anime proportions with five body builds (petite, slim, athletic, curvy, tall) that change height, shoulders, waist, hips and legs.
+  - Front, back and side views (mirrored for left), idle, walk, attack and hurt poses.
+  - Eyes are drawn as shapes too: lash line with a flick, shaded iris, pupil, catchlights, and variants for star pupils, cat slits and blinking.
+  - The hair is one connected mass: cap, bangs, side locks, back hair and animal ears.
+  - Because every feature is a shape, the same girl renders as a sprite or a large illustration. `tools/bake_heroines.js` pre-renders each heroine's sprite sheet, portrait and full-body art into `assets/heroines/` so the game loads them instantly. Run it again after changing the renderer.
 - **Infected** are artist-made sprites from the [Liberated Pixel Cup](https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles) collection, composited into nine types: four walker looks, a runner, a spitter, a bloater, a brute and a horned troll boss. They walk in four directions, swipe when they attack and collapse when they die. See `CREDITS.md` for every artist and license; the sheets in `assets/infected/` are CC-BY-SA 3.0.
 - **Nests and the city** use 64px art drawn at 2×. Tiles are built in 8×8-tile chunks as you approach them.
 - Night lighting, and render resolution that drops automatically on slower phones.
