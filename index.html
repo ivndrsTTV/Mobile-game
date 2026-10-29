@@ -152,12 +152,15 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 /* ---------- HUD ---------- */
 #hud{position:absolute;inset:0;pointer-events:none}
 #hud > *{pointer-events:auto}
-.hud-tl{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);left:calc(env(safe-area-inset-left,0px) + 8px);display:flex;gap:8px;align-items:center;
+.hud-tl{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);left:calc(env(safe-area-inset-left,0px) + 8px);display:flex;gap:8px;align-items:flex-start;
   background:rgba(14,11,22,.72);border:2px solid var(--line);padding:6px 8px;pointer-events:none}
 .hud-tl .info{display:grid;gap:3px;min-width:120px}
 .hud-tl .nm{font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
 .hpbar{width:130px;height:10px;background:#0b0912;border:2px solid #000;position:relative}
 .hpbar i{position:absolute;inset:0;right:auto;background:var(--sakura)}
+.cam{display:grid;gap:4px}.cam .hpbar{width:76px}.cam .hpbar.low i{background:#ff3b4e;animation:hpPulse .5s steps(2) infinite}
+@keyframes hpPulse{50%{opacity:.45}}
+#faceCam{width:72px;height:72px;image-rendering:pixelated;border:2px solid #000;outline:2px solid var(--line);background:#0b0912}
 .hud-tl .sm{font-size:16px;color:var(--muted);font-variant-numeric:tabular-nums}
 .hud-tl .sm b{color:var(--volt);font-weight:400}
 #objective{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);left:50%;transform:translateX(-50%);font-family:var(--display);font-size:13px;letter-spacing:.1em;
@@ -198,7 +201,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 @media (max-width:640px){
   #objective{left:calc(env(safe-area-inset-left,0px) + 8px);transform:none;top:calc(env(safe-area-inset-top,0px) + 66px);font-size:11px}
   #sbx{top:calc(env(safe-area-inset-top,0px) + 96px)}
-  .hud-tl .info{min-width:0}.hpbar{width:96px}.hud-tl .sm{font-size:14px}
+  .hud-tl .info{min-width:0}.hpbar{width:96px}.hud-tl .sm{font-size:14px}.cam .hpbar{width:64px}#faceCam{width:60px;height:60px}
 }
 @media (prefers-reduced-motion:reduce){.lineup .h{animation:none}#banner.show{animation-duration:2.2s;animation-timing-function:steps(1)}}
 </style>
@@ -209,11 +212,10 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 
   <div id="hud" hidden>
     <div class="hud-tl">
-      <span id="hudFace"></span>
+      <div class="cam"><div class="hpbar"><i id="hpFill"></i></div><canvas id="faceCam" width="126" height="126"></canvas></div>
       <div class="info">
         <span class="nm" id="hudName">Raiko</span>
-        <div class="hpbar"><i id="hpFill"></i></div>
-        <span class="sm">Supplies <b id="hudSup">0</b> · Kills <b id="hudKills">0</b> · Squad <b id="hudSquad">0</b></span>
+        <span class="sm">Supplies <b id="hudSup">0</b></span><span class="sm">Kills <b id="hudKills">0</b> · Squad <b id="hudSquad">0</b></span>
       </div>
     </div>
     <div id="objective">Nests 0</div>
@@ -663,12 +665,27 @@ const GW=128,GH=232,GFB=226,GCX=64;
 const EYES={
   s:{front:[".KKKK.","KwdddW",".WHPIW",".WIILW","..kk.."],side:["KKKK.","KwddW",".WHPI",".WILL",".kk.."],
     blink:["......","......","K....K",".KKKK.","......"],hurt:["K.....",".KK...","...KK.",".KK...","K....."]},
-  l:{front:["....KKKKKK..","..KKKKKKKKKK",".KwwdddddwwK","K.WddPPdddW.","..WdHHPPddW.","..WIHHPPIIW.","..WIIPPIIIW.","..WIIIIILIW.","...WlLLLlWW.","....kkkk...."],
+  l:{front:["....KKKKKK..","..KKKKKKKKKK",".KwwdddddwwK","K.WWdPPPdWW.","..WWHHPPdWW.","..WWHIPIIWW.","..WWIIIIIWW.","..WWILLLHWW.","...WWlLlWW..","....kkkk...."],
     side:["..KKKKK..","KKKKKKKK.",".KwwdddK.","..WddPPd.","..WdHHPPd","..WIHHPPI","..WIIPPII","..WIIIILI","...WlLLlW","...kkk..."],
     blink:["............","............","............","............","............","KK........KK","..KKKKKKKK..","............","............","............"],
     hurt:["KK..........","KKKK........","..KKKK......","....KKKK....","..KKKK......","KKKK........","KK..........","............","............","............"]}};
+Object.assign(EYES.l,{
+  happy:["............","............","............","....KKKK....","..KK....KK..",".K........K.","............","............","............","............"],
+  half:["............","............","............","KKKKKKKKKKKK",".KwwdddddwwK","..WWHHPPdWW.","..WWHIPIIWW.","..WWIIIIIWW.","...WWlLlWW..","....kkkk...."],
+  wide:["....KKKKKK..","..KKKKKKKKKK",".KwwwwwwwwwK","K.WWWdddWWW.","..WWWdPdWWW.","..WWWHPdWWW.","..WWWdddWWW.","..WWWWWWWWW.","...WWWWWWW..","....kkkk...."],
+  fierce:["............","KKK.........",".KKKKKK.....","...KKKKKKKKK","..WWdddddWK.","..WWHHPPdW..","..WWHIPIIW..","..WWIIIILW..","...WWlLlW...","....kkk....."]});
+const BROWS={flat:["...kkkkkk..."],angry:["..kkk.......",".....kkkk..."],worry:[".......kkk..","..kkkkk....."]};
+// face-cam expressions: eyes, brows, mouth, and a sweat drop when things are bad
+const EXPR={calm:{e:'front',b:'flat',m:'smile'},happy:{e:'happy',b:'flat',m:'grin'},fierce:{e:'fierce',b:'angry',m:'open'},hurt:{e:'hurt',b:'worry',m:'yelp'},
+  pain:{e:'half',b:'worry',m:'frown',sweat:1},scared:{e:'wide',b:'worry',m:'o',sweat:1},smug:{e:'front',b:'flat',m:'grin',wink:1},dead:{e:'blink',b:'worry',m:'frown'},victory:{e:'happy',b:'flat',m:'grin'}};
+// slide the iris inside the white of the eye so she glances left or right
+function mirrorEye(rows){const iris='DdILlP';return rows.map(r=>{const o=r.split(''),m=o.slice().reverse();
+  for(let i=0;i<m.length;i++){if(m[i]==='H')m[i]='I';}for(let i=0;i<o.length;i++)if(o[i]==='H'&&iris.includes(m[i]))m[i]='H';return m.join('')})}
+function glanceRows(rows,g){if(!g)return rows;const iris='DdILlPH';return rows.map(r=>{const o=r.split(''),n=o.map(c=>iris.includes(c)?'W':c);
+  o.forEach((c,i)=>{if(!iris.includes(c))return;const j=i+g;if(j>=0&&j<o.length&&!'.Kk'.includes(o[j]))n[j]=c});return n.join('')})}
 const MOUTHS={s:{smile:["mm"],open:["mm","rr"],cat:["m.m",".m."],neutral:["m"],wide:["mmm",".r."]},
-  l:{smile:["m...m",".mmm."],open:[".mmm.","mrrrm",".mrm."],cat:["m.m.m",".m.m."],neutral:[".mm.."],wide:["mmmmm","mrrrm",".mrm."]}};
+  l:{smile:["m...m",".mmm."],open:[".mmm.","mrrrm",".mrm."],cat:["m.m.m",".m.m."],neutral:[".mm.."],wide:["mmmmm","mrrrm",".mrm."],
+    grin:["mmmmm","mWWWm",".mrm."],yelp:["mmmmm",".mrm.","..m.."],frown:[".mmm.","m...m"],o:[".m.","m.m",".m."]}};
 // class guns carried by squad girls: length, thickness, stock, scope, tube (launcher), pistol
 const GUNDEF={rifle:{len:36,th:3},smg:{len:25,th:3.4,mag:1},shotgun:{len:35,th:3.4,pump:1},sniper:{len:46,th:2.8,scope:1},rocket:{len:40,th:7,tube:1},medic:{len:13,th:3,pistol:1}};
 // joint positions for a view, pose and frame (design units: 128 x 232, feet on y=226)
@@ -973,18 +990,24 @@ function renderGirl(L,p,o){
       part(z+1,'#fbf6ec',x=>{x.beginPath();x.moveTo(sx+dir*16+wag,sy-46);x.bezierCurveTo(sx+dir*26+wag,sy-46,sx+dir*34+wag,sy-40,sx+dir*35+wag,sy-30);x.bezierCurveTo(sx+dir*30+wag,sy-34,sx+dir*24+wag,sy-38,sx+dir*20+wag,sy-38);x.closePath();x.fill()});
       tint([id],x=>{x.lineWidth=1.2;x.beginPath();x.moveTo(sx+dir*6,sy+1);x.quadraticCurveTo(sx+dir*26,sy-2,sx+dir*30+wag,sy-24);x.stroke()},-1)}}
   // pixel eyes: whites around a smaller iris, lash line, catchlights, and blink, hurt, wink, star and cat-slit variants
+  const X=o.expr&&!small&&front?EXPR[o.expr]:null;
   function eyes(){const ek=L.eyes||'round',T=EYES[small?'s':'l'],hurt=pose==='hurt'||(pose==='defeat'&&f<2),closed=(pose==='defeat'&&f>=2)||(o.blink&&!hurt);
     const map={K:lashC,k:shade(lashC,50),W:'#ffffff',w:'#d6cfe8',D:shade(er[0],-10),d:er[0],I:er[1],L:er[2],l:er[3],P:shade(er[0],-45),H:'#ffffff'};
     if(ek==='star'){map.P='#fff2b0';map.H='#ffffff'}
     const list=side?[[hx+R*.62,1]]:[[hx-R*.45,0],[hx+R*.45,1]];
     for(const[ex,right]of list){let rows=closed?T.blink:hurt?T.hurt:side?T.side:T.front;
-      if(pose==='victory'&&f===3&&right&&!side)rows=T.blink;
+      if(X&&!(o.blink&&(X.e==='front'||X.e==='wide'||X.e==='half'||X.e==='fierce')))rows=T[X.e]||rows;
+      if((pose==='victory'&&f===3||X&&X.wink)&&right&&!side)rows=T.blink;
       if(ek==='cat'&&!closed&&!hurt)rows=rows.map(r=>{const i=r.indexOf('P');return i>=0&&r[i+1]==='P'?r.slice(0,i)+'I'+r.slice(i+1):r});
+      if(right&&!side)rows=mirrorEye(rows);
+      if(o.glance&&!side)rows=glanceRows(rows,o.glance);
       const tw=rows[0].length,th=rows.length,x0=Math.round(ex*S-tw/2),y0=Math.round((hy+R*.32)*S-th/2);
-      stamp(rows,x0,y0,map,95,side?false:!!right)}}
-  function mouthEtc(){const M=MOUTHS[small?'s':'l'],hurt=pose==='hurt'||pose==='defeat',m=pose==='victory'||pose==='cast'?'wide':hurt?'open':L.mouth||'smile',rows=M[m]||M.smile;
+      stamp(rows,x0,y0,map,95,false);
+      if(X){const br=BROWS[X.b];stamp(br,x0,y0-2-br.length,{k:shade(hr[0],-25)},99,!!right)}}
+    if(X&&X.sweat)stamp(["..b..",".bWb.","bbWbb",".bbb."],Math.round((hx+R*.86)*S),Math.round((hy-R*.2)*S),{b:'#7ad8ff',W:'#e8fbff'},99,false)}
+  function mouthEtc(){const M=MOUTHS[small?'s':'l'],hurt=pose==='hurt'||pose==='defeat',m=X?(X.m==='smile'?L.mouth||'smile':X.m):pose==='victory'||pose==='cast'?'wide':hurt?'open':L.mouth||'smile',rows=M[m]||M.smile;
     const mx=(side?hx+R*.78:hx)*S,my=(hy+R*.8)*S;
-    stamp(rows,Math.round(mx-rows[0].length/2),Math.round(my-rows.length/2),{m:'#b5485d',r:'#ff8a9a'},96,false);
+    stamp(rows,Math.round(mx-rows[0].length/2),Math.round(my-rows.length/2),{m:'#b5485d',r:'#ff8a9a',W:'#ffffff'},96,false);
     // blush and a tiny nose
     const bl=small?["bb"]:[".b.b","b.b."],bmap={b:'#ff9fb0'};
     for(const bx of side?[hx+R*.4]:[hx-R*.58,hx+R*.58])stamp(bl,Math.round(bx*S-bl[0].length/2),Math.round((hy+R*.62)*S),bmap,94,false);
@@ -1419,7 +1442,9 @@ function startMission(idx,sandbox){
   for(const pose of['walk','aim','idle'])for(const v of['side','front','back'])for(const f of pose==='walk'?[0,2,4,6]:pose==='idle'?[0,2]:[0])for(const s of G.squad)s.fr.get(v,pose,f);
   // HUD prep
   const lo=loadout();[0,1,2,3,4].forEach(i=>{const b=$('#pw'+i);b.hidden=!lo[i];if(lo[i])b.firstElementChild.textContent=POWERS[lo[i]].short});
-  $('#hudName').textContent=h.name;const face=$('#hudFace');face.textContent='';{const c=himeSprite(h).portrait();c.className='px';c.style.width=c.style.height='48px';face.appendChild(c)}
+  $('#hudName').textContent=h.name;FCAM.key='';FCAM.cache={};
+  // face-cam frames she'll need first are drawn in the background
+  for(const k of['calm|0|0','calm|0|1','calm|-1|0','calm|1|0','hurt|0|0','fierce|0|0','happy|0|0','smug|0|0','pain|0|0','pain|0|1','scared|0|0','victory|0|0','dead|0|0'])SQ.push(()=>faceFrame(k));
   $('#sbx').hidden=!sandbox;$('#hint').hidden=false;$('#btnSquad').textContent='Follow';
   state='play';paused=false;showScreen(null);$('#hud').hidden=false;
   banner(city.name,sandbox?'Sandbox: spawn anything, nothing to lose':`Destroy ${G.nests.length} nests and clear the infected`);
@@ -1452,7 +1477,7 @@ function nearestEnemy(x,y,range,excl,needLos){let best=null,bd=range*range;
 function enemiesIn(x,y,r){const out=[],r2=r*r;for(const z of G.zombies)if(!z.dead&&!(z.charm>0)&&dist2(x,y,z.x,z.y)<r2)out.push(z);for(const n of G.nests)if(!n.dead&&dist2(x,y,n.x,n.y)<r2+100)out.push(n);return out}
 function hurt(e,dmg){if(e.dead)return;if(save.god.oneHit)dmg=1e9;e.hp-=dmg;e.flash=.08;
   if(e.kind==='z'){e.alert=true;if(e.hp<=0)killZombie(e)}else if(e.hp<=0)killNest(e)}
-function killZombie(z){z.dead=true;G.kills++;const rw=ZT[z.type].reward;gain(rw);
+function killZombie(z){z.dead=true;G.kills++;G.kt=(G.kt||[]).filter(t=>G.time-t<2.5);G.kt.push(G.time);if(G.kt.length>=5)G.streakT=1.6;const rw=ZT[z.type].reward;gain(rw);
   G.corpses.push({x:z.x,y:z.y,fr:z.fr[0],art:z.art,type:z.type,face:z.face,t:0,dir:Math.random()<.5?-1:1});if(G.corpses.length>70)G.corpses.shift();
   blood(z.x,z.y-3,z.type==='boss'?'#5e1030':'#3f6a2a',z.type==='boss'?30:8);if(Math.random()<.5)blood(z.x,z.y-2,'#6a0f1c',4);
   if(z.type==='bloater')explode(z.x,z.y,34,40,true);
@@ -1465,7 +1490,7 @@ function explode(x,y,r,dmg,hurtsAllies,col='#c6ff4a'){addRing(x,y,2,r,col,.4);sp
   for(const e of enemiesIn(x,y,r))if(!e.dead)hurt(e,dmg*1.5);
   if(hurtsAllies){if(dist2(x,y,G.p.x,G.p.y)<r*r)hurtAlly(G.p,dmg);for(const s of G.squad)if(dist2(x,y,s.x,s.y)<r*r)hurtAlly(s,dmg)}}
 function hurtAlly(a,d){if(save.god.infHP)return;
-  if(a.kind==='p'){if(a.inv>0)return;a.hp-=d;a.hurtT=.28;G.hurtFlash=.25;G.shake=Math.max(G.shake,2);Sfx.play('hurt');
+  if(a.kind==='p'){if(a.inv>0)return;a.hp-=d;a.hurtT=.28;G.faceHitT=.7;G.hurtFlash=.25;G.shake=Math.max(G.shake,2);Sfx.play('hurt');
     if(a.hp<=0&&!G.ended&&!G.sandbox){a.hp=0;endMission(false)}else if(a.hp<=0){a.hp=a.maxHp;toast('Sandbox: you got back up')}}
   else{a.hp-=d;a.flash=.08;if(a.hp<=0&&!a.dead){a.dead=true;blood(a.x,a.y-4,'#8a1020',10);toast(`${a.rec.name} is down`)}}}
 
@@ -1573,7 +1598,7 @@ function update(dt){
   p.inv-=dt;p.hp=Math.min(p.maxHp,p.hp+dt*1.5);
   if((G.hime.trail&&p.moving)||G.slowT>0&&p.moving){p.trailT-=dt;if(p.trailT<=0){p.trailT=.05;G.trail.push({x:p.x,y:p.y,t:.25,f:p.face})}}
   for(let i=G.trail.length-1;i>=0;i--){G.trail[i].t-=dt;if(G.trail[i].t<=0)G.trail.splice(i,1)}
-  p.atkT-=dt*g.atk*(G.encore>0?2:1);p.castT=Math.max(0,(p.castT||0)-dt);p.hurtT=Math.max(0,p.hurtT-dt);
+  p.atkT-=dt*g.atk*(G.encore>0?2:1);p.castT=Math.max(0,(p.castT||0)-dt);p.hurtT=Math.max(0,p.hurtT-dt);G.faceHitT=Math.max(0,(G.faceHitT||0)-dt);G.streakT=Math.max(0,(G.streakT||0)-dt);
   const av=aimVec();if(aim.id!==null)aim.heldT+=dt;
   if(aim.id!==null&&aim.mouse)updateMouseAim();
   if(p.atkT<=0&&!p.locked){if(aim.id!==null&&av&&aim.pw<0){if(aim.heldT>.3)fireAimed(p,av[0],av[1])}else if(save.autoFire&&aim.id===null)autoAttack(p);else p.atkT=Math.max(p.atkT,0)}
@@ -1753,7 +1778,7 @@ function blitMap(m){const cs=CPX*2,cx0=Math.max(0,Math.floor(OX/cs)),cy0=Math.ma
 function hpBar(wx,wy,w,r,c){const x=SX(wx)-(w>>1),y=SY(wy);ctx.fillStyle='#000';ctx.fillRect(x-2,y-2,w+4,9);ctx.fillStyle='#3a1020';ctx.fillRect(x,y,w,5);ctx.fillStyle=c;ctx.fillRect(x,y,Math.max(0,Math.round(w*r)),5);ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(x,y,Math.max(0,Math.round(w*r)),2)}
 const onScreen=(e,m=40)=>e.x>G.cam.x-m&&e.x<G.cam.x+VW+m&&e.y>G.cam.y-m&&e.y<G.cam.y+VH+m*1.6;
 function beginFrame(){ctx.setTransform(K,0,0,K,0,0);ctx.imageSmoothingEnabled=K!==1;ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.fillStyle='#0b0812';ctx.fillRect(0,0,LW,LH)}
-function render(){
+function render(){if(state==='play'&&G)updFaceCam();
   beginFrame();
   if(!G||(state!=='play'&&!G.ended)){renderMenu();return}
   const m=G.map,sh=G.shake,p=G.p,h=G.hime;OX=Math.round((G.cam.x+(sh?rand(-sh,sh):0))*RZ);OY=Math.round((G.cam.y+(sh?rand(-sh,sh):0))*RZ);
@@ -1876,7 +1901,33 @@ function renderMenu(){
   ctx.imageSmoothingEnabled=true;ctx.drawImage(vignette,0,0,LW,LH);ctx.imageSmoothingEnabled=K!==1}
 
 /* ---------------- HUD ---------------- */
-function updHud(){const p=G.p;$('#hpFill').style.width=(p.hp/p.maxHp*100)+'%';$('#hudSup').textContent=save.god.infSup?'∞':save.supplies;$('#hudKills').textContent=G.kills;
+// face cam: the heroine's face reacting to the fight, with injuries building up as her health drops
+const FCAM={key:'',cache:{},work:null};
+function faceFrame(k){if(FCAM.cache[k])return FCAM.cache[k];const[e,g,b]=k.split('|'),h=G.hime,c=renderGirl(heroLook(h),heroGirlPal(h),{view:'front',pose:'idle',S:POR_S,expr:e,glance:+g,blink:b==='1'});
+  const f=document.createElement('canvas');f.width=f.height=42;f.getContext('2d').drawImage(c,Math.round(c.hx-21),Math.round(c.hy-20),42,42,0,0,42,42);return FCAM.cache[k]=f}
+function faceExpr(){const p=G.p,hp=p.hp/p.maxHp;
+  if(G.ended)return G.won?'victory':'dead';
+  if(G.faceHitT>0)return'hurt';
+  if(p.castT>0&&p.castKind==='cast')return'fierce';
+  if(G.streakT>0)return G.streakT>.8?'happy':'smug';
+  if(hp<.3)return nearestEnemy(p.x,p.y,70)?'scared':'pain';
+  return'calm'}
+// injuries, in the 42x42 face crop: scratches, a band-aid, a bruise, blood, then a bandaged forehead
+const INJURY=[[],[['#c8364a',[[9,29],[10,28],[11,27]]]],
+  [['#f2d0a4',[[27,29],[28,29],[29,29],[30,29],[31,29],[27,30],[29,30],[31,30],[27,31],[28,31],[29,31],[30,31],[31,31]]],['#c99c6e',[[28,30],[30,30]]],['#9a6aa8',[[11,32],[12,32],[12,33]]]],
+  [['#b02038',[[33,17],[33,18],[33,19],[32,20],[32,21],[32,22],[32,23],[32,25]]],['#6b5a50',[[15,31],[16,31],[16,32]]]],
+  [['#f4f0e8',[...Array(29)].flatMap((_,i)=>[[6+i,9],[6+i,10],[6+i,11]])],['#c8364a',[[13,10],[14,10],[14,9],[14,11],[15,10]]],['#b02038',[[25,34],[25,35],[26,35]]],['#c8364a',[[18,27],[19,26]]]]];
+function updFaceCam(){const p=G.p,hp=p.hp/p.maxHp,e=faceExpr(),g=p.moving&&Math.abs(p.dirx)>.3?Math.sign(p.dirx):0,blink=(G.time%3.4)<.14&&e!=='happy'&&e!=='victory'&&e!=='hurt'?1:0;
+  const tier=hp>.85?0:hp>.65?1:hp>.45?2:hp>.25?3:4,flash=G.faceHitT>.45,key=[e,g,blink,tier,flash].join();if(key===FCAM.key)return;
+  let fk=e+'|'+g+'|'+blink;if(!FCAM.cache[fk]){SQ.push(()=>faceFrame(fk));fk=FCAM.cache[e+'|0|0']?e+'|0|0':'calm|0|0'}
+  const base=FCAM.cache[fk]||faceFrame('calm|0|0');FCAM.key=key;
+  const w=FCAM.work||(FCAM.work=document.createElement('canvas'));w.width=w.height=42;const x=w.getContext('2d');x.drawImage(base,0,0);
+  for(let t=1;t<=tier;t++)for(const[c,pts]of INJURY[t]){x.fillStyle=c;for(const[px,py]of pts)x.fillRect(px,py,1,1)}
+  if(flash){x.globalCompositeOperation='source-atop';x.fillStyle='rgba(255,40,60,.35)';x.fillRect(0,0,42,42);x.globalCompositeOperation='source-over'}
+  const o=$('#faceCam').getContext('2d');o.imageSmoothingEnabled=false;o.fillStyle='#1a1424';o.fillRect(0,0,126,126);o.drawImage(w,0,0,126,126);
+  // a faint monitor scanline
+  o.fillStyle='rgba(0,0,0,.12)';for(let y=2;y<126;y+=3)o.fillRect(0,y,126,1)}
+function updHud(){const p=G.p;$('#hpFill').style.width=(p.hp/p.maxHp*100)+'%';$('#hpFill').parentNode.classList.toggle('low',p.hp<p.maxHp*.3);$('#hudSup').textContent=save.god.infSup?'∞':save.supplies;$('#hudKills').textContent=G.kills;
   $('#hudSquad').textContent=G.squad.filter(s=>!s.dead).length;
   const zl=G.zombies.filter(z=>!z.dead).length,nl=G.nests.filter(n=>!n.dead).length;
   $('#objective').textContent=G.sandbox?`Sandbox · ${zl} infected`:G.finalWave?`Final wave · ${zl} left`:`Nests ${nl}/${G.nestsTotal} · Infected ${zl}`;

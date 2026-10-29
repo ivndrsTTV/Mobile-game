@@ -35,6 +35,7 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
 - **Animation:** heroines face four directions, breathe and blink while idle, walk on an 8-frame cycle, reach out when they attack and flinch when hit. Squad girls walk, idle and aim. The infected idle, walk, swipe, spit, charge, slam and collapse.
 - **Controls:** drag the left side to move. Drag the right side to aim and release to fire, Brawl Stars style, or leave auto-fire on. Drag a power button to aim that power.
 - **Save slots:** three separate saves.
+- **Face cam:** a portrait in the HUD with the health bar above it. Her expression reacts to the fight (calm, fierce when casting, a yelp when hit, beaming on a kill streak, scared or in pain at low health), her eyes follow where she runs, and injuries build up as her health drops: scratches, a band-aid, bruises, blood and a bandaged forehead.
 - **Squads:** recruit Riflers, Gunners, Breachers, Marksmen, Grenadiers and Medics. Each one gets a name and hair color. They march in formation behind you, path around buildings and keep pace with you. Upgrade squad size and training.
 - **12 cities:** downtown, suburbs, harbor, ironworks, shrine town, neon district, snowfield, hospital, desert, military base and the Hive. Each has its own layout and look. Destroy every nest, then survive the final wave. Three cities have bosses.
 - **Sandbox:** any map, a fresh layout every time, and you can't lose. Spawn hordes, brutes, bosses, nests and extra soldiers.
