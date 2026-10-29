@@ -337,12 +337,12 @@ const POWERS={
 };
 
 const CLASSES={
-  rifle:{name:'Rifler',role:'Steady all-rounder',cost:40,hp:70,dmg:10,rate:.5,range:115,o:'#4a5a3a',v:'#6b7a4a',g:'#5d6e47',a:'#d9c27a'},
-  smg:{name:'Gunner',role:'Sprays bullets fast',cost:60,hp:65,dmg:5,rate:.11,range:95,o:'#3a4a5e',v:'#2a3646',g:'#4a5d75',a:'#9fe8ff'},
-  shotgun:{name:'Breacher',role:'Wrecks close crowds',cost:70,hp:100,dmg:16,rate:.95,range:62,splash:22,o:'#5e3a2e',v:'#3e2a22',g:'#734838',a:'#ffb35a'},
-  sniper:{name:'Marksman',role:'Long range, pierces lines',cost:90,hp:55,dmg:55,rate:1.7,range:200,pierce:true,o:'#2e3a2e',v:'#4a5a3a',g:'#3b4a3b',a:'#ff5c8a'},
-  rocket:{name:'Grenadier',role:'Explosive splash',cost:110,hp:75,dmg:40,rate:2.2,range:150,aoe:30,o:'#5a4a2a',v:'#3d321c',g:'#6e5c35',a:'#ff7a3a'},
-  medic:{name:'Medic',role:'Heals the squad',cost:80,hp:60,dmg:5,rate:.7,range:90,heal:12,o:'#d8d6e2',v:'#f4f2f8',g:'#f4f2f8',a:'#ff3b4e'},
+  rifle:{name:'Rifler',role:'Steady all-rounder',cost:40,hp:70,dmg:10,rate:.5,range:115,spd:72,rank:2,o:'#4a5a3a',v:'#6b7a4a',g:'#5d6e47',a:'#d9c27a'},
+  smg:{name:'Gunner',role:'Sprays bullets fast',cost:60,hp:65,dmg:5,rate:.11,range:95,spd:78,rank:1,o:'#3a4a5e',v:'#2a3646',g:'#4a5d75',a:'#9fe8ff'},
+  shotgun:{name:'Breacher',role:'Wrecks close crowds',cost:70,hp:100,dmg:16,rate:.95,range:62,splash:22,spd:68,rank:0,o:'#5e3a2e',v:'#3e2a22',g:'#734838',a:'#ffb35a'},
+  sniper:{name:'Marksman',role:'Long range, pierces lines',cost:90,hp:55,dmg:55,rate:1.7,range:200,pierce:true,spd:64,rank:5,o:'#2e3a2e',v:'#4a5a3a',g:'#3b4a3b',a:'#ff5c8a'},
+  rocket:{name:'Grenadier',role:'Explosive splash',cost:110,hp:75,dmg:40,rate:2.2,range:150,aoe:30,spd:62,rank:3,o:'#5a4a2a',v:'#3d321c',g:'#6e5c35',a:'#ff7a3a'},
+  medic:{name:'Medic',role:'Heals the squad',cost:80,hp:60,dmg:5,rate:.7,range:90,heal:12,spd:70,rank:4,o:'#d8d6e2',v:'#f4f2f8',g:'#f4f2f8',a:'#ff3b4e'},
 };
 const NAMES=['Aiko','Mei','Rin','Yui','Hana','Saki','Nao','Emi','Kana','Riko','Momo','Sora','Hikari','Asuka','Mio','Tsubaki','Kaede','Nanami','Ayame','Chiyo','Fuyu','Haru','Izumi','Kiko','Mika','Noa','Ran','Sayo','Tomo','Yuzu'];
 const HAIRS=['#1b1424','#3a2418','#7a4a2a','#d9b45a','#e8e6ef','#c2182b','#6f3fd8','#2a6bd8','#ff8ab3','#2f8a5a'];
@@ -1200,7 +1200,7 @@ function startMission(idx,sandbox){
   const sx=map.spawn.x*TILE+8,sy=map.spawn.y*TILE+8;
   G={city,idx,sandbox,map,hime:h,slots:slotCount(),zombies:[],nests:[],squad:[],clones:[],fx:[],parts:[],shots:[],pshots:[],corpses:[],timers:[],trail:[],ward:null,encore:0,regenT:0,speedT:0,
      time:0,kills:0,earned:0,nestsTotal:0,slowT:0,storm:null,orbs:null,shake:0,hurtFlash:0,ended:false,finalWave:false,flowT:0,flow:new Int16Array(map.W*map.H),
-     tier:1+.12*Math.max(0,idx),squadMode:'follow',hold:{x:sx,y:sy},cam:{x:0,y:0},hudT:0,
+     tier:1+.12*Math.max(0,idx),squadMode:'follow',hold:{x:sx,y:sy},formA:0,holdFlow:null,heroSpd:h.spd,cam:{x:0,y:0},hudT:0,
      p:{x:sx,y:sy,r:4,hp:0,maxHp:0,spd:h.spd,face:-1,dirx:-1,diry:0,anim:0,moving:false,atkT:0,inv:0,cds:[0,0,0,0,0],cdMax:[1,1,1,1,1],locked:false,trailT:0,kind:'p'}};
   const p=G.p;p.maxHp=p.hp=h.hp*(1+.2*save.up.vit);
   // nests: spread far from spawn
@@ -1230,7 +1230,7 @@ function spawnZombie(type,x,y,alert){const d=ZT[type],tier=G?G.tier:1,variants=Z
     seed:Math.random()*10,fr:variants[(Math.random()*variants.length)|0],art:pick(LPC_INFECTED[type]),dir:2,mv:false,atkAnim:0,face:1,spitT:rand(1,2.5),slamT:6,orbT:0,dead:false};
   G.zombies.push(z);return z}
 function makeSoldier(rec,i){const c=CLASSES[rec.cls],tr=1+.15*save.up.train,p=G.p;
-  return{kind:'s',rec,c,x:p.x,y:p.y,r:4,hp:c.hp*tr,max:c.hp*tr,dmgMul:tr,fireT:rand(0,.6),aim:0,face:-1,anim:0,tgt:null,tgtT:0,healT:1,fr:soldierSprite(rec),i,muzzle:0,flash:0,dead:false}}
+  return{kind:'s',rec,c,x:p.x,y:p.y,r:4,hp:c.hp*tr,max:c.hp*tr,dmgMul:tr,fireT:rand(0,.6),aim:0,face:-1,anim:0,tgt:null,tgtT:0,healT:1,fr:soldierSprite(rec),i,muzzle:0,flash:0,dead:false,slot:i,sx:p.x,sy:p.y,via:0,viaT:0,stuck:0,mv:false,spdNow:0}}
 
 /* ---------------- FX helpers ---------------- */
 function boltPts(x1,y1,x2,y2,jag){const pts=[[x1,y1]],d=Math.hypot(x2-x1,y2-y1)||1,n=Math.max(2,(d/7)|0),nx=-(y2-y1)/d,ny=(x2-x1)/d;
@@ -1345,8 +1345,9 @@ function tryCast(i,dir){if(!G||G.ended||G.p.locked)return;const p=G.p;if(p.cds[i
   if(ok!==false){p.castT=Math.max(p.castT||0,.35);p.cds[i]=save.god.noCD?.15:POWERS[id].cd*save.god.cd;p.cdMax[i]=p.cds[i]}else p.cds[i]=.25}
 
 /* ---------------- UPDATE ---------------- */
-function updateFlow(){const m=G.map,W=m.W,f=G.flow;f.fill(-1);const q=new Int32Array(W*m.H);let h=0,t=0;
-  const s=((G.p.y/TILE)|0)*W+((G.p.x/TILE)|0);f[s]=0;q[t++]=s;
+function updateFlow(){bfsFrom(G.p.x,G.p.y,G.flow)}
+function bfsFrom(x,y,f){const m=G.map,W=m.W;f.fill(-1);const q=new Int32Array(W*m.H);let h=0,t=0;
+  const s=((y/TILE)|0)*W+((x/TILE)|0);f[s]=0;q[t++]=s;
   while(h<t){const c=q[h++],cx=c%W,cy=(c/W)|0,d=f[c]+1;
     if(cx>0&&f[c-1]<0&&!SOLID[m.tiles[c-1]]){f[c-1]=d;q[t++]=c-1}
     if(cx<W-1&&f[c+1]<0&&!SOLID[m.tiles[c+1]]){f[c+1]=d;q[t++]=c+1}
@@ -1390,7 +1391,9 @@ function update(dt){
     if(dist2(n.x,n.y,p.x,p.y)<420*420&&G.zombies.length<cap){n.spawnT-=zdt;if(n.spawnT<=0){n.spawnT=rand(2.4,4.2)/g.zDensity;
       const z=spawnZombie(rollType(G.city.mix),n.x+rand(-6,6),n.y+rand(4,10),true);sparks(z.x,z.y,'#7a2238',5)}}}
   // squad
+  G.heroSpd=p.spd*g.speed*(G.speedT>0?1.45:1);squadFormation(dt);
   for(const s of G.squad)if(!s.dead)updSoldier(s,dt);
+  squadSpacing();
   // clones
   for(let i=G.clones.length-1;i>=0;i--){const c=G.clones[i];c.t-=dt;if(c.t<=0){G.clones.splice(i,1);continue}c.ang+=dt*2.2;c.x=p.x+Math.cos(c.ang)*30;c.y=p.y+Math.sin(c.ang)*22;c.atk-=dt*g.atk;
     if(c.atk<=0){const t=nearestEnemy(c.x,c.y,110);if(t){c.atk=.22;addBolt(c.x,c.y-9,t.x,t.y-6,G.hime.bolt,1,.1,3);hurt(t,14*pm())}else c.atk=.1}}
@@ -1446,11 +1449,7 @@ function updZombie(z,dt){
   const d=Math.sqrt(bd);let mx=0,my=0;const sp=z.spd;
   if(z.type==='spitter'&&d<115&&d>28&&los(z.x,z.y-4,tgt.x,tgt.y-4)){z.dir=dirOf(tgt.x-z.x,tgt.y-z.y);z.spitT-=dt;if(z.spitT<=0){z.spitT=rand(2,3);z.atkAnim=.36;const a=Math.atan2(tgt.y-z.y,tgt.x-z.x);G.shots.push({x:z.x,y:z.y-6,vx:Math.cos(a)*85,vy:Math.sin(a)*85,t:2,dmg:z.dmg})}}
   else if(d<100&&los(z.x,z.y-3,tgt.x,tgt.y-3)){mx=(tgt.x-z.x)/(d||1);my=(tgt.y-z.y)/(d||1)}
-  else{const W=m.W,tx=(z.x/TILE)|0,ty=(z.y/TILE)|0,c=ty*W+tx,f=G.flow;let best=f[c],bx=-1,by=-1;
-    if(best<0){mx=(p.x-z.x)/(d||1);my=(p.y-z.y)/(d||1)}else{
-      for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){if(!ox&&!oy)continue;const nx=tx+ox,ny=ty+oy;if(nx<0||ny<0||nx>=W||ny>=m.H)continue;const n=ny*W+nx;
-        if(f[n]<0||f[n]>=best)continue;if(ox&&oy&&(SOLID[m.tiles[ty*W+nx]]||SOLID[m.tiles[ny*W+tx]]))continue;best=f[n];bx=nx;by=ny}
-      if(bx>=0){const gx=bx*TILE+8-z.x,gy=by*TILE+8-z.y,gl=Math.hypot(gx,gy)||1;mx=gx/gl;my=gy/gl}else{mx=(tgt.x-z.x)/(d||1);my=(tgt.y-z.y)/(d||1)}}}
+  else{const st=flowStep(G.flow,z.x,z.y);if(st){mx=st[0];my=st[1]}else{mx=(tgt.x-z.x)/(d||1);my=(tgt.y-z.y)/(d||1)}}
   if(mx||my){moveEntity(z,mx*sp*dt,my*sp*dt);z.mv=true;z.dir=dirOf(mx,my);if(Math.abs(mx)>.2)z.face=mx<0?-1:1}
   // separation
   const gx=(z.x/CELL)|0,gy=(z.y/CELL)|0;let px=0,py=0;
@@ -1463,12 +1462,42 @@ function updZombie(z,dt){
     for(let i=0;i<3;i++)spawnZombie('runner',z.x+rand(-14,14),z.y+rand(-14,14),true)}}
 }
 
+// one step down a flow field from (x,y): the direction to the neighbouring tile closer to its source, or null
+function flowStep(f,x,y){const m=G.map,W=m.W,tx=(x/TILE)|0,ty=(y/TILE)|0;let best=f[ty*W+tx],bx=-1,by=-1;if(best<0)return null;
+  for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){if(!ox&&!oy)continue;const nx=tx+ox,ny=ty+oy;if(nx<0||ny<0||nx>=W||ny>=m.H)continue;const n=ny*W+nx;
+    if(f[n]<0||f[n]>=best)continue;if(ox&&oy&&(SOLID[m.tiles[ty*W+nx]]||SOLID[m.tiles[ny*W+tx]]))continue;best=f[n];bx=nx;by=ny}
+  if(bx<0)return null;const gx=bx*TILE+8-x,gy=by*TILE+8-y,gl=Math.hypot(gx,gy)||1;return[gx/gl,gy/gl]}
+function clearPath(x1,y1,x2,y2,r){const n=Math.ceil(Math.hypot(x2-x1,y2-y1)/4);for(let i=1;i<=n;i++){const t=i/n;if(blocked(x1+(x2-x1)*t,y1+(y2-y1)*t,r))return false}return true}
+// formation: an arc behind the heroine that turns with her (close-range classes in front), or a ring around a held spot
+function squadFormation(dt){const p=G.p,follow=G.squadMode==='follow',base=follow?p:G.hold,live=G.squad.filter(s=>!s.dead).sort((a,b)=>a.c.rank-b.c.rank||a.i-b.i);
+  if(follow&&p.moving){const da=((Math.atan2(-p.diry,-p.dirx)-G.formA+Math.PI*3)%(Math.PI*2))-Math.PI;G.formA+=clamp(da,-dt*2.6,dt*2.6)}
+  for(let k=0,row=0;k<live.length;row++){const n=Math.min(live.length-k,follow?4+row:6+row*3),dist=follow?17+row*12:14+row*13;
+    for(let j=0;j<n;j++,k++){const s=live[k],a=follow?G.formA+(j-(n-1)/2)*Math.min(.62,11/dist):G.formA+j/n*Math.PI*2+row*.4,ox=Math.cos(a)*dist,oy=Math.sin(a)*dist*.8;
+      // a slot inside a wall slides in toward the centre
+      let t=1;while(t>0&&blocked(base.x+ox*t,base.y+oy*t,s.r+1))t-=.25;s.sx=base.x+ox*Math.max(0,t);s.sy=base.y+oy*Math.max(0,t)}}}
+function squadSpacing(){const L=G.squad,p=G.p;
+  for(let i=0;i<L.length;i++){const a=L[i];if(a.dead)continue;
+    for(let j=i+1;j<L.length;j++){const b=L[j];if(b.dead)continue;const dx=b.x-a.x,dy=b.y-a.y,dd=dx*dx+dy*dy;if(dd<100&&dd>.0001){const dl=Math.sqrt(dd),k=(10-dl)/dl*.25;moveEntity(a,-dx*k,-dy*k);moveEntity(b,dx*k,dy*k)}}
+    const dx=a.x-p.x,dy=a.y-p.y,dd=dx*dx+dy*dy;if(dd<81&&dd>.0001){const dl=Math.sqrt(dd),k=(9-dl)/dl*.3;moveEntity(a,dx*k,dy*k)}}}
 function updSoldier(s,dt){
-  const p=G.p,c=s.c,g=save.god;s.flash-=dt;s.muzzle-=dt;
-  const base=G.squadMode==='follow'?p:G.hold,a=s.i*2.399,rad=18+7*Math.sqrt(s.i);
-  const tx=base.x+Math.cos(a)*rad,ty=base.y+Math.sin(a)*rad*.8,dx=tx-s.x,dy=ty-s.y,d=Math.hypot(dx,dy);
-  if(G.squadMode==='follow'&&dist2(s.x,s.y,p.x,p.y)>280*280){s.x=p.x;s.y=p.y}
-  if(d>3){const sp=Math.min(d*4,82*g.speed);moveEntity(s,dx/d*sp*dt,dy/d*sp*dt);s.anim+=dt*9;if(Math.abs(dx)>1)s.face=dx<0?-1:1}else s.anim=0;
+  const p=G.p,c=s.c,g=save.god,follow=G.squadMode==='follow';s.flash-=dt;s.muzzle-=dt;
+  // far behind, or wedged for a while: regroup beside the heroine
+  const dp=Math.hypot(p.x-s.x,p.y-s.y);
+  if(follow&&(dp>340||(s.stuck>2.2&&dp>60))){const a=G.formA+rand(-.6,.6);let nx=p.x+Math.cos(a)*14,ny=p.y+Math.sin(a)*11;if(blocked(nx,ny,s.r)){nx=p.x;ny=p.y}
+    s.x=nx;s.y=ny;s.stuck=0;sparks(s.x,s.y-6,'#ffffff',5,40)}
+  const dx=s.sx-s.x,dy=s.sy-s.y,d=Math.hypot(dx,dy);
+  // straight to the slot when the way is clear, otherwise down the flow field around buildings
+  s.viaT-=dt;if(s.viaT<=0){s.viaT=.2;s.via=d>6&&!clearPath(s.x,s.y,s.sx,s.sy,s.r)}
+  let mx=0,my=0;
+  if(s.via){const st=flowStep(follow?G.flow:G.holdFlow||G.flow,s.x,s.y);if(st){mx=st[0];my=st[1]}else if(d>0){mx=dx/d;my=dy/d}}
+  else if(d>2.5){mx=dx/d;my=dy/d}
+  // pace: their own walking speed, jogging to keep up with the heroine and sprinting when far behind
+  const lag=s.via?Math.max(d,30):d,own=c.spd*g.speed,cap=follow?Math.max(own,G.heroSpd*(lag>48?1.35:1.08)):own,sp=(mx||my)?Math.min(lag*4,cap):0;
+  const x0=s.x,y0=s.y;
+  if(sp>0){const steps=Math.ceil(sp*dt/3);for(let i=0;i<steps;i++)moveEntity(s,mx*sp*dt/steps,my*sp*dt/steps)}
+  const moved=Math.hypot(s.x-x0,s.y-y0);s.spdNow=moved/dt;s.mv=moved>sp*dt*.3&&s.spdNow>4;
+  if(sp*dt>.3&&moved<sp*dt*.25)s.stuck+=dt;else s.stuck=Math.max(0,s.stuck-dt*2);
+  if(s.mv){s.anim+=dt*(5+s.spdNow/12);if(Math.abs(mx)>.2)s.face=mx<0?-1:1;if(!s.tgt||s.tgt.dead)s.aim=Math.atan2(my,mx)}else s.anim=0;
   s.tgtT-=dt;if(s.tgtT<=0||!s.tgt||s.tgt.dead){s.tgtT=.2;s.tgt=nearestEnemy(s.x,s.y,c.range,null,true)}
   if(c.heal){s.healT-=dt;if(s.healT<=0){s.healT=1.1;let low=null,lr=1;for(const a of[p,...G.squad]){if(a.dead)continue;const r=a.hp/(a.maxHp||a.max);if(r<lr&&dist2(a.x,a.y,s.x,s.y)<90*90){lr=r;low=a}}
     if(low){const amt=c.heal*s.dmgMul;if(low.kind==='p')low.hp=Math.min(low.maxHp,low.hp+amt);else low.hp=Math.min(low.max,low.hp+amt);sparks(low.x,low.y-10,'#7dff8a',6,30)}}}
@@ -1529,7 +1558,7 @@ function render(){
       if(e.charm>0){const hx=SX(e.x),hy2=SY(e.y)-H-6+Math.sin(G.time*6)*4;ctx.fillStyle='#ff5c8a';ctx.fillRect(hx-9,hy2,6,6);ctx.fillRect(hx+3,hy2,6,6);ctx.fillRect(hx-9,hy2+3,18,6);ctx.fillRect(hx-6,hy2+9,12,3);ctx.fillRect(hx-3,hy2+12,6,3);ctx.fillStyle='#ffd0e0';ctx.fillRect(hx-6,hy2+3,3,3)}
       if(e.seal>0&&(e.seal>.3||(G.time*20|0)%2)){const tx=SX(e.x)-7,tyy=SY(e.y)-H*.6;ctx.fillStyle='#f8f2e0';ctx.fillRect(tx,tyy,14,24);ctx.fillStyle='#d42a3a';ctx.fillRect(tx+3,tyy+3,8,2);ctx.fillRect(tx+6,tyy+5,2,14);ctx.fillRect(tx+3,tyy+12,8,2)}
       if(big)hpBar(e.x,e.y-H/RZ-3,e.type==='boss'?150:80,e.hp/e.max,e.type==='boss'?'#ff3b6b':'#8fd14f')}
-    else if(e.kind==='s'){const view=Math.sin(e.aim)<-.6&&e.tgt?e.fr.back:e.fr.front,f=view[e.anim?(e.anim|0)%4:0],gs=gunSprites(e.rec.cls);
+    else if(e.kind==='s'){const view=Math.sin(e.aim)<-.6&&(e.tgt||e.mv)?e.fr.back:e.fr.front,f=view[e.anim?(e.anim|0)%4:0],gs=gunSprites(e.rec.cls);
       const k=((Math.round(e.aim/(Math.PI*2)*16)%16)+16)%16,gi=gs[k],gw=gi.width,gx=SX(e.x+Math.cos(e.aim)*2.5)-(gw>>1),gy=SY(e.y-6)-(gw>>1);
       shadow(e.x,e.y,60);const rc=e.muzzle>0?-1.2:0,rx=Math.cos(e.aim)*rc*RZ,ry=Math.sin(e.aim)*rc*RZ,behind=Math.sin(e.aim)<-.2;if(behind)ctx.drawImage(gi,gx+rx,gy+ry,gw,gw);drawSpr(f,e.x+Math.cos(e.aim)*rc,e.y+Math.sin(e.aim)*rc,e.face,e.flash>0);if(!behind)ctx.drawImage(gi,gx+rx,gy+ry,gw,gw);
       if(e.muzzle>0){const mx=SX(e.x+Math.cos(e.aim)*12),my=SY(e.y-6+Math.sin(e.aim)*12);ctx.fillStyle='#fff4c0';ctx.fillRect(mx-6,my-6,12,12);ctx.fillStyle='#ffb35a';ctx.fillRect(mx-3,my-11,6,22);ctx.fillRect(mx-11,my-3,22,6)}
@@ -1764,7 +1793,7 @@ gameEl.addEventListener('click',e=>{Sfx.init();const b=e.target.closest('button'
 gameEl.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.sl;if(!k)return;save.god[k]=+e.target.value;persist();const o=$('#o-'+k);const v=save.god[k];
   if(o)o.textContent=k==='squadBonus'?'+'+v:'×'+(+v).toFixed(v<10?(v%1?2:0):0)});
 $('#btnPause').addEventListener('click',()=>{if(state!=='play'||G.ended)return;paused=true;held.fill(false);stick.id=null;$('#stick').hidden=true;stick.dx=stick.dy=0;$('#hud').hidden=true;returnTo='pause';showScreen('pause')});
-$('#btnSquad').addEventListener('click',()=>{if(!G)return;G.squadMode=G.squadMode==='follow'?'hold':'follow';G.hold={x:G.p.x,y:G.p.y};$('#btnSquad').textContent=G.squadMode==='follow'?'Follow':'Hold';toast(G.squadMode==='follow'?'Squad: follow me':'Squad: hold this position')});
+$('#btnSquad').addEventListener('click',()=>{if(!G)return;G.squadMode=G.squadMode==='follow'?'hold':'follow';G.hold={x:G.p.x,y:G.p.y};if(G.squadMode==='hold'){G.holdFlow=G.holdFlow||new Int16Array(G.flow.length);bfsFrom(G.hold.x,G.hold.y,G.holdFlow)}$('#btnSquad').textContent=G.squadMode==='follow'?'Follow':'Hold';toast(G.squadMode==='follow'?'Squad: follow me':'Squad: hold this position')});
 $('#btnSound').addEventListener('click',()=>{save.sound=!save.sound;persist();R.title()});
 $('#btnFull').addEventListener('click',()=>{const d=document.documentElement;try{const r=document.fullscreenElement?document.exitFullscreen():(d.requestFullscreen||d.webkitRequestFullscreen).call(d);if(r&&r.catch)r.catch(()=>toast('Fullscreen is not available here'))}catch(e){toast('Fullscreen is not available here')}});
 for(let i=0;i<5;i++){const b=$('#pw'+i);
