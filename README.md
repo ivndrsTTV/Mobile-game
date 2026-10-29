@@ -40,13 +40,14 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
 
 ## Art
 
-All art is pixel art generated in code, so the game stays a single HTML file. It renders at your screen's real resolution, with two levels of detail:
+All art is pixel art generated in code, so the game stays a single HTML file.
 
-- **128 px: main characters.** The four heroines and the Boss. Heroines are built from a parametric figure with blunt hime-cut bangs, sidelocks and long hair, layered anime eyes, a sailor uniform with a pleated skirt, and a personal hair ornament. They have front and back views, four-frame walk cycles and 128×128 menu portraits.
-- **64 px: everything else.** Infected, soldiers (with guns that rotate to aim), nests and the 64px city tiles, drawn at 2× next to the main characters.
-- Colors use four-tone, hue-shifted ramps with dithered transitions, rim light and selective outlines.
-- The city is built in 8×8-tile chunks as you approach them: cracked asphalt, manholes, crosswalks, curbs, detailed rooftops, layered trees and cars.
-- Night lighting: the city is dark except around your heroine, muzzle flashes and lightning.
-- If a device can't keep the frame rate up, the game lowers its render resolution automatically.
+- **Heroines and squad girls (about 170px tall)** are drawn as smooth shapes (hair, face, outfits, limbs), then snapped to crisp pixels and cel-shaded per part, with rim light, contact lines and selective outlines.
+  - Eyes are hand-placed pixel templates: a thick upper lash, a five-tone iris, pupil, sclera, two highlights and a lower lash, with variants for star pupils, cat slits and blinking.
+  - Animal ears grow out of the crown and tails come from the hip.
+  - Front and back views, four-frame walks, idle breathing, blinks and a cast pose.
+- **Portraits** are each heroine's own head scaled 2× with no smoothing, so they stay true pixel art.
+- **Infected, nests and the city** use 64px art drawn at 2×. Tiles are built in 8×8-tile chunks as you approach them.
+- Night lighting, and render resolution that drops automatically on slower phones.
 
 Progress is saved in the browser.
