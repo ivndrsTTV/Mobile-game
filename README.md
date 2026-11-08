@@ -1,12 +1,13 @@
 # Voltfall
 
-A detailed pixel-art zombie game for phones. You play as one of four lightning-powered heroines with hime cuts, lead a squad of soldiers, and clear the infected out of 12 cities. It also has a sandbox mode and a God Mode panel where you can set your power as high as you like.
+A detailed pixel-art zombie game for phones that plays fully offline. You play as one of eight anime heroines (lightning girls with hime cuts, a cat girl, a battle maid, an idol and a kitsune shrine maiden), lead a squad of soldiers and clear the infected out of 18 missions. It also has a card battle mode, AFK patrols, weapons to collect, heroine levels, a character gallery, a sandbox and a God Mode panel where you can set your power as high as you like.
 
 ## Play it
 
 - **In a browser:** open `index.html` from any web host, or locally.
 - **Android APK:** every push builds `Voltfall.apk` and attaches it to the **apk-latest** release on this repo's Releases page. Download it on your phone and open it to install. The first time, Android asks you to allow installs from that app.
-- **Versioned releases:** pushing a tag like `v1.0.0` builds the APK and publishes it as a full release named after the tag, marked as the latest release.
+- **Versioned releases:** raise the number in `VERSION` (for example to `1.1.0`) and push. The build publishes it as a full release, `v1.1.0`, marked as the latest, with `RELEASE_NOTES.md` as its notes. No git tag is needed, so it works from a phone. Pushing a `v*` tag does the same.
+- **Updating:** every APK is signed with the same key (`tools/android/debug.keystore`), so a new one installs over the old one and keeps your saves. APKs built before v1.0.0 used a different key each time: uninstall that one first, after copying your progress with **Save slots → Backup code**.
 - **iPhone or Android without the APK:** host the folder (for example with GitHub Pages: Settings → Pages → deploy from branch) and open it in the browser, then choose **Add to Home Screen**. It runs fullscreen and works offline after the first load.
 
 ## Controls
@@ -35,7 +36,13 @@ A detailed pixel-art zombie game for phones. You play as one of four lightning-p
   - Kohaku: Fox Fire, Talisman Seal, Sacred Ward
 - **Animation:** heroines face four directions, breathe and blink while idle, walk on an 8-frame cycle, reach out when they attack and flinch when hit. Squad girls walk, idle and aim. The infected idle, walk, swipe, spit, charge, slam and collapse.
 - **Controls:** drag the left side to move. Drag the right side to aim and release to fire, Brawl Stars style, or leave auto-fire on. Drag a power button to aim that power.
-- **Save slots:** three separate saves.
+- **Save slots:** three separate saves, plus a backup code you can copy and paste to carry progress across reinstalls or phones.
+- **Weapons:** a weapon replaces a heroine's basic attack: Raikiri Katana (wide slashes), Twin Shock Pistols, Storm Scattergun, Rail Lance (pierces a whole line), Tesla Whip (arcs to more targets), Plasma Orb Staff (homing bursts) and Thunder Hammer (stuns everything around her). They drop from supply crates, nests and bosses, come back from patrols and are won in Volt Clash. Duplicates and upgrades level them up to 10.
+- **Heroine levels:** every heroine earns XP from kills, missions, patrols and card battles. Each level adds 5% health and damage, up to level 50.
+- **Patrol (AFK):** send a heroine and the squad to patrol a liberated city. They keep earning supplies, XP and weapon finds while the game is closed, up to 12 hours, shown as a small far-away scene of them walking the streets.
+- **Volt Clash:** a Clash Royale style card battle against the horde, played offline. Two lanes, a canal with two bridges and three towers a side. Energy refills over time (double in the last minute) and you play from a hand of four cards out of an eight-card deck: the heroines, squad troops, turrets, sandbags and powers. The horde plays walkers, runners, spitters, bloaters, brutes, the Horned Troll, nests and acid. Ten opponents to climb, each unlocking the next, with supplies, XP and weapons as rewards.
+- **Gallery:** every heroine at four pixel resolutions, from a far-away sprite to a full-body view to a close-up, in every view, pose and expression.
+- **Camera:** far, normal, close or closer, from the title screen or the pause menu.
 - **Face cam:** a portrait in the HUD with the health bar above it. Her expression reacts to the fight (calm, fierce when casting, a yelp when hit, beaming on a kill streak, scared or in pain at low health), her eyes follow where she runs, and injuries build up as her health drops: scratches, a band-aid, bruises, blood and a bandaged forehead.
 - **Squads:** recruit Riflers, Gunners, Breachers, Marksmen, Grenadiers and Medics. Each one gets a name and hair color. They march in formation behind you, path around buildings and keep pace with you. Upgrade squad size and training.
 - **18 missions:** downtown, suburbs, harbor, ironworks, shrine town, neon district, snowfield, hospital, desert, military base and the Hive, plus metro tunnels, sewers, a bunker and rooftops high above the city. Early missions are nest hunts; later ones stack quests:

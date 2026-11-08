@@ -49,6 +49,16 @@ jobs:
             cp www/icon-192.png $d/ic_launcher_round.png
           done
 
+      # Every build signs with the same key (tools/android/debug.keystore), so a new APK installs
+      # over the old one and keeps your saves. The version comes from the VERSION file.
+      - name: Fixed signing key and version number
+        run: |
+          mkdir -p ~/.android
+          cp tools/android/debug.keystore ~/.android/debug.keystore
+          VER=$(tr -d ' \n' < VERSION)
+          sed -i "s/versionCode 1$/versionCode ${{ github.run_number }}/; s/versionName \"1.0\"/versionName \"$VER\"/" build/android/app/build.gradle
+          grep -n "versionCode\|versionName" build/android/app/build.gradle
+
       - name: Build debug APK
         working-directory: build/android
         run: ./gradlew assembleDebug --no-daemon
@@ -73,6 +83,31 @@ jobs:
             Download **Voltfall.apk** on your Android phone and open it to install.
             Android will ask you to allow installs from your browser or file manager the first time.
             Built from ${{ github.sha }}.
+
+      # A new number in the VERSION file becomes a full release (tag v<number>) the first time it is
+      # pushed, so releases need no git tags from a phone. Later pushes of the same number only
+      # update apk-latest.
+      - name: Is this version released yet?
+        id: ver
+        if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER=$(tr -d ' \n' < VERSION)
+          echo "tag=v$VER" >> "$GITHUB_OUTPUT"
+          if gh release view "v$VER" --repo "${{ github.repository }}" > /dev/null 2>&1; then echo "new=false" >> "$GITHUB_OUTPUT"; else echo "new=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Publish the new version as a release
+        if: steps.ver.outputs.new == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: Voltfall ${{ steps.ver.outputs.tag }}
+          prerelease: false
+          make_latest: true
+          files: Voltfall.apk
+          body_path: RELEASE_NOTES.md
 
       # a version tag (v1.0.0, v1.1.0, ...) becomes a full release with its own APK
       - name: Publish a versioned release

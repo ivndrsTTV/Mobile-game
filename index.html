@@ -100,6 +100,21 @@ p{margin:0}
 .hcard{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;text-align:left;cursor:pointer}
 .hcard.sel{border-color:var(--volt);box-shadow:4px 4px 0 #000,0 0 0 2px var(--volt)}
 .hcard .pf{background:#0b0912;border:2px solid var(--line);display:block;line-height:0}
+.wcard{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;border-color:color-mix(in srgb,var(--rc) 45%,var(--line))}
+.wcard.sel{border-color:var(--volt);box-shadow:4px 4px 0 #000,0 0 0 2px var(--volt)}
+.wcard h3{font-family:var(--display);margin:0;font-size:19px}
+.wcard.locked h3{color:var(--muted)}
+.wic-box{background:#0b0912;border:2px solid var(--line);padding:8px 6px;line-height:0}
+.hpick{display:flex;gap:6px;flex-wrap:wrap}
+#bkCode{width:100%;background:#0b0912;color:var(--ink);border:2px solid var(--line);font:14px var(--body);padding:6px;resize:vertical;word-break:break-all}
+.galgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.galstage{display:grid;gap:8px;justify-items:center}.galstage canvas{width:min(100%,300px);height:auto;background:#0b0912}
+.galres{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end}.gcell{display:grid;gap:6px;justify-items:center}
+.pnums{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}.pnums div{display:grid;gap:2px}.pnums b{font-family:var(--display);font-size:24px;color:var(--volt)}
+.wline{display:flex;gap:8px;align-items:center;font-family:var(--display);font-size:13px;color:var(--muted)}
+.btn .dot{display:inline-block;width:8px;height:8px;background:var(--toxic);margin-left:6px;vertical-align:middle;box-shadow:0 0 0 2px #000}
+.loot{display:flex;gap:10px;align-items:center;font-family:var(--display);font-size:16px;color:var(--volt)}
+.xpline{font-size:20px;margin:0}.xpline b{color:var(--volt);font-weight:400}.xpline .lvup{color:var(--toxic)}
 .hcard h3{font-family:var(--display);margin:0;font-size:22px}.hcard .chip{justify-self:start}
 .stat{display:grid;grid-template-columns:62px 1fr;gap:6px;align-items:center;font-size:16px;color:var(--muted)}
 .meter{height:8px;background:#0b0912;border:1px solid var(--line)}
@@ -210,6 +225,28 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
   /* portrait: the controls hint sits under the objectives, clear of the power buttons and the heroine */
   #hint{left:calc(env(safe-area-inset-left,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);bottom:auto;top:calc(env(safe-area-inset-top,0px) + 196px);font-size:16px;padding:10px 12px;text-align:center}
 }
+/* ---------- Volt Clash ---------- */
+#clashHud{position:absolute;inset:0;pointer-events:none}
+#clashHud > *{pointer-events:auto}
+.ch-top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 4px);left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;background:rgba(14,11,22,.78);border:2px solid var(--line);padding:2px 4px 2px 10px;font-family:var(--display);font-size:13px;white-space:nowrap}
+.ch-top .btn{width:30px;height:26px;padding:0}
+.ch-c b{font-size:17px;font-weight:400}.ch-c.p b{color:#5ab8ff}.ch-c.e b{color:var(--sakura)}
+#chTime{color:var(--volt);min-width:64px;text-align:center}
+.ch-bar{position:absolute;left:0;right:0;bottom:0;padding:6px 8px calc(env(safe-area-inset-bottom,0px) + 4px);display:flex;gap:8px;align-items:flex-end;justify-content:center;background:linear-gradient(rgba(8,6,14,0),rgba(8,6,14,.9) 35%)}
+.ch-hand{display:flex;gap:6px}
+.ccard{position:relative;width:62px;height:76px;padding:0;background:var(--panel2);border:2px solid var(--line);display:grid;grid-template-columns:100%;grid-auto-flow:row;justify-items:center;align-content:start;cursor:pointer;color:var(--ink);font-family:var(--display);touch-action:none}
+.ccard .cimg canvas{width:46px;height:46px;margin-top:3px;display:block}
+.ccard b{position:absolute;top:-7px;left:-7px;width:22px;height:22px;display:grid;place-items:center;background:#d93fb8;border:2px solid #000;font-size:13px;color:#fff;font-weight:400}
+.ccard small{display:block;width:100%;font-size:9px;line-height:1.05;padding:1px 2px 0;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:clip}
+.ccard.sel{border-color:var(--volt);transform:translateY(-8px);box-shadow:0 0 0 2px var(--volt)}
+.ccard.poor{filter:grayscale(.85) brightness(.7)}
+.ch-next{display:grid;justify-items:center;gap:2px;opacity:.85}.ch-next canvas{width:30px;height:30px;display:block}
+.ch-en{display:grid;gap:2px;justify-items:center;min-width:92px}.ch-meter{width:96px;height:12px;background:#0b0912;border:2px solid var(--line)}.ch-meter i{display:block;height:100%;background:#d93fb8;transition:width .1s}
+.ch-en b{font-family:var(--display);color:#ff9ae6;font-size:18px;font-weight:400;line-height:1}
+#clashMenu{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);display:grid;gap:10px;min-width:220px;text-align:center}
+.dcard{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;text-align:left;cursor:pointer}.dcard.on{border-color:var(--volt)}.dcard b{font-family:var(--display);font-weight:400}
+.dcard .cimg{line-height:0;border:2px solid var(--line)}
+@media (orientation:portrait){.ccard{width:70px;height:88px}.ccard .cimg canvas{width:54px;height:54px}.ch-bar{flex-wrap:wrap;row-gap:4px}}
 @media (prefers-reduced-motion:reduce){.lineup .h{animation:none}#banner.show{animation-duration:2.2s;animation-timing-function:steps(1)}}
 </style>
 </head>
@@ -243,6 +280,12 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
     </div>
     <div id="banner"><b></b><small></small></div>
   </div>
+  <div id="clashHud" hidden>
+    <div class="ch-top"><span class="ch-c e">Horde <b id="chE">0</b></span><span id="chTime">3:00</span><span class="ch-c p">You <b id="chP">0</b></span><button class="btn small" id="chPause" aria-label="Pause">II</button></div>
+    <div class="ch-bar"><div class="ch-next" id="chNext"></div><div class="ch-hand" id="chHand"></div>
+      <div class="ch-en"><div class="ch-meter"><i id="chEn"></i></div><b id="chEnN">5</b><span id="chDbl" class="label" hidden>Double energy</span></div></div>
+    <div id="clashMenu" class="panel" hidden><h3 style="font-family:var(--display);margin:0">Paused</h3><button class="btn primary" data-act="cresume">Resume</button><button class="btn ghost" data-act="cquit">Surrender</button></div>
+  </div>
   <div id="toast"></div>
 
   <section class="screen" id="scr-title">
@@ -254,22 +297,33 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
       </div>
       <div class="menu">
         <button class="btn primary" data-go="map">Campaign</button>
-        <button class="btn pink" data-go="sandbox">Sandbox</button>
+        <div class="row">
+          <button class="btn pink" data-go="sandbox">Sandbox</button>
+          <button class="btn pink" data-go="clash">Volt Clash</button>
+        </div>
         <div class="row">
           <button class="btn" data-go="heroines">Heroines</button>
-          <button class="btn" data-go="powers">Powers</button>
+          <button class="btn" data-go="weapons">Weapons</button>
         </div>
         <div class="row">
+          <button class="btn" data-go="powers">Powers</button>
           <button class="btn" data-go="squad">Squad</button>
+        </div>
+        <div class="row">
           <button class="btn" data-go="armory">Armory</button>
+          <button class="btn" data-go="patrol">Patrol<span class="dot" id="patrolDot" hidden></span></button>
         </div>
         <button class="btn" data-go="god" style="color:var(--volt)">God Mode</button>
+        <div class="row">
+          <button class="btn ghost small" data-go="gallery">Gallery</button>
+          <button class="btn ghost small" data-go="slots">Save slots</button>
+        </div>
         <div class="row">
           <button class="btn ghost small" id="btnSound">Sound: on</button>
           <button class="btn ghost small" id="btnFull">Fullscreen</button>
         </div>
         <div class="row">
-          <button class="btn ghost small" data-go="slots">Save slots</button>
+          <button class="btn ghost small" id="btnZoom">View: normal</button>
           <button class="btn ghost small" data-go="credits">Credits</button>
         </div>
         <div class="foot"><span id="titleSup"></span><span id="titleProg"></span></div>
@@ -288,6 +342,10 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
   <section class="screen" id="scr-result" hidden></section>
   <section class="screen" id="scr-credits" hidden></section>
   <section class="screen" id="scr-slots" hidden></section>
+  <section class="screen" id="scr-weapons" hidden></section>
+  <section class="screen" id="scr-patrol" hidden></section>
+  <section class="screen" id="scr-gallery" hidden></section>
+  <section class="screen" id="scr-clash" hidden></section>
 </div>
 
 <script>
@@ -416,7 +474,8 @@ const SAVE_KEY='himeblitz.save.v1';
 function defaultGod(){return{infHP:false,noCD:false,oneHit:false,infSup:false,unlock:false,dmg:1,size:1,speed:1,atk:1,cd:1,zDensity:1,zSpeed:1,squadBonus:0}}
 function defaultSave(){return{supplies:150,cleared:{},heroine:'raiko',loadouts:{},
   squad:[{cls:'rifle',name:'Aiko',hair:'#1b1424'},{cls:'rifle',name:'Mei',hair:'#7a4a2a'},{cls:'smg',name:'Rin',hair:'#d9b45a'}],
-  up:{power:0,vit:0,size:0,train:0,slots:0,turret:0,sandbag:0},kits:{sand:2,fence:2,trap:2,turret:1},god:defaultGod(),sound:true,autoFire:true}}
+  up:{power:0,vit:0,size:0,train:0,slots:0,turret:0,sandbag:0},kits:{sand:2,fence:2,trap:2,turret:1},god:defaultGod(),sound:true,autoFire:true,
+  weapons:{},equip:{},xp:{},patrol:null,zoom:1,clash:{wins:0,losses:0,tier:0,deck:null}}}
 function merge(base,s){for(const k in s){if(base[k]&&typeof base[k]==='object'&&!Array.isArray(base[k])&&s[k]&&typeof s[k]==='object')merge(base[k],s[k]);else base[k]=s[k]}return base}
 // three independent save slots; the pre-slots save becomes slot 1
 const SLOTS=3,SLOT_KEY=n=>'voltfall.slot.'+n,ACTIVE_KEY='voltfall.activeSlot';
@@ -426,7 +485,11 @@ function loadSave(){try{activeSlot=clamp(+localStorage.getItem(ACTIVE_KEY)||1,1,
     if(!localStorage.getItem(SLOT_KEY(1))){const old=localStorage.getItem(SAVE_KEY);if(old)localStorage.setItem(SLOT_KEY(1),old)}}catch(e){}
   return readSlot(activeSlot)||defaultSave()}
 function persist(){save.lastPlayed=Date.now();try{localStorage.setItem(SLOT_KEY(activeSlot),JSON.stringify(save));localStorage.setItem(ACTIVE_KEY,String(activeSlot))}catch(e){}}
-function useSlot(n){persist();activeSlot=n;save=readSlot(n)||defaultSave();persist()}
+function useSlot(n){persist();activeSlot=n;save=readSlot(n)||defaultSave();persist();resize()}
+// a backup code is the save as base64 text, so it can be copied to a note and pasted back after a reinstall
+const saveCode=()=>'VF1:'+btoa(unescape(encodeURIComponent(JSON.stringify(save))));
+function readCode(t){try{t=String(t||'').trim();if(!t.startsWith('VF1:'))return null;const o=JSON.parse(decodeURIComponent(escape(atob(t.slice(4)))));
+  if(!o||typeof o!=='object'||typeof o.heroine!=='string'||!HMAP[o.heroine])return null;return merge(defaultSave(),o)}catch(e){return null}}
 function deleteSlot(n){try{localStorage.removeItem(SLOT_KEY(n))}catch(e){}if(n===activeSlot){save=defaultSave();persist()}}
 let save=loadSave();
 const squadCap=()=>4+save.up.size+save.god.squadBonus;
@@ -435,6 +498,35 @@ const slotCount=()=>3+(save.up.slots||0);
 // the heroine's chosen powers, padded with unused ones when extra slots are unlocked
 const loadout=()=>{const lo=(save.loadouts[save.heroine]||HMAP[save.heroine].loadout).slice(0,slotCount());
   for(const k of Object.keys(POWERS)){if(lo.length>=slotCount())break;if(!lo.includes(k))lo.push(k)}return lo};
+
+/* ---------------- WEAPONS & LEVELS ---------------- */
+// Every heroine fights with her own power until she equips a weapon. Weapons are found in supply crates, dropped by bosses
+// and nests, brought back from patrols and won in Volt Clash; finding one again levels it up.
+const WEAPONS={
+  innate:{name:'Innate power',kind:'innate',rar:0,desc:'Her own lightning, claws, knives, songs or foxfire.'},
+  katana:{name:'Raikiri Katana',kind:'slash',rar:1,dmg:1.7,rate:.34,range:46,arc:1.2,c:'#9fe8ff',desc:'A lightning blade that cuts everything in a wide arc.'},
+  pistols:{name:'Twin Shock Pistols',kind:'pistols',rar:1,dmg:.6,rate:.13,range:170,c:'#ffe14d',desc:'Two quick pistols that fire in turns.'},
+  scatter:{name:'Storm Scattergun',kind:'scatter',rar:2,dmg:.5,rate:.62,range:100,pellets:6,spread:.5,c:'#ffb35a',desc:'Six charged pellets that shred close crowds.'},
+  rail:{name:'Rail Lance',kind:'rail',rar:2,dmg:2.3,rate:.95,range:240,c:'#c9a2ff',desc:'A beam that pierces every infected in a line.'},
+  tesla:{name:'Tesla Whip',kind:'whip',rar:3,dmg:.95,rate:.42,range:125,jumps:3,c:'#7ad8ff',desc:'Lashes one infected and arcs to three more.'},
+  orb:{name:'Plasma Orb Staff',kind:'orb',rar:3,dmg:1.5,rate:.8,range:170,aoe:30,c:'#ff9ad5',desc:'A homing orb that bursts on impact.'},
+  hammer:{name:'Thunder Hammer',kind:'quake',rar:4,dmg:2.6,rate:1.05,range:42,aoe:46,c:'#ffd84a',desc:'Slams the ground and stuns everything around her.'},
+};
+const RARITY=[{n:'Innate',c:'#a49ac0'},{n:'Common',c:'#cfd6e6'},{n:'Rare',c:'#5ab8ff'},{n:'Epic',c:'#c48cff'},{n:'Legendary',c:'#ffcc33'}];
+const WMAX=10,wLevel=id=>save.weapons[id]||0,wMult=id=>1+.12*(Math.max(1,wLevel(id))-1),wUpCost=l=>Math.round(120*Math.pow(1.45,l-1));
+const equipped=(hid=save.heroine)=>{const w=save.equip[hid];return w&&w!=='innate'&&wLevel(w)?w:'innate'};
+// a weapon found or won: new ones arrive at level 1, repeats add a level; rarer weapons are rarer finds
+function rollWeapon(luck=0){const ids=Object.keys(WEAPONS).filter(k=>k!=='innate'&&wLevel(k)<WMAX);if(!ids.length)return null;
+  const wt=ids.map(k=>Math.pow(.42+luck*.1,WEAPONS[k].rar-1));let r=Math.random()*wt.reduce((a,b)=>a+b,0);for(let i=0;i<ids.length;i++){r-=wt[i];if(r<=0)return ids[i]}return ids[0]}
+function grantWeapon(id){if(!id)return null;const was=wLevel(id);save.weapons[id]=Math.min(WMAX,was+1);persist();return{id,lv:save.weapons[id],isNew:!was}}
+const weaponMsg=g=>g?(g.isNew?`New weapon: ${WEAPONS[g.id].name}!`:`${WEAPONS[g.id].name} reached level ${g.lv}`):'';
+// heroine levels: experience from kills, missions, patrols and card battles; every level adds 5% health and damage
+const LVMAX=50,xpFor=l=>50*(l-1)*l;
+const xpPct=hid=>{const l=heroLevel(hid),x=(save.xp[hid]||0);return l>=LVMAX?100:Math.round((x-xpFor(l))/(xpFor(l+1)-xpFor(l))*100)};
+function heroLevel(hid=save.heroine){const x=(save.xp&&save.xp[hid])||0;let l=1;while(l<LVMAX&&x>=xpFor(l+1))l++;return l}
+const lvMult=(hid=save.heroine)=>1+.05*(heroLevel(hid)-1);
+// returns the new level when the heroine levels up
+function giveXP(n,hid=save.heroine){if(!(n>0))return 0;const before=heroLevel(hid);save.xp[hid]=((save.xp[hid])||0)+Math.round(n);const after=heroLevel(hid);return after>before?after:0}
 
 /* ---------------- PIXEL ART ENGINE ---------------- */
 // Sprites are drawn into material maps (one letter = material + tone) and baked with hue-shifted
@@ -1143,7 +1235,7 @@ function soldierSprite(rec){const k=rec.cls+rec.hair;if(SSPR[k])return SSPR[k];c
   const get=(view,pose,f=0,now)=>{const q=view+pose+f;if(cache[q])return cache[q];if(now)return cache[q]=make(view,pose,f);
     if(!cache[q+'?']){cache[q+'?']=1;SQ.push(()=>{cache[q]=make(view,pose,f)})}
     return cache[view+'idle0']||get('front','idle',0,true)};
-  return SSPR[k]={get}}
+  return SSPR[k]={get,look,pal}}
 /* ---------- fortifications: sandbag walls and auto-turrets, bought at the Armory and placed during missions ---------- */
 const BUILD={sand:{name:'Sandbags',cost:25,hp:320,d:'A waist-high wall the infected have to tear through'},fence:{name:'Fence',cost:15,hp:170,d:'A long barricade: cheap and wide, weaker than sandbags'},
   trap:{name:'Spike trap',cost:20,hp:90,d:'Hurts and slows every infected that steps on it'},turret:{name:'Turret',cost:120,hp:180,d:'Shoots the nearest infected on its own'}};
@@ -1153,6 +1245,20 @@ function propSprite(w,h,draw){const c=document.createElement('canvas');c.width=w
   for(let y=0;y<H;y++)for(let xx=0;xx<W;xx++){const i=(y*W+xx)*4;if(src[i+3])continue;
     for(const[dx,dy]of[[0,-1],[-1,0],[0,1],[1,0]]){const u=xx+dx,v=y+dy;if(u<0||v<0||u>=W||v>=H)continue;const j=(v*W+u)*4;if(src[j+3]){a[i]=src[j]*.32;a[i+1]=src[j+1]*.32;a[i+2]=src[j+2]*.32;a[i+3]=255;break}}}
   x.putImageData(d,0,0);const f=mkC(c,PX);f.foot=(h+1)*PX;return f}
+// weapon icons: 32x16 pixel art, outlined like the props
+const WICON={};
+function weaponIcon(id,col){const key=id+(col||'');if(WICON[key])return WICON[key];const W=WEAPONS[id],g=col||W.c||'#ffe14d';
+  const metal='#c8ccd8',dark='#5a5f70',mid='#8a90a2',wood='#7a4f2e',gold='#e8b84a',wht='#ffffff';
+  return WICON[key]=propSprite(32,16,x=>{const P=(a,b,w,h,c)=>{x.fillStyle=c;x.fillRect(a,b,w,h)};
+    if(id==='innate'){x.fillStyle=g;x.beginPath();x.moveTo(18,0);x.lineTo(9,9);x.lineTo(15,9);x.lineTo(12,16);x.lineTo(23,6);x.lineTo(17,6);x.lineTo(20,0);x.closePath();x.fill();P(16,2,2,2,wht)}
+    else if(id==='katana'){P(1,7,7,3,'#2a2235');for(let i=1;i<8;i+=2)P(i,7,1,3,'#d42a3a');P(8,5,2,7,gold);P(10,7,19,2,metal);P(10,8,19,1,mid);P(29,7,2,1,metal);P(12,6,16,1,wht);for(let i=13;i<28;i+=4)P(i,5,2,1,g)}
+    else if(id==='pistols'){const gun=(ox,oy,c)=>{P(ox,oy,11,3,c);P(ox+10,oy,2,2,dark);P(ox+1,oy+3,3,5,'#3a3046');P(ox+4,oy+3,2,2,c);P(ox+11,oy,1,1,g)};gun(2,2,dark);gun(14,7,mid);P(26,7,3,1,g);P(14,2,2,1,g)}
+    else if(id==='scatter'){P(1,7,7,4,wood);P(1,10,3,2,wood);P(8,6,9,4,dark);P(16,6,14,2,mid);P(16,8,13,1,dark);P(18,9,6,2,wood);P(29,5,2,4,g);P(9,7,6,1,mid)}
+    else if(id==='rail'){P(1,8,5,4,dark);P(6,7,9,4,mid);P(14,7,16,2,metal);P(8,4,6,2,dark);P(9,3,4,1,g);for(const c of[16,19,22,25])P(c,5,2,6,g);P(30,7,2,2,wht)}
+    else if(id==='tesla'){P(1,9,7,3,'#3a3046');P(2,10,5,1,gold);x.strokeStyle=g;x.lineWidth=2;x.beginPath();x.moveTo(8,10);for(let i=0;i<=22;i++)x.lineTo(8+i,9-Math.sin(i/22*Math.PI*3)*4);x.stroke();P(30,4,2,2,wht);P(20,2,1,1,wht);P(25,13,1,1,wht)}
+    else if(id==='orb'){x.strokeStyle=wood;x.lineWidth=2;x.beginPath();x.moveTo(3,15);x.lineTo(21,5);x.stroke();P(19,5,3,3,gold);x.fillStyle=g;x.beginPath();x.arc(25,4.5,4,0,7);x.fill();P(23,2,2,2,wht);P(14,9,2,2,gold)}
+    else if(id==='hammer'){P(1,8,19,2,wood);P(4,8,1,2,'#3a2a1a');P(9,8,1,2,'#3a2a1a');P(19,3,10,12,dark);P(20,4,8,10,mid);P(19,7,10,2,gold);
+      x.fillStyle=g;x.beginPath();x.moveTo(25,4);x.lineTo(22,9);x.lineTo(24,9);x.lineTo(23,13);x.lineTo(27,7);x.lineTo(25,7);x.lineTo(26,4);x.closePath();x.fill()}})}
 // one burlap sack: shadowed underside, the cloth, a light top and a stitched seam
 function sack(x,cx,cy,rx,ry){x.fillStyle='#7f6a40';x.beginPath();x.ellipse(cx+.6,cy+.8,rx,ry,0,0,7);x.fill();x.fillStyle='#c4aa72';x.beginPath();x.ellipse(cx-.3,cy-.3,rx-.6,ry-.7,0,0,7);x.fill();
   x.fillStyle='#e0cc98';x.beginPath();x.ellipse(cx-rx*.35,cy-ry*.4,rx*.4,ry*.3,0,0,7);x.fill();x.fillStyle='#9a8350';x.fillRect(cx-rx*.6,cy,rx*1.2,1)}
@@ -1290,9 +1396,12 @@ const Sfx={ctx:null,noise:null,last:{},
 // The canvas uses the screen's real pixels. Logical space is 8 px per world unit: a 64px tile/minor sprite
 // is drawn at 2x (16 world units), a 128px heroine at 1x. K maps logical px to device px.
 const cv=$('#cv'),ctx=cv.getContext('2d'),RZ=8;
+// camera distance: far shows more of the city, close shows the pixel art bigger
+const ZOOMS=[{n:'far',v:.75},{n:'normal',v:1},{n:'close',v:1.3},{n:'closer',v:1.6}],zoomOf=()=>ZOOMS.find(z=>z.v===save.zoom)||ZOOMS[1];
+function cycleZoom(){const i=ZOOMS.indexOf(zoomOf());save.zoom=ZOOMS[(i+1)%ZOOMS.length].v;persist();resize();return zoomOf().n}
 let PXCAP=3.4e6,CW=640,CHt=400,K=1,LW=640,LH=400,VW=80,VH=50,vignette=null,lightC=null,lctx=null,LS=1/3;
 function resize(){const dpr=Math.min(3,window.devicePixelRatio||1);let w=innerWidth*dpr,h=innerHeight*dpr;if(w*h>PXCAP){const f=Math.sqrt(PXCAP/(w*h));w*=f;h*=f}
-  CW=Math.round(w);CHt=Math.round(h);cv.width=CW;cv.height=CHt;K=Math.min(CW,CHt)/(160*RZ);if(K>.9&&K<1.12)K=1;LW=CW/K;LH=CHt/K;VW=LW/RZ;VH=LH/RZ;
+  CW=Math.round(w);CHt=Math.round(h);cv.width=CW;cv.height=CHt;K=Math.min(CW,CHt)/(160/zoomOf().v*RZ);if(K>.9&&K<1.12)K=1;LW=CW/K;LH=CHt/K;VW=LW/RZ;VH=LH/RZ;
   vignette=document.createElement('canvas');vignette.width=Math.ceil(CW/4);vignette.height=Math.ceil(CHt/4);const v=vignette.getContext('2d'),vw=vignette.width,vh=vignette.height;
   const gr=v.createRadialGradient(vw/2,vh/2,Math.min(vw,vh)*.35,vw/2,vh/2,Math.max(vw,vh)*.75);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(5,2,12,0.55)');v.fillStyle=gr;v.fillRect(0,0,vw,vh);
   lightC=document.createElement('canvas');lightC.width=Math.ceil(LW*LS);lightC.height=Math.ceil(LH*LS);lctx=lightC.getContext('2d')}
@@ -1556,7 +1665,7 @@ function moveEntity(e,dx,dy){if(dx&&!blocked(e.x+dx,e.y,e.r))e.x+=dx;if(dy&&!blo
 function los(x1,y1,x2,y2){const m=G.map,d=Math.hypot(x2-x1,y2-y1),n=Math.ceil(d/6);for(let i=1;i<n;i++){const t=i/n,tx=((x1+(x2-x1)*t)/TILE)|0,ty=((y1+(y2-y1)*t)/TILE)|0;
   const tt=m.tiles[ty*m.W+tx];if(tt===T.BUILD||tt===T.WALL)return false}return true}
 
-const pm=()=>(1+.15*save.up.power)*save.god.dmg;
+const pm=()=>(1+.15*save.up.power)*save.god.dmg*lvMult();
 const psz=()=>save.god.size;
 
 function startMission(idx,sandbox){
@@ -1567,10 +1676,10 @@ function startMission(idx,sandbox){
   const h=HMAP[save.heroine];
   const sx=map.spawn.x*TILE+8,sy=map.spawn.y*TILE+8;
   G={city,idx,sandbox,map,hime:h,slots:slotCount(),zombies:[],nests:[],squad:[],builds:[],clones:[],fx:[],parts:[],shots:[],pshots:[],corpses:[],timers:[],trail:[],ward:null,encore:0,regenT:0,speedT:0,
-     time:0,kills:0,earned:0,nestsTotal:0,quests:[],surv:[],crates:[],lightsOn:false,slowT:0,storm:null,orbs:null,shake:0,hurtFlash:0,ended:false,finalWave:false,flowT:0,flow:new Int16Array(map.W*map.H),
+     time:0,kills:0,earned:0,xp:0,loot:[],nestsTotal:0,quests:[],surv:[],crates:[],lightsOn:false,slowT:0,storm:null,orbs:null,shake:0,hurtFlash:0,ended:false,finalWave:false,flowT:0,flow:new Int16Array(map.W*map.H),
      tier:1+.12*Math.max(0,idx),squadMode:'follow',hold:{x:sx,y:sy},formA:0,holdFlow:null,heroSpd:h.spd,cam:{x:0,y:0},hudT:0,
      p:{x:sx,y:sy,r:4,hp:0,maxHp:0,spd:h.spd,face:-1,dirx:-1,diry:0,ax:0,ay:1,view:'front',hurtT:0,anim:0,moving:false,atkT:0,inv:0,cds:[0,0,0,0,0],cdMax:[1,1,1,1,1],locked:false,trailT:0,kind:'p'}};
-  const p=G.p;p.maxHp=p.hp=h.hp*(1+.2*save.up.vit);
+  const p=G.p;p.maxHp=p.hp=h.hp*(1+.2*save.up.vit)*lvMult();
   // nests: spread far from spawn
   const W=map.W,cand=[];for(let i=0;i<W*map.H;i++){if(map.reach[i]>18&&map.tiles[i]!==T.ROAD)cand.push(i)}
   const nestPos=[];for(let tries=0;tries<4000&&nestPos.length<city.nests;tries++){const c=cand[(Math.random()*cand.length)|0];if(c===undefined)break;const cx=c%W,cy=(c/W)|0;
@@ -1588,7 +1697,7 @@ function startMission(idx,sandbox){
   for(const pose of['walk','aim','idle'])for(const v of['side','front','back'])for(const f of pose==='walk'?[0,2,4,6]:pose==='idle'?[0,2]:[0])for(const s of G.squad)s.fr.get(v,pose,f);
   // HUD prep
   const lo=loadout();[0,1,2,3,4].forEach(i=>{const b=$('#pw'+i);b.hidden=!lo[i];if(lo[i])b.firstElementChild.textContent=POWERS[lo[i]].short});
-  $('#hudName').textContent=h.name;FCAM.key='';FCAM.cache={};
+  $('#hudName').textContent=`${h.name} · Lv ${heroLevel()}`;FCAM.key='';FCAM.cache={};
   // face-cam frames she'll need first are drawn in the background
   for(const k of['calm|0|0','calm|0|1','calm|-1|0','calm|1|0','hurt|0|0','fierce|0|0','happy|0|0','smug|0|0','pain|0|0','pain|0|1','scared|0|0','victory|0|0','dead|0|0'])SQ.push(()=>faceFrame(k));
   $('#sbx').hidden=!sandbox;$('#hint').hidden=false;$('#buildBar').hidden=true;updBuildBar();$('#btnSquad').textContent='Follow';
@@ -1623,15 +1732,17 @@ function nearestEnemy(x,y,range,excl,needLos){let best=null,bd=range*range;
 function enemiesIn(x,y,r){const out=[],r2=r*r;for(const z of G.zombies)if(!z.dead&&!(z.charm>0)&&dist2(x,y,z.x,z.y)<r2)out.push(z);for(const n of G.nests)if(!n.dead&&dist2(x,y,n.x,n.y)<r2+100)out.push(n);return out}
 function hurt(e,dmg){if(e.dead)return;if(save.god.oneHit)dmg=1e9;e.hp-=dmg;e.flash=.08;
   if(e.kind==='z'){e.alert=true;if(e.hp<=0)killZombie(e)}else if(e.hp<=0)killNest(e)}
-function killZombie(z){z.dead=true;G.kills++;G.kt=(G.kt||[]).filter(t=>G.time-t<2.5);G.kt.push(G.time);if(G.kt.length>=5)G.streakT=1.6;const rw=ZT[z.type].reward;gain(rw);
+function killZombie(z){z.dead=true;G.kills++;G.kt=(G.kt||[]).filter(t=>G.time-t<2.5);G.kt.push(G.time);if(G.kt.length>=5)G.streakT=1.6;const rw=ZT[z.type].reward;gain(rw);G.xp+=Math.max(1,rw);
   G.corpses.push({x:z.x,y:z.y,fr:z.fr[0],art:z.art,type:z.type,face:z.face,t:0,dir:Math.random()<.5?-1:1});if(G.corpses.length>70)G.corpses.shift();
   blood(z.x,z.y-3,z.type==='boss'?'#5e1030':'#3f6a2a',z.type==='boss'?30:8);if(Math.random()<.5)blood(z.x,z.y-2,'#6a0f1c',4);
   if(z.type==='bloater')explode(z.x,z.y,34,40,true);
-  if(z.type==='boss'){banner('BOSS DOWN','+150 supplies');G.shake=8;Sfx.play('boom');for(let i=0;i<6;i++)sparks(z.x+rand(-12,12),z.y-10+rand(-12,12),'#ffe14d',10,90)}
+  if(z.type==='boss'){const g=G.sandbox?null:findLoot(1);banner('BOSS DOWN',g?weaponMsg(g):'+150 supplies');G.shake=8;Sfx.play('boom');for(let i=0;i<6;i++)sparks(z.x+rand(-12,12),z.y-10+rand(-12,12),'#ffe14d',10,90)}
   else Sfx.play('hit')}
-function killNest(n){n.dead=true;gain(25);G.shake=6;Sfx.play('boom');for(let i=0;i<5;i++)blood(n.x+rand(-10,10),n.y+rand(-6,6),'#5e1030',12);addRing(n.x,n.y,4,40,'#ff5c8a',.5);
+function killNest(n){n.dead=true;gain(25);G.xp+=25;if(!G.sandbox&&Math.random()<.06){const g=findLoot(0);if(g)toast(weaponMsg(g))}G.shake=6;Sfx.play('boom');for(let i=0;i<5;i++)blood(n.x+rand(-10,10),n.y+rand(-6,6),'#5e1030',12);addRing(n.x,n.y,4,40,'#ff5c8a',.5);
   const left=G.nests.filter(x=>!x.dead).length;if(!G.sandbox)banner('NEST DESTROYED',left?`${left} left`:'');}
 function gain(n){G.earned+=n;if(!save.god.infSup)save.supplies+=n}
+// a weapon drop during a mission, remembered for the result screen
+function findLoot(luck){const g=grantWeapon(rollWeapon(luck));if(g){G.loot.push(g);Sfx.play('win')}return g}
 function explode(x,y,r,dmg,hurtsAllies,col='#c6ff4a'){addRing(x,y,2,r,col,.4);sparks(x,y,col,16,90);Sfx.play('boom');G.shake=Math.max(G.shake,3);
   for(const e of enemiesIn(x,y,r))if(!e.dead)hurt(e,dmg*1.5);
   if(hurtsAllies){if(dist2(x,y,G.p.x,G.p.y)<r*r)hurtAlly(G.p,dmg);for(const s of G.squad)if(dist2(x,y,s.x,s.y)<r*r)hurtAlly(s,dmg)}}
@@ -1700,7 +1811,8 @@ const CAST={
 function strike(x,y){const h=G.hime,s=psz();addBolt(x,y-180,x,y-2,h.bolt,4,.3,10);addBolt(x,y-180,x,y-2,'#ffffff',1,.2,6);addRing(x,y,2,26*s,h.bolt,.3);sparks(x,y,h.bolt,10,80);
   for(const e of enemiesIn(x,y,26*s))hurt(e,80*pm());G.shake=Math.max(G.shake,2.5);Sfx.play('zap');Sfx.play('hit')}
 // fire the basic attack along (dx,dy): a lightning hitscan, a claw arc, or a straight projectile
-function fireAimed(p,dx,dy){const h=G.hime,ak=h.auto||'bolt',dmg=h.atk*pm()*1.1;p.ax=dx;p.ay=dy;p.castKind='attack';p.castT=Math.max(p.castT,.16);if(Math.abs(dx)>.1)p.face=dx<0?-1:1;
+function fireAimed(p,dx,dy){const wid=equipped();if(wid!=='innate'){weaponAttack(p,wid,dx,dy,null);return}
+  const h=G.hime,ak=h.auto||'bolt',dmg=h.atk*pm()*1.1;p.ax=dx;p.ay=dy;p.castKind='attack';p.castT=Math.max(p.castT,.16);if(Math.abs(dx)>.1)p.face=dx<0?-1:1;
   if(ak==='bolt'){p.atkT=.32;const R=150;let best=null,bt=R;
     for(const e of enemiesIn(p.x,p.y,R+10)){const ex=e.x-p.x,ey=e.y-p.y,t=ex*dx+ey*dy;if(t<0||t>bt)continue;const off=Math.abs(ex*dy-ey*dx);if(off<(e.kind==='n'?12:8)&&los(p.x,p.y-4,e.x,e.y-4)){bt=t;best=e}}
     const ex=best?best.x:p.x+dx*R,ey=best?best.y-6:p.y-17+dy*R;addBolt(p.x+p.face*4,p.y-17,ex,ey,h.bolt,1.4,.12,3);if(best){hurt(best,dmg);sparks(best.x,best.y-5,h.bolt,4)}Sfx.play('zap')}
@@ -1708,13 +1820,36 @@ function fireAimed(p,dx,dy){const h=G.hime,ak=h.auto||'bolt',dmg=h.atk*pm()*1.1;
     for(const e of enemiesIn(p.x,p.y,64)){const da=Math.abs(((Math.atan2(e.y-p.y,e.x-p.x)-a0+Math.PI*3)%(Math.PI*2))-Math.PI);if(da<.9)hurt(e,dmg)}Sfx.play('hit')}
   else{const sp=ak==='knife'?320:ak==='note'?220:200;p.atkT=ak==='knife'?.26:.3;
     G.pshots.push({x:p.x+dx*6,y:p.y-17+dy*6,vx:dx*sp,vy:dy*sp,t:.75,dmg,kind:ak,home:0,pierce:ak==='knife'?1:0,hit:new Set(),c:h.bolt});Sfx.play(ak==='knife'?'shot':'zap')}}
-function autoAttack(p){const h=G.hime,ak=h.auto||'bolt',t=nearestEnemy(p.x,p.y,ak==='claw'?62:135,null,true);if(!t){p.atkT=.06;return}
+function autoAttack(p){const wid=equipped();
+  if(wid!=='innate'){const W=WEAPONS[wid],t=nearestEnemy(p.x,p.y,W.kind==='slash'||W.kind==='quake'?W.range+18:Math.min(150,W.range),null,true);if(!t){p.atkT=.06;return}
+    const dx=t.x-p.x,dy=t.y-p.y,l=Math.hypot(dx,dy)||1;weaponAttack(p,wid,dx/l,dy/l,t);return}
+  const h=G.hime,ak=h.auto||'bolt',t=nearestEnemy(p.x,p.y,ak==='claw'?62:135,null,true);if(!t){p.atkT=.06;return}
   {const dx=t.x-p.x,dy=t.y-p.y,l=Math.hypot(dx,dy)||1;p.ax=dx/l;p.ay=dy/l;p.castKind='attack'}
   const dmg=h.atk*pm();p.castT=Math.max(p.castT,.16);if(Math.abs(t.x-p.x)>2&&!p.moving)p.face=t.x<p.x?-1:1;
   if(ak==='bolt'){p.atkT=.32;addBolt(p.x+p.face*4,p.y-17,t.x,t.y-(t.kind==='n'?2:6),h.bolt,1,.1,3);hurt(t,dmg);sparks(t.x,t.y-5,h.bolt,3);Sfx.play('zap')}
   else if(ak==='claw'){p.atkT=.2;G.fx.push({k:'claw',x:t.x,y:t.y-6,a:Math.atan2(t.y-p.y,t.x-p.x),c:h.bolt,t:.18,max:.18});for(const e of enemiesIn(t.x,t.y,16))hurt(e,e===t?dmg:dmg*.6);sparks(t.x,t.y-5,'#ffffff',4);Sfx.play('hit')}
   else{const a=Math.atan2(t.y-6-(p.y-17),t.x-p.x),sp=ak==='knife'?300:ak==='note'?190:170;p.atkT=ak==='knife'?.26:.3;
     G.pshots.push({x:p.x+p.face*4,y:p.y-17,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:1.2,dmg,kind:ak,home:ak==='knife'?0:ak==='note'?3:6,pierce:0,hit:new Set(),c:h.bolt});Sfx.play(ak==='knife'?'shot':'zap')}}
+// equipped weapons replace the heroine's basic attack; t is the auto-fire target, or null when aimed by hand
+function weaponAttack(p,id,dx,dy,t){const W=WEAPONS[id],h=G.hime,dmg=h.atk*pm()*W.dmg*wMult(id),a0=Math.atan2(dy,dx);
+  p.ax=dx;p.ay=dy;p.castKind='attack';p.castT=Math.max(p.castT,.16);if(Math.abs(dx)>.1)p.face=dx<0?-1:1;p.atkT=W.rate;
+  const ox=p.x+dx*6,oy=p.y-15+dy*6,shot=(a,sp,life,kind,extra)=>G.pshots.push({x:ox,y:oy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:life,dmg,kind,home:0,pierce:0,hit:new Set(),c:W.c,...extra});
+  // the first infected along the aim line, for weapons that hit one target
+  const along=R=>{let best=null,bt=R;for(const e of enemiesIn(p.x,p.y,R+10)){const ex=e.x-p.x,ey=e.y-p.y,d=ex*dx+ey*dy;if(d<0||d>bt)continue;if(Math.abs(ex*dy-ey*dx)<(e.kind==='n'?12:9)&&los(p.x,p.y-4,e.x,e.y-4)){bt=d;best=e}}return best};
+  if(W.kind==='slash'){G.fx.push({k:'claw',x:p.x+dx*W.range*.5,y:p.y-8+dy*W.range*.5,a:a0,c:W.c,t:.2,max:.2,big:1.7});
+    for(const e of enemiesIn(p.x,p.y,W.range)){const da=Math.abs(((Math.atan2(e.y-p.y,e.x-p.x)-a0+Math.PI*3)%(Math.PI*2))-Math.PI);if(da<W.arc){hurt(e,dmg);sparks(e.x,e.y-6,W.c,3)}}Sfx.play('hit')}
+  else if(W.kind==='pistols'){p.gun=-(p.gun||1);const px=-dy*3*p.gun,py=dx*3*p.gun;G.pshots.push({x:ox+px,y:oy+py,vx:dx*380,vy:dy*380,t:W.range/380,dmg,kind:'bullet',home:0,pierce:0,hit:new Set(),c:W.c});Sfx.play('shot')}
+  else if(W.kind==='scatter'){for(let i=0;i<W.pellets;i++){const a=a0+(i/(W.pellets-1)-.5)*W.spread+rand(-.04,.04);shot(a,rand(280,330),W.range/300,'bullet',{small:true})}G.shake=Math.max(G.shake,1.5);Sfx.play('shot')}
+  else if(W.kind==='rail'){let ex=p.x+dx*W.range,ey=p.y-15+dy*W.range;
+    for(const e of enemiesIn(p.x,p.y,W.range+10)){const vx=e.x-p.x,vy=e.y-p.y,d=vx*dx+vy*dy;if(d<0||d>W.range)continue;if(Math.abs(vx*dy-vy*dx)<(e.kind==='n'?13:9)&&los(p.x,p.y-4,e.x,e.y-4)){hurt(e,dmg);sparks(e.x,e.y-6,W.c,4)}}
+    G.fx.push({k:'beam',x1:ox,y1:oy,x2:ex,y2:ey,w:1.2,c:W.c,t:.22,max:.22});Sfx.play('zap')}
+  else if(W.kind==='whip'){let cur=t||along(W.range);const hit=new Set();
+    if(!cur){addBolt(ox,oy,p.x+dx*W.range*.7,p.y-15+dy*W.range*.7,W.c,1,.12,5);Sfx.play('zap');return}
+    let fx=ox,fy=oy;for(let k=0;k<=W.jumps&&cur;k++){hit.add(cur);addBolt(fx,fy,cur.x,cur.y-6,W.c,1.2,.16,5);hurt(cur,dmg*(1-.15*k));sparks(cur.x,cur.y-6,W.c,3);fx=cur.x;fy=cur.y-6;
+      let nb=null,bd=70*70;for(const e of enemiesIn(cur.x,cur.y,70)){if(hit.has(e)||e.dead)continue;const d=dist2(e.x,e.y,cur.x,cur.y);if(d<bd){bd=d;nb=e}}cur=nb}Sfx.play('zap')}
+  else if(W.kind==='orb'){G.pshots.push({x:ox,y:oy,vx:dx*150,vy:dy*150,t:W.range/150+.4,dmg,kind:'orb',home:3,pierce:0,hit:new Set(),c:W.c,aoe:W.aoe});Sfx.play('power')}
+  else if(W.kind==='quake'){const cx=p.x+dx*14,cy=p.y+dy*10;addRing(cx,cy,4,W.aoe,W.c,.45);G.shake=Math.max(G.shake,4);
+    for(const e of enemiesIn(cx,cy,W.aoe)){hurt(e,dmg);if(e.kind==='z')e.stun=Math.max(e.stun||0,.7);sparks(e.x,e.y-6,W.c,3)}sparks(cx,cy,'#ffffff',12,90);Sfx.play('boom')}}
 function tryCast(i,dir){if(!G||G.ended||G.p.locked)return;const p=G.p;if(p.cds[i]>0)return;const id=loadout()[i];aim.castDir=dir||null;if(dir&&Math.abs(dir[0])>.1)p.face=dir[0]<0?-1:1;
   const ok=CAST[id]();aim.castDir=null;
   if(ok!==false){const d=dir||aimDir(160);p.ax=d[0];p.ay=d[1];p.castKind='cast';p.castT=Math.max(p.castT||0,.35);p.cds[i]=save.god.noCD?.15:POWERS[id].cd*save.god.cd;p.cdMax[i]=p.cds[i]}else p.cds[i]=.25}
@@ -1776,7 +1911,7 @@ function updHeli(dt){const h=G.heli;h.t+=dt;h.eta-=dt;if(h.eta<=0&&!h.landed){h.
   if(h.landed){const near=G.def||dist2(G.p.x,G.p.y,h.x,h.y)<56*56;if(near){h.boardT+=dt;if(h.boardT>1.6)endMission(true)}}}
 function updQuests(dt){if(G.sandbox||G.ended)return;const p=G.p;
   for(const v of G.surv)if(!v.dead)updSurvivor(v,dt);
-  for(const c of G.crates)if(!c.taken&&dist2(c.x,c.y,p.x,p.y)<14*14){c.taken=true;gain(25);const q=quest('crates');if(q)q.got++;sparks(c.x,c.y-4,'#ffd84a',12,50);Sfx.play('ui');toast('Supply crate +25')}
+  for(const c of G.crates)if(!c.taken&&dist2(c.x,c.y,p.x,p.y)<14*14){c.taken=true;gain(25);const q=quest('crates');if(q)q.got++;sparks(c.x,c.y-4,'#ffd84a',12,50);Sfx.play('ui');const g=Math.random()<.2?findLoot(0):null;toast(g?'Supply crate: '+weaponMsg(g):'Supply crate +25')}
   const g=G.gen;if(g&&!g.done){if(dist2(g.x,g.y,p.x,p.y)<34*34){g.prog+=dt;g.spT-=dt;if(g.spT<=0){g.spT=2.4;spawnRing(g.x,g.y,3,150,230)}}
     if(g.prog>=g.need){g.done=true;quest('power').got=1;banner('POWER RESTORED',G.map.under?'The lights are back on':'The grid is live again');G.lightsOn=true;Sfx.play('win')}}
   if(G.boss&&G.boss.dead){const q=quest('boss');if(q)q.got=1}
@@ -1910,9 +2045,9 @@ function update(dt){
     if(s.home){if(!s.tg||s.tg.dead||s.tg.charm>0)s.tg=nearestEnemy(s.x,s.y+7,150);
       if(s.tg){const a=Math.atan2(s.tg.y-7-s.y,s.tg.x-s.x),cur=Math.atan2(s.vy,s.vx),dd=((a-cur+Math.PI*3)%(Math.PI*2))-Math.PI,na=cur+clamp(dd,-s.home*dt,s.home*dt);
         let sp=Math.hypot(s.vx,s.vy);if(s.acc)sp=Math.min(s.acc,sp+dt*260);s.vx=Math.cos(na)*sp;s.vy=Math.sin(na)*sp}}
-    s.x+=s.vx*dt;s.y+=s.vy*dt;let done=s.t<=0||(s.kind==='knife'&&blocked(s.x,s.y+7,1));
+    s.x+=s.vx*dt;s.y+=s.vy*dt;let done=s.t<=0||((s.kind==='knife'||s.kind==='bullet'||s.kind==='orb')&&blocked(s.x,s.y+7,1));
     if(!done)for(const e of enemiesIn(s.x,s.y+7,9)){if(s.hit.has(e))continue;s.hit.add(e);hurt(e,s.dmg);sparks(s.x,s.y,s.c,4,40);if(--s.pierce<0){done=true;break}}
-    if(done)G.pshots.splice(i,1)}
+    if(done){if(s.aoe)explode(s.x,s.y+7,s.aoe,s.dmg/1.5,false,s.c);G.pshots.splice(i,1)}}
   for(const c of G.corpses)c.t+=dt;if(G.corpses.length&&G.corpses[0].t>1.3)G.corpses=G.corpses.filter(c=>c.t<1.3);
   // enemy shots
   for(let i=G.shots.length-1;i>=0;i--){const s=G.shots[i];s.x+=s.vx*zdt;s.y+=s.vy*zdt;s.t-=zdt;let done=s.t<=0||blocked(s.x,s.y,1);
@@ -2126,12 +2261,16 @@ function render(){if(state==='play'&&G)updFaceCam();
       ctx.strokeStyle='#e8ecf2';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x-ca*5,y-sa*5);ctx.lineTo(x+ca*15,y+sa*15);ctx.stroke();ctx.fillStyle='#ffffff';ctx.fillRect(x+ca*9-2,y+sa*9-2,3,3)}
     else if(s.kind==='note'){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x-40,y-40,80,80);ctx.globalCompositeOperation='source-over';ctx.fillStyle='#ffffff';ctx.beginPath();ctx.ellipse(x-4,y+6,7,5,-.4,0,7);ctx.fill();
       ctx.fillRect(x+1,y-14,4,20);ctx.fillRect(x+1,y-14,12,4);ctx.fillStyle=s.c;ctx.fillRect(x+5,y-10,8,3)}
+    else if(s.kind==='bullet'){const L=s.small?10:16;ctx.lineCap='butt';ctx.globalCompositeOperation='lighter';ctx.strokeStyle=s.c;ctx.globalAlpha=.6;ctx.lineWidth=s.small?5:7;ctx.beginPath();ctx.moveTo(x-ca*L,y-sa*L);ctx.lineTo(x+ca*4,y+sa*4);ctx.stroke();
+      ctx.globalAlpha=1;ctx.strokeStyle='#ffffff';ctx.lineWidth=s.small?2:3;ctx.stroke();ctx.globalCompositeOperation='source-over'}
+    else if(s.kind==='orb'){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x-56,y-56,112,112);ctx.fillStyle=s.c;ctx.beginPath();ctx.arc(x,y,11,0,7);ctx.fill();ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(x-2,y-2,6,0,7);ctx.fill();ctx.globalCompositeOperation='source-over'}
     else if(s.kind==='fox'){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf('#7ad8ff'),x-48,y-48,96,96);ctx.fillStyle='#bff0ff';ctx.beginPath();ctx.ellipse(x,y,7,9,0,0,7);ctx.fill();
       ctx.fillStyle='#ffffff';ctx.beginPath();ctx.ellipse(x,y+2,4,5,0,0,7);ctx.fill();ctx.fillStyle='#7ad8ff';ctx.fillRect(x-2,y-18,4,10);ctx.fillRect(x-6,y-12,3,6);ctx.globalCompositeOperation='source-over'}}
   for(const q of G.parts){ctx.fillStyle=q.c;const s=(q.s||2)*3;ctx.fillRect(SX(q.x),SY(q.y),s,s)}
   const av=aim.id!==null?aimVec():null;
-  if(av&&!G.ended){const ak=h.auto||'bolt',R=(aim.pw>=0?120:ak==='claw'?60:ak==='bolt'?150:160)*RZ,x0=SX(p.x),y0=SY(p.y-17),a=Math.atan2(av[1],av[0]);ctx.save();ctx.globalAlpha=.55;
-    if(ak==='claw'&&aim.pw<0){ctx.fillStyle=h.bolt;ctx.globalAlpha=.22;ctx.beginPath();ctx.moveTo(x0,y0);ctx.arc(x0,y0,R,a-.9,a+.9);ctx.closePath();ctx.fill()}
+  if(av&&!G.ended){const wid=equipped(),W=wid==='innate'?null:WEAPONS[wid],ak=h.auto||'bolt',melee=W?W.kind==='slash'||W.kind==='quake':ak==='claw',
+      R=(aim.pw>=0?120:W?W.range:ak==='claw'?60:ak==='bolt'?150:160)*RZ,x0=SX(p.x),y0=SY(p.y-17),a=Math.atan2(av[1],av[0]),arc=W&&W.kind==='slash'?W.arc:W&&W.kind==='quake'?Math.PI:.9;ctx.save();ctx.globalAlpha=.55;
+    if(melee&&aim.pw<0){ctx.fillStyle=W?W.c:h.bolt;ctx.globalAlpha=.22;ctx.beginPath();ctx.moveTo(x0,y0);ctx.arc(x0,y0,R,a-arc,a+arc);ctx.closePath();ctx.fill()}
     else{ctx.strokeStyle='#ffffff';ctx.globalAlpha=.16;ctx.lineWidth=34;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x0+av[0]*30,y0+av[1]*30);ctx.lineTo(x0+av[0]*R,y0+av[1]*R);ctx.stroke();ctx.lineCap='butt';ctx.globalAlpha=.6;
       ctx.strokeStyle=aim.pw>=0?'#ffffff':h.bolt;ctx.lineWidth=10;ctx.setLineDash([24,14]);ctx.lineDashOffset=-G.time*80;ctx.beginPath();ctx.moveTo(x0+av[0]*30,y0+av[1]*30);ctx.lineTo(x0+av[0]*R,y0+av[1]*R);ctx.stroke();ctx.setLineDash([]);
       ctx.globalAlpha=.8;ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(x0+av[0]*R,y0+av[1]*R,12,0,7);ctx.fill()}ctx.restore()}
@@ -2210,7 +2349,7 @@ function renderMenu(){
 // face cam: the heroine's face reacting to the fight, with injuries building up as her health drops
 const FCAM={key:'',cache:{},work:null};
 function faceFrame(k){if(FCAM.cache[k])return FCAM.cache[k];const[e,g,b]=k.split('|'),h=G.hime,c=renderGirl(heroLook(h),heroGirlPal(h),{view:'front',pose:'idle',S:POR_S,expr:e,glance:+g,blink:b==='1'});
-  const f=document.createElement('canvas');f.width=f.height=42;f.getContext('2d').drawImage(c,Math.round(c.hx-21),Math.round(c.hy-20),42,42,0,0,42,42);return FCAM.cache[k]=f}
+  const f=document.createElement('canvas');f.width=f.height=42;f.getContext('2d').drawImage(c,Math.round(c.hx-21),Math.round(c.hy-(h.look.ears?25:20)),42,42,0,0,42,42);return FCAM.cache[k]=f}
 function faceExpr(){const p=G.p,hp=p.hp/p.maxHp;
   if(G.ended)return G.won?'victory':'dead';
   if(G.faceHitT>0)return'hurt';
@@ -2239,8 +2378,10 @@ function updHud(){const p=G.p;$('#hpFill').style.width=(p.hp/p.maxHp*100)+'%';$(
   for(let i=0;i<G.slots;i++){const b=$('#pw'+i),mx=p.cdMax[i]||1;b.style.setProperty('--p',(p.cds[i]/mx).toFixed(3));b.classList.toggle('cd',p.cds[i]>0)}}
 
 function endMission(win,why){if(G.ended)return;G.ended=true;G.won=win;G.endT=G.time;held.fill(false);
-  if(win){const reward=200+50*G.idx;if(!save.god.infSup)save.supplies+=reward;G.earned+=reward;save.cleared[G.city.id]=true;Sfx.play('win');banner('CITY LIBERATED',`+${reward} supplies`)}
+  if(win){const reward=200+50*G.idx;if(!save.god.infSup)save.supplies+=reward;G.earned+=reward;save.cleared[G.city.id]=true;Sfx.play('win');banner('CITY LIBERATED',`+${reward} supplies`);
+    if(!G.sandbox){G.xp+=100+25*G.idx;if(Math.random()<.3)findLoot(.5)}}
   else banner(why?'MISSION FAILED':'YOU FELL',why||'The infected overran your position');
+  G.xpGot=Math.round(G.xp*(G.sandbox?.5:1));G.lvUp=giveXP(G.xpGot);
   persist();setTimeout(()=>showResult(win),1800)}
 
 /* ---------------- UI SCREENS ---------------- */
@@ -2250,8 +2391,10 @@ const sprCanvas=(img,scale)=>cropCanvas(img,0,0,img.width,img.height,scale);
 function hydrate(root){root.querySelectorAll('[data-spr]').forEach(n=>{const[k,id,sc]=n.dataset.spr.split(':');let img;
   if(k==='h'||k==='p'){const c=k==='h'?himeSprite(HMAP[id]).full():himeSprite(HMAP[id]).portrait();c.className='px';c.style.width=c.width*(+sc||1)+'px';c.style.height=c.height*(+sc||1)+'px';
     n.appendChild(c);return}
+  if(k==='w'){const f=weaponIcon(id,id==='innate'?HMAP[save.heroine].bolt:null),c=sprCanvas(f.r,+sc||1);if(n.dataset.locked)c.style.filter='brightness(0) opacity(.45)';n.appendChild(c);return}
   if(k==='h')img=null;else if(k==='s'){const r=save.squad[+id];img=soldierSprite(r).get('front','idle',0,true).r}else if(k==='c')img=soldierSprite({cls:id,hair:'#3a2418'}).get('front','idle',0,true).r;
   n.appendChild(sprCanvas(img,+sc||3))})}
+const wIconHTML=(id,sc=1,locked)=>`<span class="wic" data-spr="w:${id}:${sc}"${locked?' data-locked="1"':''}></span>`;
 const head=(title,back='title')=>`<div class="bar"><button class="btn small" data-go="${back}">Back</button><h2>${title}</h2><span class="sup">${save.god.infSup?'∞':save.supplies} supplies</span></div>`;
 let returnTo='title';
 function showScreen(id,keep){const prev=keep?$('#scr-'+id).scrollTop:0;document.querySelectorAll('.screen').forEach(s=>s.hidden=true);if(!id)return;
@@ -2269,7 +2412,7 @@ function cityCard(c,i,mode){const th=THEMES[c.theme],cl=!!save.cleared[c.id],loc
     <p class="muted" style="font-size:15px;margin:0">${questLine(c)}</p>
     <span class="pips">THREAT ${'■'.repeat(threat)}${'□'.repeat(5-threat)}</span></button>`}
 const R={
-  title(){$('#titleSup').textContent=`Slot ${activeSlot} · ${save.god.infSup?'∞':save.supplies} supplies`;$('#titleProg').textContent=`${CITIES.filter(c=>save.cleared[c.id]).length}/${CITIES.length} cities liberated`;
+  title(){$('#btnZoom').textContent='View: '+zoomOf().n;$('#patrolDot').hidden=!patrolReady();$('#titleSup').textContent=`Slot ${activeSlot} · ${save.god.infSup?'∞':save.supplies} supplies`;$('#titleProg').textContent=`${CITIES.filter(c=>save.cleared[c.id]).length}/${CITIES.length} cities liberated`;
     $('#btnSound').textContent='Sound: '+(save.sound?'on':'off');
     const l=$('#lineup');l.innerHTML=HEROINES.map(h=>`<div class="h"><span data-spr="h:${h.id}:.3333"></span><span class="n">${h.name}</span></div>`).join('')},
   map(){$('#scr-map').innerHTML=`<div class="wrap">${head('Liberate the cities')}<p class="muted">Destroy every nest, then survive the final wave. Each city unlocks the next.</p>
@@ -2279,6 +2422,8 @@ const R={
   heroines(){$('#scr-heroines').innerHTML=`<div class="wrap">${head('Heroines')}<div class="grid wide">${HEROINES.map(h=>`
     <button class="panel hcard ${save.heroine===h.id?'sel':''}" data-hero="${h.id}"><span class="pf" data-spr="p:${h.id}:1"></span>
       <div style="display:grid;gap:6px;min-width:0"><span class="label" style="color:${h.bolt}">${h.title}</span><h3>${h.name} <span class="label" style="color:var(--muted);white-space:nowrap">Age ${h.age}</span></h3><p class="muted">${h.blurb}</p>
+      <div class="stat" style="color:var(--toxic)">Lv ${heroLevel(h.id)}<div class="meter"><i style="width:${xpPct(h.id)}%;background:var(--toxic)"></i></div></div>
+      <div class="wline">${wIconHTML(equipped(h.id),.75)}<span>${WEAPONS[equipped(h.id)].name}</span></div>
       <div class="stat">Health<div class="meter"><i style="width:${h.hp/1.4}%"></i></div></div>
       <div class="stat">Speed<div class="meter"><i style="width:${h.spd}%"></i></div></div>
       <div class="stat">Bolt<div class="meter"><i style="width:${h.atk*6}%"></i></div></div>
@@ -2300,6 +2445,18 @@ const R={
       <div class="act"><span class="sup">${save.god.infSup?'Free':c.cost+' supplies'}</span><button class="btn small primary" data-recruit="${k}" ${save.squad.length>=cap||(!save.god.infSup&&save.supplies<c.cost)?'disabled':''}>Recruit</button></div></div>`).join('')}</div>
     <h2 class="label" style="font-size:14px;margin:8px 0 0">Upgrades</h2>
     <div class="grid">${upRow('size','Squad Size','+1 soldier slot')}${upRow('train','Training','+15% soldier damage, health and healing')}</div></div>`},
+  weapons(){const h=HMAP[save.heroine],eq=equipped(),ids=Object.keys(WEAPONS);
+    const card=id=>{const W=WEAPONS[id],own=id==='innate'||wLevel(id)>0,R=RARITY[W.rar],lv=wLevel(id),on=eq===id,cost=lv?wUpCost(lv):0,canUp=own&&id!=='innate'&&lv<WMAX&&(save.god.infSup||save.supplies>=cost);
+      return`<div class="panel wcard ${on?'sel':''} ${own?'':'locked'}" style="--rc:${R.c}"><div class="wic-box">${wIconHTML(id,1.5,!own)}</div>
+        <div style="display:grid;gap:4px;min-width:0"><span class="label" style="color:${R.c}">${R.n}${own&&id!=='innate'?` · Lv ${lv}/${WMAX}`:''}</span><h3>${own?W.name:'Not found yet'}</h3>
+        <p class="muted">${own?W.desc:'Found in supply crates, dropped by bosses and nests, brought back from patrols and won in Volt Clash.'}</p>
+        ${own&&id!=='innate'?`<p class="muted" style="font-size:15px">Damage ×${(W.dmg*wMult(id)).toFixed(2)} · ${(1/W.rate).toFixed(1)} attacks/s · Range ${W.range}</p>`:''}
+        ${own?`<div class="bar" style="gap:6px;flex-wrap:wrap">${on?'<span class="chip" style="color:var(--volt)">Equipped</span>':`<button class="btn small primary" data-wequip="${id}">Equip</button>`}
+          ${id!=='innate'&&lv<WMAX?`<button class="btn small" data-wup="${id}" ${canUp?'':'disabled'}>Upgrade · ${save.god.infSup?'free':cost}</button>`:''}</div>`:''}</div></div>`};
+    $('#scr-weapons').innerHTML=`<div class="wrap">${head('Weapons')}<p class="muted">A weapon replaces the heroine's basic attack. Each heroine keeps her own choice. Finding a weapon again, or upgrading it, adds a level (+12% damage).</p>
+      <div class="hpick">${HEROINES.map(x=>`<button class="btn small ${x.id===save.heroine?'primary':''}" data-whero="${x.id}">${x.name}</button>`).join('')}</div>
+      <p class="label" style="margin:2px 0 0">${h.name} · Lv ${heroLevel()} · using ${WEAPONS[eq].name}</p>
+      <div class="grid wide">${ids.map(card).join('')}</div></div>`},
   armory(){const kit=k=>{const B=BUILD[k],n=save.kits[k]||0,can=m=>save.god.infSup||save.supplies>=B.cost*m;
       return`<div class="panel up"><div style="min-width:0"><h3>${B.name} <span class="label" style="white-space:nowrap">${save.god.infSup?'∞':n} owned</span></h3><p class="muted">${B.d}</p>
         <p class="sup" style="font-size:13px">${save.god.infSup?'Free':B.cost+' supplies each'}</p></div>
@@ -2327,7 +2484,11 @@ const R={
         <span class="muted">${lib}/${CITIES.length} cities liberated</span><span class="muted">${s.god.infSup?'∞':s.supplies} supplies · ${s.squad.length} in squad</span><span class="muted" style="font-size:16px">${when}</span></div></div>
         <div class="bar">${act?'':`<button class="btn small primary" data-slotuse="${n}">Play this slot</button>`}
         <button class="btn small ghost" data-slotdel="${n}">${delConfirm===n?'Tap again to delete':'Delete'}</button></div></div>`)}
-    $('#scr-slots').innerHTML=`<div class="wrap" style="max-width:760px">${head('Save slots')}<p class="muted">Each slot keeps its own heroine, squad, supplies, upgrades, liberated cities and God Mode settings.</p><div class="grid">${cards.join('')}</div></div>`},
+    $('#scr-slots').innerHTML=`<div class="wrap" style="max-width:760px">${head('Save slots')}<p class="muted">Each slot keeps its own heroine, squad, supplies, upgrades, liberated cities and God Mode settings.</p><div class="grid">${cards.join('')}</div>
+      <h2 class="label" style="font-size:14px;margin:8px 0 0">Backup code</h2>
+      <div class="panel" style="display:grid;gap:8px"><p class="muted">Keep your progress when you reinstall the game or move to another phone: show your code, copy it somewhere safe, then paste it here later and tap Restore. Restoring replaces the slot you are playing (slot ${activeSlot}).</p>
+        <textarea id="bkCode" rows="3" spellcheck="false" placeholder="Your backup code appears here, or paste one to restore"></textarea>
+        <div class="bar" style="gap:8px;flex-wrap:wrap"><button class="btn small" data-act="bkmake">Show my code</button><button class="btn small" data-act="bkcopy">Copy</button><button class="btn small primary" data-act="bkload">Restore from code</button></div></div></div>`},
   credits(){$('#scr-credits').innerHTML=`<div class="wrap" style="max-width:760px">${head('Credits')}
     <div class="panel" style="display:grid;gap:10px"><h3 class="label" style="font-size:14px;margin:0">Game</h3><p>Voltfall: design, code, heroines, squad, city and effects are generated in code for this game.</p></div>
     <div class="panel" style="display:grid;gap:10px"><h3 class="label" style="font-size:14px;margin:0">Infected sprites</h3>
@@ -2338,7 +2499,7 @@ const R={
   pause(){$('#scr-pause').innerHTML=`<div class="wrap" style="max-width:420px;margin-top:10vh"><h2 style="font-family:var(--display);font-size:40px;margin:0">Paused</h2>
     <p class="muted">${G.city.name} · ${G.kills} kills</p>
     <button class="btn primary" data-act="resume">Resume</button><button class="btn" data-act="pgod">God Mode</button>
-    <button class="btn" data-act="sound">Sound: ${save.sound?'on':'off'}</button><button class="btn" data-act="autofire">Auto-fire: ${save.autoFire?'on':'off'}</button><button class="btn ghost" data-act="quit">${G.sandbox?'Leave sandbox':'Retreat to base'}</button></div>`},
+    <button class="btn" data-act="sound">Sound: ${save.sound?'on':'off'}</button><button class="btn" data-act="autofire">Auto-fire: ${save.autoFire?'on':'off'}</button><button class="btn" data-act="zoom">View: ${zoomOf().n}</button><button class="btn ghost" data-act="quit">${G.sandbox?'Leave sandbox':'Retreat to base'}</button></div>`},
 };
 const UPMAX={slots:2};
 const upCostOf=(k,l)=>k==='slots'?[600,1500][l]:upCost(l);
@@ -2356,8 +2517,344 @@ function showResult(win){state='menu';$('#hud').hidden=true;const el=$('#scr-res
     <p class="muted">${win?'The streets are quiet. Your squad regroups.':'Your squad pulled you out. Regroup and try again.'}</p>
     <div class="nums"><div><span class="label">Kills</span><b>${G.kills}</b></div><div><span class="label">Nests</span><b>${G.nestsTotal-G.nests.filter(n=>!n.dead).length}/${G.nestsTotal}</b></div>
       <div><span class="label">Supplies</span><b>+${G.earned}</b></div><div><span class="label">Time</span><b>${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}</b></div></div>
+    <p class="xpline">${G.hime.name} <b>+${G.xpGot||0} XP</b> · Level ${heroLevel()}${G.lvUp?' <b class="lvup">Level up!</b>':''}</p>
+    ${G.loot.map(g=>`<div class="loot">${wIconHTML(g.id,2)}<span>${weaponMsg(g)}</span></div>`).join('')}
     <div class="bar" style="justify-content:center"><button class="btn" data-act="retry">Retry</button><button class="btn primary" data-go="${G.sandbox?'sandbox':'map'}">${win?'Next city':'World map'}</button></div></div>`;
   showScreen('result')}
+
+/* ---------------- PATROL: AFK rewards ---------------- */
+// A heroine and the squad patrol a city while you are away. Rewards build up for up to 12 hours, even with the game closed.
+const PATROL_CAP=720,libCount=()=>CITIES.filter(c=>save.cleared[c.id]).length;
+const patrolMins=()=>save.patrol?Math.min(PATROL_CAP,Math.max(0,(Date.now()-save.patrol.since)/60000)):0;
+function patrolYield(m=patrolMins()){const lib=libCount();return{sup:Math.floor(m*(1+.5*lib)),xp:Math.floor(m*(3+.25*lib)),kills:Math.floor(m*(2+.4*lib)),rolls:Math.floor(m/60)}}
+const patrolReady=()=>patrolMins()>=10;
+function startPatrol(hero,city){save.patrol={hero,city,since:Date.now()};persist()}
+function claimPatrol(end){const P=save.patrol;if(!P)return null;const y=patrolYield(),loot=[];if(!save.god.infSup)save.supplies+=y.sup;const up=giveXP(y.xp,P.hero);
+  for(let i=0;i<y.rolls;i++)if(Math.random()<.15){const g=grantWeapon(rollWeapon(0));if(g)loot.push(g)}
+  P.since=Date.now();if(end)save.patrol=null;persist();return{...y,up,loot,hero:P.hero}}
+const fmtMins=m=>`${Math.floor(m/60)}h ${String(Math.floor(m%60)).padStart(2,'0')}m`;
+// the patrol scene: a far-away, low-resolution view of the heroine and two soldiers walking a road, zapping infected
+const PS={key:'',map:null,hf:{},sf:{},t:0,cx:0,zs:[],fx:[],last:0,spawnT:0,shotT:0};
+const PSW=384,PSH=168,PGY=128;
+function patrolFrames(){const P=save.patrol,key=P?P.hero+'|'+P.city:'';if(PS.key===key)return;PS.key=key;PS.hf={};PS.sf={};PS.zs=[];PS.fx=[];
+  const city=CITIES[P?P.city:0]||CITIES[0];PS.map=genMap(city,(P?P.city:0)*7919+13);prepMapArt(PS.map);PS.road=PS.map.th.block+1}
+function heroFar(pose,f){const k=pose+f;if(PS.hf[k])return PS.hf[k];const h=HMAP[save.patrol.hero];return PS.hf[k]=renderGirl(heroLook(h),heroGirlPal(h),{view:'side',pose,f,S:.25})}
+function soldierFar(i,pose,f){const k=i+pose+f;if(PS.sf[k])return PS.sf[k];const r=save.squad[i]||{cls:['rifle','smg'][i%2],hair:HAIRS[i]},sp=soldierSprite(r);
+  return PS.sf[k]=renderGirl(sp.look,sp.pal,{view:'side',pose,f,S:.22})}
+function drawPatrol(){const c=$('#patrolCv');if(!c||!save.patrol)return;const x=c.getContext('2d'),now=performance.now(),dt=Math.min(.05,(now-(PS.last||now))/1000);PS.last=now;PS.t+=dt;
+  patrolFrames();x.imageSmoothingEnabled=false;const m=PS.map,T=32,CKP=CK*T;PS.cx=(PS.cx+dt*14)%(m.W*T-PSW-T*2);
+  const camX=Math.round(PS.cx+T),camY=Math.round(PS.road*T+T-PGY+6);x.fillStyle='#0b0812';x.fillRect(0,0,PSW,PSH);
+  for(let cy=Math.floor(camY/CKP);cy<=Math.floor((camY+PSH)/CKP);cy++)for(let cx=Math.floor(camX/CKP);cx<=Math.floor((camX+PSW)/CKP);cx++){if(cx<0||cy<0||cx*CK>=m.W||cy*CK>=m.H)continue;
+    x.drawImage(getChunk(m,cx,cy,true),cx*CKP-camX,cy*CKP-camY,CKP,CKP)}
+  x.fillStyle='rgba(10,6,24,.28)';x.fillRect(0,0,PSW,PSH);
+  // infected walk in from the right; the heroine zaps the nearest one in range
+  PS.spawnT-=dt;if(PS.spawnT<=0&&PS.zs.length<4){PS.spawnT=rand(1.2,2.6);const t=pick(['walker','walker','walker','runner','spitter','bloater']);PS.zs.push({x:PSW+20,y:PGY+rand(-8,10),t,art:pick(LPC_INFECTED[t]),hp:3,die:-1,s:Math.random()*9})}
+  const hx=150,hero=save.patrol.hero,hb=HMAP[hero].bolt;PS.shotT-=dt;let tgt=null;
+  for(const z of PS.zs){if(z.die>=0){z.die+=dt;continue}z.x-=dt*(z.t==='runner'?30:12)+dt*14;if(z.x<hx+105&&(!tgt||z.x<tgt.x))tgt=z}
+  if(tgt&&PS.shotT<=0){PS.shotT=.55;tgt.hp--;PS.fx.push({x1:hx+8,y1:PGY-28,x2:tgt.x,y2:tgt.y-20,t:.14,c:hb});if(tgt.hp<=0)tgt.die=0}
+  PS.zs=PS.zs.filter(z=>z.die<.9&&z.x>hx-10);
+  const draw=[];for(const z of PS.zs)draw.push({y:z.y,f:()=>{const a=ZART[z.art];if(!a||!a.ready)return;const dying=z.die>=0,fr=dying?Math.min(5,z.die/.12|0):1+((PS.t*(z.t==='runner'?12:7)+z.s)|0)%8;
+    x.globalAlpha=dying?Math.max(0,1-(z.die-.6)/.3):1;x.drawImage(a.img,fr*64,dying?512:64,64,64,Math.round(z.x-24),Math.round(z.y-46),48,48);x.globalAlpha=1}});
+  const shooting=PS.shotT>.4,wf=((PS.t*8)|0)%8;
+  draw.push({y:PGY,f:()=>{const c2=shooting?heroFar('attack',1):heroFar('walk',wf);x.drawImage(c2,Math.round(hx-c2.width/2),Math.round(PGY-GFB*.25))}});
+  for(let i=0;i<2;i++){const sy=PGY-10+i*16,sx=hx-46-i*30;draw.push({y:sy,f:()=>{const c2=soldierFar(i,shooting&&i===1?'aim':'walk',shooting&&i===1?0:(wf+i*3)%8);x.drawImage(c2,Math.round(sx-c2.width/2),Math.round(sy-GFB*.22))}})}
+  draw.sort((a,b)=>a.y-b.y);for(const d of draw)d.f();
+  x.globalCompositeOperation='lighter';for(const f of PS.fx){f.t-=dt;x.globalAlpha=Math.max(0,f.t/.14);x.strokeStyle=f.c;x.lineWidth=2;x.beginPath();x.moveTo(f.x1,f.y1);
+    for(let k=1;k<5;k++)x.lineTo(f.x1+(f.x2-f.x1)*k/5+rand(-3,3),f.y1+(f.y2-f.y1)*k/5+rand(-3,3));x.lineTo(f.x2,f.y2);x.stroke();x.strokeStyle='#fff';x.lineWidth=1;x.stroke()}
+  x.globalAlpha=1;x.globalCompositeOperation='source-over';PS.fx=PS.fx.filter(f=>f.t>0);
+  // the counters tick up while you watch
+  if((PS.t*2|0)!==(PS.lastTick|0)){PS.lastTick=PS.t*2;const y=patrolYield(),e=$('#patrolNums');if(e)e.innerHTML=patrolNums(y)}}
+const patrolNums=y=>`<div><span class="label">Time out</span><b>${fmtMins(patrolMins())}</b></div><div><span class="label">Supplies</span><b>+${y.sup}</b></div><div><span class="label">XP</span><b>+${y.xp}</b></div><div><span class="label">Infected cleared</span><b>${y.kills}</b></div>`;
+let patrolPick={hero:null,city:0},lastClaim=null;
+R.patrol=()=>{const P=save.patrol,lib=CITIES.map((c,i)=>[c,i]).filter(([c])=>save.cleared[c.id]),rate=patrolYield(60);let body;
+  if(P){const h=HMAP[P.hero];body=`<div class="panel" style="display:grid;gap:10px;padding:10px">
+      <canvas id="patrolCv" class="px" width="${PSW}" height="${PSH}" style="width:100%;height:auto;max-width:576px;justify-self:center;border:2px solid var(--line)"></canvas>
+      <div class="bar" style="flex-wrap:wrap"><span class="label" style="color:${h.bolt}">${h.name} · Lv ${heroLevel(h.id)} on patrol in ${(CITIES[P.city]||CITIES[0]).name}</span></div>
+      <div class="pnums" id="patrolNums">${patrolNums(patrolYield())}</div>
+      <p class="muted">Every full hour out is a 15% chance to bring back a weapon. Rewards stop growing at 12 hours, so check in twice a day.</p>
+      <div class="bar" style="gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="pclaim">Claim and keep patrolling</button><button class="btn ghost" data-act="precall">Claim and come home</button></div>
+      ${lastClaim?`<p class="xpline">Claimed <b>+${lastClaim.sup} supplies</b> and <b>+${lastClaim.xp} XP</b>${lastClaim.up?` · <b class="lvup">${HMAP[lastClaim.hero].name} reached level ${lastClaim.up}!</b>`:''}</p>${lastClaim.loot.map(g=>`<div class="loot">${wIconHTML(g.id,1)}<span>${weaponMsg(g)}</span></div>`).join('')}`:''}</div>`}
+  else{const hp=patrolPick.hero||save.heroine;body=`<div class="panel" style="display:grid;gap:10px">
+      <span class="label">Who goes out</span><div class="hpick">${HEROINES.map(x=>`<button class="btn small ${x.id===hp?'primary':''}" data-phero="${x.id}">${x.name} · Lv ${heroLevel(x.id)}</button>`).join('')}</div>
+      <span class="label">Where</span><div class="hpick">${(lib.length?lib:[[CITIES[0],0]]).map(([c,i])=>`<button class="btn small ${i===patrolPick.city?'primary':''}" data-pcity="${i}">${lib.length?c.name:'Kiritani outskirts'}</button>`).join('')}</div>
+      <p class="muted">Right now a patrol earns about ${rate.sup} supplies and ${rate.xp} XP an hour. Every liberated city adds more.</p>
+      <button class="btn primary" data-act="pstart">Start patrol</button>${lastClaim?`<p class="xpline">Last patrol: <b>+${lastClaim.sup} supplies</b>, <b>+${lastClaim.xp} XP</b>${lastClaim.loot.length?' and '+lastClaim.loot.map(g=>WEAPONS[g.id].name).join(', '):''}</p>`:''}</div>`}
+  $('#scr-patrol').innerHTML=`<div class="wrap" style="max-width:820px">${head('Patrol')}<p class="muted">Send a heroine and the squad to patrol a city. They keep clearing infected and finding supplies while you are away, even with the game closed.</p>${body}</div>`};
+
+/* ---------------- GALLERY ---------------- */
+// Every heroine at any pixel resolution, from far away to a close-up, in every view, pose and expression.
+const GRES=[{n:'Low',S:.3},{n:'Game',S:.5},{n:'High',S:.75},{n:'Max',S:1}],GPOSE={idle:4,walk:8,attack:4,cast:4,hurt:2,victory:4,defeat:4},GEXPR=['calm','happy','fierce','hurt','pain','scared','smug','victory','dead'];
+const GS={hero:'raiko',res:3,dist:'full',view:'front',pose:'idle',expr:'calm',cache:{},t:0,last:0,bg:null};
+const galS=()=>GS.dist==='far'?.25:GRES[GS.res].S;
+function galFrame(f){const front=GS.pose==='victory'||GS.pose==='defeat',view=front?'front':GS.view,S=galS(),k=[GS.hero,S,view,GS.pose,f,GS.dist==='close'?GS.expr:''].join('|');
+  if(GS.cache[k])return GS.cache[k];if(GS.made>1)return null;GS.made++;const h=HMAP[GS.hero];
+  return GS.cache[k]=renderGirl(heroLook(h),heroGirlPal(h),{view,pose:GS.pose,f,S,expr:GS.dist==='close'&&GS.pose==='idle'?GS.expr:undefined})}
+function drawGallery(){const c=$('#galCv');if(!c)return;const x=c.getContext('2d'),now=performance.now(),dt=Math.min(.05,(now-(GS.last||now))/1000);GS.last=now;GS.t+=dt;GS.made=0;
+  const n=GPOSE[GS.pose],fps=GS.pose==='walk'?8:4;let f=((GS.t*fps)|0)%n,img=galFrame(f);for(let k=1;!img&&k<n;k++)img=GS.cache[[GS.hero,galS(),GS.pose==='victory'||GS.pose==='defeat'?'front':GS.view,GS.pose,(f-k+n)%n,GS.dist==='close'?GS.expr:''].join('|')];
+  x.imageSmoothingEnabled=false;const W=c.width,H=c.height,h=HMAP[GS.hero];
+  if(GS.dist==='far'){if(!GS.bg){const m=genMap(CITIES[0],13);prepMapArt(m);GS.bg=m}const m=GS.bg,T=32;x.fillStyle='#0b0812';x.fillRect(0,0,W,H);
+    for(let cy=0;cy<2;cy++)for(let cx=0;cx<2;cx++)x.drawImage(getChunk(m,cx+1,cy+1,true),cx*CK*T-60,cy*CK*T-80,CK*T,CK*T);x.fillStyle='rgba(10,6,24,.25)';x.fillRect(0,0,W,H)}
+  else{const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#241b38');g.addColorStop(1,'#0e0b16');x.fillStyle=g;x.fillRect(0,0,W,H);x.fillStyle='rgba(255,255,255,.04)';for(let i=0;i<W;i+=16)x.fillRect(i,0,1,H)}
+  if(!img)return;const S=galS();
+  if(GS.dist==='close'){const R=16.5*1.1*S,sx=img.hx-R*2.1,sy=img.hy-R*(h.look.ears?2.3:1.6),sw=R*4.2,sh=R*4.2,k=Math.max(1,Math.floor(Math.min(W/sw,H/sh)));
+    x.drawImage(img,Math.round(sx),Math.round(sy),Math.round(sw),Math.round(sh),Math.round((W-sw*k)/2),Math.round((H-sh*k)/2),Math.round(sw)*k,Math.round(sh)*k)}
+  else if(GS.dist==='full'){const k=Math.max(1,Math.floor(Math.min(W/img.width,(H-8)/(GFB*S+4))));x.drawImage(img,Math.round((W-img.width*k)/2),Math.round(H-6-GFB*S*k),img.width*k,img.height*k)}
+  else{x.fillStyle='rgba(0,0,0,.35)';x.beginPath();x.ellipse(W/2,H*.72,img.width*.28,4,0,0,7);x.fill();x.drawImage(img,Math.round(W/2-img.width/2),Math.round(H*.72-GFB*S))}}
+R.gallery=()=>{const h=HMAP[GS.hero],opt=(k,v,label,on)=>`<button class="btn small ${on?'primary':''}" data-gal="${k}" data-v="${v}">${label}</button>`;
+  $('#scr-gallery').innerHTML=`<div class="wrap" style="max-width:900px">${head('Gallery')}<p class="muted">Every heroine is drawn by the game's pixel renderer. Pick how many pixels she is drawn with, and how close you stand.</p>
+    <div class="hpick">${HEROINES.map(x=>opt('hero',x.id,x.name,x.id===GS.hero)).join('')}</div>
+    <div class="galgrid"><div class="panel galstage"><canvas id="galCv" class="px" width="300" height="300"></canvas><span class="label" style="color:${h.bolt}">${h.name} · ${h.title} · ${GS.dist==='far'?'patrol-scale sprite':GRES[GS.res].n+' resolution'}</span></div>
+      <div class="panel" style="display:grid;gap:8px;align-content:start">
+        <span class="label">Resolution</span><div class="hpick">${GRES.map((r,i)=>opt('res',i,r.n,i===GS.res)).join('')}</div>
+        <span class="label">Distance</span><div class="hpick">${[['far','Far'],['full','Full body'],['close','Close-up']].map(([v,l])=>opt('dist',v,l,v===GS.dist)).join('')}</div>
+        <span class="label">View</span><div class="hpick">${['front','side','back'].map(v=>opt('view',v,v[0].toUpperCase()+v.slice(1),v===GS.view)).join('')}</div>
+        <span class="label">Pose</span><div class="hpick">${Object.keys(GPOSE).map(v=>opt('pose',v,v[0].toUpperCase()+v.slice(1),v===GS.pose)).join('')}</div>
+        ${GS.dist==='close'?`<span class="label">Expression</span><div class="hpick">${GEXPR.map(v=>opt('expr',v,v[0].toUpperCase()+v.slice(1),v===GS.expr)).join('')}</div>`:''}</div></div>
+    <h2 class="label" style="font-size:14px;margin:8px 0 0">The same heroine at every resolution</h2><div class="panel galres" id="galRes"></div>
+    <h2 class="label" style="font-size:14px;margin:8px 0 0">Expressions</h2><div class="panel galres" id="galExpr"></div></div>`;
+  // static strips: full body at each resolution, then her face in every expression
+  const look=heroLook(h),pal=heroGirlPal(h),res=$('#galRes'),ex=$('#galExpr');
+  for(const r of[{n:'Tiny',S:.2},...GRES]){const c=renderGirl(look,pal,{view:'front',pose:'idle',S:r.S}),k=200/(GFB*r.S),d=document.createElement('div');d.className='gcell';
+    d.appendChild(sprCanvas(c,k));d.insertAdjacentHTML('beforeend',`<span class="label">${r.n} · ${c.width}×${Math.round(GFB*r.S)} px</span>`);res.appendChild(d)}
+  for(const e of GEXPR){const c=renderGirl(look,pal,{view:'front',pose:'idle',S:1,expr:e}),f=document.createElement('canvas'),o=h.look.ears?25:20;f.width=f.height=42;f.getContext('2d').drawImage(c,Math.round(c.hx-21),Math.round(c.hy-o),42,42,0,0,42,42);
+    const d=document.createElement('div');d.className='gcell';d.appendChild(sprCanvas(f,2));d.insertAdjacentHTML('beforeend',`<span class="label">${e}</span>`);ex.appendChild(d)}};
+
+/* ---------------- VOLT CLASH: a card battle against the infected ---------------- */
+// Two lanes and a canal, three towers a side, energy that refills, and a hand of four cards from an eight-card deck.
+// The squad, the heroines, fortifications and powers face the horde's cards. Played offline against the computer.
+const CL={LEN:460,WID:250,RIV:230,RW:16,BR:[62,188],BRW:30,TIME:180,OT:60},CS=.64; // CS: the arena is drawn smaller than the troops' world size so they read big
+const CCARDS={
+  rifle:{name:'Rifle Squad',cost:3,type:'troop',n:3,cls:'rifle',hp:240,dmg:26,rate:.9,range:95,spd:24,d:'Three riflers who hold a lane'},
+  smg:{name:'Gunner Duo',cost:2,type:'troop',n:2,cls:'smg',hp:190,dmg:11,rate:.22,range:70,spd:28,d:'Two gunners spraying bullets'},
+  shotgun:{name:'Breacher',cost:3,type:'troop',n:1,cls:'shotgun',hp:720,dmg:82,rate:1.2,range:38,spd:22,splash:22,d:'Tough, blasts close crowds'},
+  sniper:{name:'Marksman',cost:4,type:'troop',n:1,cls:'sniper',hp:260,dmg:175,rate:2.2,range:175,spd:20,d:'Shoots across the canal'},
+  rocket:{name:'Grenadier',cost:4,type:'troop',n:1,cls:'rocket',hp:330,dmg:125,rate:2.4,range:130,spd:20,splash:30,d:'Rockets with splash'},
+  medic:{name:'Medic',cost:3,type:'troop',n:1,cls:'medic',hp:300,dmg:8,rate:1,range:80,spd:24,heal:45,d:'Heals the troops around her'},
+  turret:{name:'Turret',cost:4,type:'building',hp:1000,dmg:30,rate:.45,range:125,life:30,r:12,d:'Shoots anything in range for 30 s'},
+  sand:{name:'Sandbags',cost:1,type:'building',hp:900,life:25,r:13,d:'A wall that draws the horde'},
+  zap:{name:'Chain Lightning',cost:3,type:'spell',dmg:190,r:44,d:'A bolt that jumps through a group'},
+  storm:{name:'Storm Field',cost:4,type:'spell',dps:75,r:58,dur:4,d:'Lightning rains on an area for 4 s'},
+  judge:{name:"Heaven's Judgment",cost:6,type:'spell',dmg:560,r:48,delay:.8,d:'A pillar of light that hits towers too'},
+};
+const HERO_RANGE={claw:30,bolt:110,knife:100,note:100,fox:115};
+for(const h of HEROINES)CCARDS['h_'+h.id]={name:h.name,cost:5,type:'troop',n:1,hero:h.id,hp:h.hp*10,dmg:h.atk*7,rate:h.auto==='claw'?.42:.8,range:HERO_RANGE[h.auto]||100,
+  spd:h.spd*.36,splash:h.auto==='claw'?18:0,ability:9,d:h.title+': fights in the lane and casts a power every 9 s'};
+const ZCARDS={
+  walkers:{name:'Walker Horde',cost:3,type:'troop',n:5,z:'walker',hp:170,dmg:24,rate:1.1,range:14,spd:15},
+  runners:{name:'Runners',cost:2,type:'troop',n:3,z:'runner',hp:115,dmg:17,rate:.7,range:14,spd:38},
+  spitter:{name:'Spitter',cost:3,type:'troop',n:1,z:'spitter',hp:290,dmg:70,rate:1.6,range:105,spd:15},
+  bloater:{name:'Bloater',cost:3,type:'troop',n:1,z:'bloater',hp:580,dmg:30,rate:1,range:14,spd:13,targ:'b',boom:230},
+  brute:{name:'Brute',cost:5,type:'troop',n:1,z:'brute',hp:1750,dmg:135,rate:1.5,range:18,spd:13,targ:'b'},
+  boss:{name:'Horned Troll',cost:8,type:'troop',n:1,z:'boss',hp:3900,dmg:270,rate:1.8,range:24,spd:11,splash:30},
+  nest:{name:'Nest',cost:4,type:'building',hp:760,life:32,spawn:'walker',every:4.5,r:14},
+  acid:{name:'Acid Burst',cost:3,type:'spell',dmg:215,r:44},
+};
+const CTIERS=['Stragglers','Street Pack','Metro Swarm','Harbor Horde','Ironworks Mass','Shrine Blight','Neon Plague','Sewer Kings','Fort Breakers','The Hive Mind'];
+const zDeckOf=t=>['walkers','runners','spitter','bloater','acid','nest',...(t>=2?['brute']:[]),...(t>=5?['boss']:[])];
+const DEFAULT_DECK=()=>['h_'+save.heroine,'rifle','smg','shotgun','sniper','turret','zap','storm'];
+const deckRaw=()=>{const d=(save.clash.deck||DEFAULT_DECK()).filter((k,i,a)=>CCARDS[k]&&a.indexOf(k)===i);return d};
+// a battle always uses 8 cards: a short deck is topped up from the starter deck
+const clashDeck=()=>{const d=deckRaw().slice(0,8);for(const k of[...DEFAULT_DECK(),...Object.keys(CCARDS)]){if(d.length>=8)break;if(!d.includes(k))d.push(k)}return d};
+const zDef=k=>ZCARDS[k]||CCARDS[k];
+let B=null;
+// card power follows the rest of the game: training for the squad, levels for heroines, upgrades for powers and builds
+function cardMult(k){const c=CCARDS[k],g=save.god.dmg;if(!c)return 1;if(c.hero)return lvMult(c.hero)*g;if(c.cls)return(1+.12*save.up.train)*g;
+  if(c.type==='spell')return(1+.12*save.up.power)*g;return(1+.15*save.up.turret)*g}
+function startClash(tier){Sfx.init();const deck=clashDeck(),q=[...deck].sort(()=>Math.random()-.5);
+  B={tier,t:0,over:false,en:[5,5],hand:q.slice(0,4),queue:q.slice(4),sel:-1,ents:[],shots:[],fx:[],parts:[],crowns:[0,0],aiT:1.5,aiPush:rand(6,9),zmul:1+.09*tier,
+    ghost:null,shake:0,paused:false,result:null};
+  const tower=(side,u,v,king)=>{const m=side?B.zmul:1,e={side,kind:king?'king':'tower',u:side?CL.LEN-u:u,v,r:king?22:16,hp:(king?2600:1500)*m,dmg:(king?48:34)*(side?m:save.god.dmg),rate:king?1:.8,range:king?100:95,t:0,active:!king};e.max=e.hp;B.ents.push(e);return e};
+  for(const s of[0,1]){tower(s,84,CL.BR[0]);tower(s,84,CL.BR[1]);tower(s,34,CL.WID/2,true)}
+  state='clash';G=null;showScreen(null);$('#hud').hidden=true;$('#clashHud').hidden=false;$('#clashMenu').hidden=true;clashLayout();clashHandUI();banner('VOLT CLASH',CTIERS[tier])}
+// spawn a card's units; side 0 is the player, side 1 the horde
+function playCard(side,k,u,v){const c=side?zDef(k):CCARDS[k];if(!c)return false;if(B.en[side]<c.cost)return false;B.en[side]-=c.cost;
+  const m=side?B.zmul:cardMult(k);
+  if(c.type==='spell'){B.fx.push({k:'cast',u,v,r:c.r,c:side?'#c6ff4a':k==='storm'?'#9fe8ff':'#ffe14d',t:.5,max:.5});
+    if(k==='storm')B.fx.push({k:'storm',u,v,r:c.r,side,dps:c.dps*m,t:c.dur,max:c.dur,tick:0});
+    else after2(c.delay||.25,()=>{for(const e of B.ents)if(!e.dead&&e.side!==side&&dist2(e.u,e.v,u,v)<(c.r+e.r)**2)hitE(e,c.dmg*m*(e.kind!=='troop'&&k!=='judge'?.35:1),side);
+      B.fx.push({k:k==='judge'?'pillar':'burst',u,v,r:c.r,c:side?'#c6ff4a':'#ffe14d',t:.45,max:.45});B.shake=Math.max(B.shake,k==='judge'?6:3);Sfx.play(k==='acid'?'hit':'boom');
+      if(k==='zap'){let prev=null;for(const e of B.ents.filter(e=>!e.dead&&e.side!==side&&dist2(e.u,e.v,u,v)<(c.r+40)**2).slice(0,6)){B.fx.push({k:'bolt',u1:prev?prev.u:u,v1:prev?prev.v:v-40,u2:e.u,v2:e.v,c:'#ffe14d',t:.2,max:.2});prev=e}}});
+    Sfx.play('power');return true}
+  const n=c.n||1;for(let i=0;i<n;i++){const a=i/n*Math.PI*2,rr=n>1?9:0,e={side,k,c,kind:c.type,u:clamp(u+Math.cos(a)*rr,8,CL.LEN-8),v:clamp(v+Math.sin(a)*rr,8,CL.WID-8),
+      hp:c.hp*m,dmg:(c.dmg||0)*m,rate:c.rate||1,range:c.range||0,spd:c.spd||0,r:c.r||(c.z==='boss'?16:c.z==='brute'?12:8),t:rand(.2,.6),deploy:1,life:c.life||0,spawnT:c.every||0,abil:c.ability||0,
+      hair:pick(HAIRS),art:c.z?pick(LPC_INFECTED[c.z]):null,seed:Math.random()*10,du:side?-1:1,dv:0,mv:false,anim:0,atk:0};e.max=e.hp;B.ents.push(e)}
+  Sfx.play('ui');return true}
+function after2(t,fn){B.fx.push({k:'timer',t,max:t,fn})}
+function hitE(e,d,from){if(e.dead||d<=0)return;if(from===1&&e.side===0&&(e.kind==='tower'||e.kind==='king')&&save.god.infHP)return;e.hp-=d;e.flash=.08;if(e.kind==='king')e.active=true;
+  if(e.hp<=0)killE(e)}
+function killE(e){e.dead=true;e.deadT=0;sparkle(e.u,e.v,e.side?'#8fd14f':'#ff5c8a',e.kind==='troop'?6:24);
+  if(e.c&&e.c.boom){for(const o of B.ents)if(!o.dead&&o.side!==e.side&&dist2(o.u,o.v,e.u,e.v)<(40+o.r)**2)hitE(o,e.c.boom*B.zmul,e.side);B.fx.push({k:'burst',u:e.u,v:e.v,r:40,c:'#c6ff4a',t:.4,max:.4});Sfx.play('boom')}
+  if(e.kind==='tower'||e.kind==='king'){const o=1-e.side;B.crowns[o]+=e.kind==='king'?3-B.crowns[o]:1;B.crowns[o]=Math.min(3,B.crowns[o]);B.shake=8;Sfx.play('boom');
+    for(const k of B.ents)if(k.kind==='king'&&k.side===e.side)k.active=true;banner(e.side?'TOWER DOWN':'TOWER LOST',e.kind==='king'?'':`${B.crowns[0]} - ${B.crowns[1]}`);
+    if(e.kind==='king')endClash()}}
+function sparkle(u,v,c,n){for(let i=0;i<n&&B.parts.length<500;i++){const a=rand(0,6.28),s=rand(10,60);B.parts.push({u,v,du:Math.cos(a)*s,dv:Math.sin(a)*s,c,t:rand(.3,.7)})}}
+const isBld=e=>e.kind==='tower'||e.kind==='king'||e.kind==='building';
+// the next point a troop walks to: its target, or the bridge on the way to it
+function waypoint(e,tu,tv){const R=CL.RIV,W=CL.RW,us=e.u<R?-1:1,ts=tu<R?-1:1,inBand=Math.abs(e.u-R)<W+4;if(us===ts&&!inBand)return[tu,tv];
+  const bv=CL.BR.reduce((a,b)=>Math.abs(b-e.v)<Math.abs(a-e.v)?b:a);
+  // on the bridge, or at its head: cross to the target's side; otherwise walk to the bridge head on this side
+  if(inBand||(Math.abs(e.v-bv)<CL.BRW/2-6&&Math.abs(e.u-R)<W+12))return[R+ts*(W+8),bv];return[R+us*(W+6),bv]}
+function laneTarget(e){const foe=B.ents.filter(o=>!o.dead&&o.side!==e.side&&(o.kind==='tower'||o.kind==='king'));const lane=e.v<CL.WID/2?0:1;
+  return foe.find(o=>o.kind==='tower'&&(o.v<CL.WID/2?0:1)===lane)||foe.find(o=>o.kind==='king')||foe[0]}
+function findTarget(e){const sight=e.range+75;let best=null,bd=1e9;
+  for(const o of B.ents){if(o.dead||o.side===e.side||o.deploy>0)continue;if(e.c&&e.c.targ==='b'&&!isBld(o))continue;    const d=Math.hypot(o.u-e.u,o.v-e.v)-o.r;if(d<sight&&d<bd){bd=d;best=o}}return best}
+function healTarget(e){let best=null,bd=e.range;for(const o of B.ents)if(!o.dead&&o.side===e.side&&o.kind==='troop'&&o!==e&&o.hp<o.max){const d=Math.hypot(o.u-e.u,o.v-e.v);if(d<bd){bd=d;best=o}}return best}
+function shoot(e,o){const c=e.c||{},side=e.side,col=side?'#c6ff4a':c.hero?HMAP[c.hero].bolt:CLASSES[c.cls]?CLASSES[c.cls].a:'#ffe14d',melee=e.range<=40&&e.kind==='troop';e.atk=.3;
+  if(e.kind==='troop'&&!c.hero&&!c.z){B.fx.push({k:c.cls==='sniper'?'beam':'tracer',u1:e.u,v1:e.v,u2:o.u,v2:o.v,c:col,t:.12,max:.12});Sfx.play('shot')}
+  if(c.hero){const h=HMAP[c.hero];if(h.auto==='bolt'){B.fx.push({k:'bolt',u1:e.u,v1:e.v,u2:o.u,v2:o.v,c:h.bolt,t:.15,max:.15});Sfx.play('zap')}else if(melee)B.fx.push({k:'slash',u:o.u,v:o.v,c:h.bolt,t:.18,max:.18})}
+  if(melee||(c.hero&&HMAP[c.hero].auto==='bolt')||(!c.z&&!c.hero&&e.kind==='troop'&&c.cls!=='rocket')){applyHit(e,o);return}
+  // everything else flies: rockets, knives, notes, foxfire, acid, tower shots
+  B.shots.push({u:e.u,v:e.v,o,side,dmg:e.dmg,splash:(c.splash||0),spd:c.cls==='rocket'?150:c.z==='spitter'||side?170:260,c:col,kind:c.cls==='rocket'?'rocket':side?'acid':'shot',src:e})}
+function applyHit(e,o){const c=e.c||{};if(c.splash){for(const x of B.ents)if(!x.dead&&x.side!==e.side&&dist2(x.u,x.v,o.u,o.v)<(c.splash+x.r)**2)hitE(x,e.dmg,e.side)}else hitE(o,e.dmg,e.side);
+  sparkle(o.u,o.v,e.side?'#c6ff4a':'#ffffff',3);if(c.z)Sfx.play('hit')}
+function updClash(dt){const b=B;if(!b||b.over||b.paused)return;b.t+=dt;b.shake=Math.max(0,b.shake-dt*10);
+  const dbl=b.t>CL.TIME-60?2:1,god=save.god.noCD?3:1;b.en[0]=Math.min(10,b.en[0]+dt/2.8*dbl*god);b.en[1]=Math.min(10,b.en[1]+dt/2.8*dbl*(1+.02*b.tier));
+  if(b.t>=CL.TIME&&b.crowns[0]!==b.crowns[1])return endClash();if(b.t>=CL.TIME+CL.OT)return endClash();
+  b.aiT-=dt;if(b.aiT<=0){b.aiT=rand(.35,.7)-b.tier*.02;aiThink()}
+  for(const f of b.fx){f.t-=dt;if(f.k==='timer'&&f.t<=0&&f.fn){const fn=f.fn;f.fn=null;fn()}
+    if(f.k==='storm'){f.tick-=dt;if(f.tick<=0){f.tick=.25;for(const e of b.ents)if(!e.dead&&e.side!==f.side&&dist2(e.u,e.v,f.u,f.v)<(f.r+e.r)**2)hitE(e,f.dps*.25*(isBld(e)?.35:1),f.side);
+      const a=rand(0,6.28),rr=rand(0,f.r);b.fx.push({k:'bolt',u1:f.u+Math.cos(a)*rr,v1:f.v+Math.sin(a)*rr-60,u2:f.u+Math.cos(a)*rr,v2:f.v+Math.sin(a)*rr,c:'#9fe8ff',t:.12,max:.12})}}}
+  b.fx=b.fx.filter(f=>f.t>0);
+  for(const e of b.ents){if(e.dead){e.deadT+=dt;continue}e.flash=(e.flash||0)-dt;e.atk=Math.max(0,e.atk-dt);
+    if(e.deploy>0){e.deploy-=dt;continue}
+    if(e.kind==='building'&&e.life){e.hp-=e.max/e.life*dt;if(e.hp<=0){killE(e);continue}
+      if(e.c.spawn){e.spawnT-=dt;if(e.spawnT<=0){e.spawnT=e.c.every;const z=ZCARDS.walkers,m=b.zmul;b.ents.push({side:e.side,k:'walkers',c:z,kind:'troop',u:e.u+(e.side?-14:14),v:e.v+rand(-6,6),hp:z.hp*m,max:z.hp*m,dmg:z.dmg*m,rate:z.rate,range:z.range,spd:z.spd,r:8,t:.5,deploy:.3,hair:'',art:pick(LPC_INFECTED.walker),seed:Math.random()*10,du:e.side?-1:1,dv:0,anim:0,atk:0})}}}
+    if((e.kind==='king'&&!e.active)||(!e.dmg&&!(e.c&&e.c.heal))){continue}
+    e.t-=dt;e.retT=(e.retT||0)-dt;
+    if(e.c&&e.c.heal){const ht=healTarget(e);if(ht&&e.t<=0){e.t=e.rate;ht.hp=Math.min(ht.max,ht.hp+e.c.heal*cardMult('medic'));B.fx.push({k:'heal',u:ht.u,v:ht.v,t:.4,max:.4})}}
+    if(e.retT<=0||!e.tgt||e.tgt.dead){e.retT=.25;e.tgt=findTarget(e)}
+    const o=e.tgt;
+    if(e.abil>0){e.abil-=dt;if(e.abil<=0&&o){e.abil=e.c.ability;const h=HMAP[e.c.hero];for(const x of b.ents)if(!x.dead&&x.side!==e.side&&dist2(x.u,x.v,o.u,o.v)<(46+x.r)**2)hitE(x,e.dmg*2.2*(isBld(x)?.4:1),0);
+      b.fx.push({k:'burst',u:o.u,v:o.v,r:46,c:h.bolt,t:.45,max:.45});b.fx.push({k:'bolt',u1:o.u,v1:o.v-70,u2:o.u,v2:o.v,c:h.bolt,t:.25,max:.25});b.shake=Math.max(b.shake,3);Sfx.play('boom')}}
+    if(o){const d=Math.hypot(o.u-e.u,o.v-e.v)-o.r-e.r;
+      if(d<=e.range){e.mv=false;if(e.t<=0&&e.dmg){e.t=e.rate;shoot(e,o)}if(e.kind==='troop'){e.du=o.u-e.u;e.dv=o.v-e.v}continue}}
+    if(e.kind!=='troop')continue;
+    const tg=o||laneTarget(e);if(!tg)continue;const[wu,wv]=waypoint(e,tg.u,tg.v),du=wu-e.u,dv=wv-e.v,l=Math.hypot(du,dv)||1,sp=e.spd*dt;
+    e.u+=du/l*Math.min(sp,l);e.v+=dv/l*Math.min(sp,l);e.du=du;e.dv=dv;e.mv=true;e.anim+=dt*(5+e.spd/8)}
+  // troops push each other apart and stay out of the canal except on the bridges
+  const tr=b.ents.filter(e=>!e.dead&&e.kind==='troop');
+  for(let i=0;i<tr.length;i++){const a=tr[i];for(let j=i+1;j<tr.length;j++){const c=tr[j],du=c.u-a.u,dv=c.v-a.v,d2=du*du+dv*dv,R=a.r+c.r;if(d2<R*R&&d2>.01){const d=Math.sqrt(d2),p=(R-d)/2;a.u-=du/d*p;a.v-=dv/d*p;c.u+=du/d*p;c.v+=dv/d*p}}
+    a.u=clamp(a.u,6,CL.LEN-6);a.v=clamp(a.v,6,CL.WID-6);if(Math.abs(a.u-CL.RIV)<CL.RW){const bv=CL.BR.reduce((x,y)=>Math.abs(y-a.v)<Math.abs(x-a.v)?y:x);a.v=clamp(a.v,bv-CL.BRW/2+5,bv+CL.BRW/2-5)}}
+  for(const s of b.shots){const o=s.o,du=o.u-s.u,dv=o.v-s.v,l=Math.hypot(du,dv)||1;if(l<=s.spd*dt+2||o.dead){s.done=true;if(!o.dead){if(s.splash){for(const x of b.ents)if(!x.dead&&x.side!==s.side&&dist2(x.u,x.v,o.u,o.v)<(s.splash+x.r)**2)hitE(x,s.dmg,s.side);b.fx.push({k:'burst',u:o.u,v:o.v,r:s.splash,c:'#ff9a3a',t:.3,max:.3});Sfx.play('boom')}else hitE(o,s.dmg,s.side);sparkle(o.u,o.v,s.c,3)}continue}
+    s.u+=du/l*s.spd*dt;s.v+=dv/l*s.spd*dt}
+  b.shots=b.shots.filter(s=>!s.done);
+  for(const q of b.parts){q.t-=dt;q.u+=q.du*dt;q.v+=q.dv*dt;q.du*=.9;q.dv*=.9}b.parts=b.parts.filter(q=>q.t>0);
+  b.ents=b.ents.filter(e=>!e.dead||(e.kind!=='troop'&&e.kind!=='building')||e.deadT<.9);
+  clashHud()}
+// the horde's brain: defend when the squad crosses, otherwise save up and push the weaker lane
+function aiThink(){const b=B,en=b.en[1],deck=zDeckOf(b.tier),can=deck.filter(k=>ZCARDS[k].cost<=en);if(!can.length)return;
+  const foes=b.ents.filter(e=>!e.dead&&e.side===0&&e.kind==='troop'&&e.deploy<=0),threat=foes.filter(e=>e.u>CL.RIV-30).sort((a,c)=>c.u-a.u)[0];
+  // acid on a clump of three or more
+  if(can.includes('acid')){for(const f of foes){const n=foes.filter(g=>dist2(g.u,g.v,f.u,f.v)<44*44).length;if(n>=3&&Math.random()<.7){playCard(1,'acid',f.u,f.v);return}}}
+  if(threat&&Math.random()<.85){const opts=can.filter(k=>ZCARDS[k].type==='troop'&&!ZCARDS[k].targ);if(opts.length){const k=pick(opts);playCard(1,k,clamp(threat.u+50,CL.RIV+CL.RW+8,CL.LEN-20),clamp(threat.v+rand(-14,14),10,CL.WID-10));return}}
+  if(en>=b.aiPush){const mine=b.ents.filter(e=>!e.dead&&e.side===0&&e.kind==='tower'),weak=mine.sort((a,c)=>a.hp/a.max-c.hp/c.max)[0],lane=weak?weak.v:pick(CL.BR);
+    const order=['boss','brute','nest','bloater','spitter','walkers','runners'].filter(k=>can.includes(k));if(!order.length)return;const k=Math.random()<.75?order[0]:pick(order),c=ZCARDS[k];
+    const u=c.type==='building'?CL.LEN-120:k==='runners'?CL.RIV+CL.RW+30:CL.LEN-70;playCard(1,k,u,clamp(lane+rand(-12,12),12,CL.WID-12));b.aiPush=rand(5,9.5)-b.tier*.2}}
+function endClash(){const b=B;if(b.over)return;b.over=true;const win=b.crowns[0]>b.crowns[1],draw=b.crowns[0]===b.crowns[1],t=b.tier;
+  const r={win,draw,crowns:[...b.crowns],sup:win?60+30*t:draw?20:0,xp:win?80+20*t:draw?40:30,loot:null,up:0,unlocked:false};
+  if(!save.god.infSup)save.supplies+=r.sup;r.up=giveXP(r.xp);if(win){save.clash.wins++;if(t===save.clash.tier&&t<CTIERS.length-1){save.clash.tier++;r.unlocked=true}if(Math.random()<.25+(r.unlocked?.25:0))r.loot=grantWeapon(rollWeapon(t/9))}
+  else if(!draw)save.clash.losses++;persist();b.result=r;Sfx.play(win?'win':'hurt');
+  setTimeout(()=>{if(B!==b)return;$('#clashHud').hidden=true;state='menu';showScreen('clash')},2200);banner(win?'VICTORY':draw?'DRAW':'DEFEAT',`${b.crowns[0]} - ${b.crowns[1]}`)}
+/* ----- Volt Clash view: the arena fits the screen, lanes run left to right in landscape and bottom to top in portrait ----- */
+let CLV={z:1,ox:0,oy:0,port:false,bg:null,bgKey:''};
+function clashLayout(){const f=LW/innerWidth,port=LH>LW,barH=(port?118:88)*f,topH=(port?36:6)*f,aw=(port?CL.WID:CL.LEN)*CS,ah=(port?CL.LEN:CL.WID)*CS,availH=LH-barH-topH;
+  const z=Math.min(LW/(aw*RZ),availH/(ah*RZ));CLV={...CLV,z,port,ox:(LW-aw*RZ*z)/2,oy:topH+(availH-ah*RZ*z)/2}}
+const toW=(u,v)=>CLV.port?[v*CS,(CL.LEN-u)*CS]:[u*CS,v*CS],toUV=(x,y)=>CLV.port?[CL.LEN-y/CS,x/CS]:[x/CS,y/CS];
+function clashBg(){const key=CLV.port?'p':'l';if(CLV.bg&&CLV.bgKey===key)return CLV.bg;const P=2,c=document.createElement('canvas');c.width=CL.LEN*P;c.height=CL.WID*P;const x=c.getContext('2d'),rng=mulberry32(7);
+  const R=(a,b,w,h,col)=>{x.fillStyle=col;x.fillRect(a*P|0,b*P|0,Math.ceil(w*P),Math.ceil(h*P))},noise=(a,b,w,h,n,cols)=>{for(let i=0;i<n;i++){x.fillStyle=cols[(rng()*cols.length)|0];x.fillRect((a+rng()*w)*P|0,(b+rng()*h)*P|0,P,P)}};
+  R(0,0,CL.RIV,CL.WID,'#34313e');noise(0,0,CL.RIV,CL.WID,2600,['#2e2b37','#3b3846','#2a2832']);
+  R(CL.RIV,0,CL.LEN-CL.RIV,CL.WID,'#2f2a35');noise(CL.RIV,0,CL.LEN-CL.RIV,CL.WID,2600,['#2a2530','#36303c','#28222c']);
+  // the horde's side is overgrown with flesh
+  for(let i=0;i<70;i++){const u=CL.RIV+20+rng()*(CL.LEN-CL.RIV-20),v=rng()*CL.WID,r=3+rng()*9*(u/CL.LEN);x.fillStyle=rng()<.5?'#4a2238':'#3b4a2a';x.beginPath();x.ellipse(u*P,v*P,r*P,r*.7*P,0,0,7);x.fill()}
+  // lane roads with a dashed centre line
+  for(const lv of CL.BR){R(0,lv-14,CL.LEN,28,'#26242d');R(0,lv-15,CL.LEN,1,'#4f4b57');R(0,lv+14,CL.LEN,1,'#4f4b57');noise(0,lv-14,CL.LEN,28,700,['#2c2a33','#212027']);for(let u=6;u<CL.LEN;u+=16)R(u,lv-.5,8,1,'#b9a24e')}
+  // tower plazas
+  for(const s of[0,1])for(const[u,v,w]of[[84,CL.BR[0],34],[84,CL.BR[1],34],[34,CL.WID/2,48]]){const uu=s?CL.LEN-u:u;R(uu-w/2,v-w/2,w,w,s?'#3a2a36':'#45424f');for(let i=0;i<w;i+=6)for(let j=0;j<w;j+=6)if((i+j)/6%2)R(uu-w/2+i,v-w/2+j,6,6,s?'#33242f':'#4d4a58')}
+  // the canal and its bridges
+  R(CL.RIV-CL.RW,0,CL.RW*2,CL.WID,'#173550');for(let i=0;i<220;i++)R(CL.RIV-CL.RW+rng()*CL.RW*2,rng()*CL.WID,2+rng()*4,.5,rng()<.5?'#2a5a80':'#1f4668');
+  R(CL.RIV-CL.RW-2,0,2,CL.WID,'#5f5a68');R(CL.RIV+CL.RW,0,2,CL.WID,'#5f5a68');
+  for(const bv of CL.BR){R(CL.RIV-CL.RW-3,bv-CL.BRW/2,CL.RW*2+6,CL.BRW,'#6b5a44');for(let u=CL.RIV-CL.RW-3;u<CL.RIV+CL.RW+3;u+=3)R(u,bv-CL.BRW/2,1,CL.BRW,'#4f4232');
+    R(CL.RIV-CL.RW-3,bv-CL.BRW/2-2,CL.RW*2+6,2,'#3a3040');R(CL.RIV-CL.RW-3,bv+CL.BRW/2,CL.RW*2+6,2,'#3a3040')}
+  R(0,0,CL.LEN,2,'#15121b');R(0,CL.WID-2,CL.LEN,2,'#15121b');R(0,0,2,CL.WID,'#15121b');R(CL.LEN-2,0,2,CL.WID,'#15121b');
+  let out=c;if(CLV.port){out=document.createElement('canvas');out.width=c.height;out.height=c.width;const y=out.getContext('2d');y.translate(0,out.height);y.rotate(-Math.PI/2);y.drawImage(c,0,0)}
+  CLV.bg=out;CLV.bgKey=key;return out}
+let PTOWER=null,KTOWER=null;
+function towerArt(king){if(king&&KTOWER)return KTOWER;if(!king&&PTOWER)return PTOWER;const w=king?44:32,h=king?40:30;
+  const f=propSprite(w,h,x=>{const P=(a,b,c,d,col)=>{x.fillStyle=col;x.fillRect(a,b,c,d)};P(2,h*.35,w-4,h*.65,'#5f5a68');P(4,h*.35+2,w-8,h*.65-4,'#7a7586');for(let i=4;i<w-4;i+=6)P(i,h*.35,3,3,'#4a4654');
+    P(0,h-8,w,8,'#9a8350');for(let i=1;i<w;i+=7)P(i,h-8,6,4,'#c4aa72');P(w/2-4,h*.55,8,h*.45-8,'#2a2235');if(king){P(w/2-1,0,2,h*.38,'#3a3040');P(w/2+1,1,12,7,'#ffe14d');P(w/2+4,2,4,2,'#2e2860')}})
+  ;return king?(KTOWER=f):(PTOWER=f)}
+function renderClash(){const b=B;if(!b)return;clashLayout();ctx.setTransform(K,0,0,K,0,0);ctx.fillStyle='#0b0812';ctx.fillRect(0,0,LW,LH);
+  const sh=b.shake?rand(-b.shake,b.shake):0;ctx.setTransform(K*CLV.z,0,0,K*CLV.z,K*(CLV.ox+sh),K*CLV.oy);ctx.imageSmoothingEnabled=false;OX=0;OY=0;
+  const bg=clashBg();ctx.drawImage(bg,0,0,bg.width*RZ/2*CS,bg.height*RZ/2*CS);
+  // deploy zone while a card is chosen
+  if(b.sel>=0&&!b.over){const c=CCARDS[b.hand[b.sel]];if(c&&c.type!=='spell'){const[a0,c0]=toW(0,0),[a1,c1]=toW(CL.RIV-CL.RW-2,CL.WID);ctx.fillStyle='rgba(255,225,77,.08)';ctx.fillRect(Math.min(a0,a1)*RZ,Math.min(c0,c1)*RZ,Math.abs(a1-a0)*RZ,Math.abs(c1-c0)*RZ)}}
+  const list=b.ents.filter(e=>!e.dead||e.kind==='troop').map(e=>({e,w:toW(e.u,e.v)}));list.sort((a,c)=>a.w[1]-c.w[1]);
+  for(const f of b.fx)if(f.k==='storm'){const[x,y]=toW(f.u,f.v);ctx.globalAlpha=.18;ctx.fillStyle='#9fe8ff';ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,f.r*RZ*CS,f.r*RZ*CS*.8,0,0,7);ctx.fill();ctx.globalAlpha=1}
+  for(const{e,w}of list)drawClashEnt(e,w[0],w[1]);
+  for(const s of b.shots){const[x,y]=toW(s.u,s.v);ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x*RZ-28,y*RZ-12-28,56,56);ctx.fillStyle=s.kind==='acid'?'#c6ff4a':'#ffffff';ctx.fillRect(x*RZ-5,y*RZ-17,10,10);ctx.globalCompositeOperation='source-over'}
+  for(const f of b.fx){const a=f.t/f.max;if(f.k==='tracer'||f.k==='beam'||f.k==='bolt'){const[x1,y1]=toW(f.u1,f.v1),[x2,y2]=toW(f.u2,f.v2);ctx.globalCompositeOperation='lighter';ctx.strokeStyle=f.c;ctx.globalAlpha=a;ctx.lineWidth=f.k==='beam'?10:f.k==='bolt'?8:4;
+      ctx.beginPath();ctx.moveTo(x1*RZ,y1*RZ-90);if(f.k==='bolt')for(let k=1;k<6;k++)ctx.lineTo((x1+(x2-x1)*k/6)*RZ+rand(-14,14),(y1+(y2-y1)*k/6)*RZ-90+rand(-14,14));ctx.lineTo(x2*RZ,y2*RZ-90);ctx.stroke();
+      ctx.strokeStyle='#ffffff';ctx.lineWidth=f.k==='tracer'?2:3;ctx.stroke();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
+    else if(f.k==='burst'||f.k==='cast'||f.k==='pillar'){const[x,y]=toW(f.u,f.v),r=f.r*RZ*CS*(f.k==='cast'?a:1-a*.5);ctx.globalAlpha=a;ctx.strokeStyle=f.c;ctx.lineWidth=8;ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,r,r*.8,0,0,7);ctx.stroke();
+      if(f.k==='pillar'){ctx.globalCompositeOperation='lighter';ctx.fillStyle=f.c;ctx.globalAlpha=a*.6;ctx.fillRect(x*RZ-f.r*RZ*CS*.35,0,f.r*RZ*CS*.7,y*RZ);ctx.globalCompositeOperation='source-over'}ctx.globalAlpha=1}
+    else if(f.k==='slash'){const[x,y]=toW(f.u,f.v);ctx.globalAlpha=a;ctx.strokeStyle=f.c;ctx.lineWidth=8;ctx.beginPath();ctx.arc(x*RZ,y*RZ-60,60,-.8,1.4);ctx.stroke();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();ctx.globalAlpha=1}
+    else if(f.k==='heal'){const[x,y]=toW(f.u,f.v);ctx.globalAlpha=a;ctx.fillStyle='#7dff8a';ctx.fillRect(x*RZ-6,y*RZ-150+a*30,12,30);ctx.fillRect(x*RZ-15,y*RZ-141+a*30,30,12);ctx.globalAlpha=1}}
+  for(const q of b.parts){const[x,y]=toW(q.u,q.v);ctx.fillStyle=q.c;ctx.fillRect(x*RZ-4,y*RZ-40,8,8)}
+  // ghost of the card being placed
+  if(b.ghost&&b.sel>=0){const c=CCARDS[b.hand[b.sel]],[x,y]=toW(b.ghost.u,b.ghost.v),ok=canDeploy(b.hand[b.sel],b.ghost.u,b.ghost.v),r=(c.r||14)*RZ*CS;
+    ctx.globalAlpha=.5;ctx.strokeStyle=ok?'#ffe14d':'#ff4d5e';ctx.lineWidth=6;ctx.setLineDash([16,10]);ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,r,r*.8,0,0,7);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1}
+  ctx.setTransform(K,0,0,K,0,0);ctx.imageSmoothingEnabled=K!==1}
+function drawClashEnt(e,x,y){const b=B,a=e.dead?Math.max(0,1-e.deadT/.9):e.deploy>0?.55:1;ctx.globalAlpha=a;
+  if(e.kind==='tower'||e.kind==='king'){if(e.dead){ctx.globalAlpha=1;ctx.fillStyle='rgba(20,14,26,.85)';ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,e.r*RZ*CS*1.4,e.r*RZ*CS*.8,0,0,7);ctx.fill();return}
+    if(e.side===0){const f=towerArt(e.kind==='king');shadow(x,y+2,f.w*2);drawScaled(f,x,y+4,2.4,e.flash>0);const sp=soldierSprite({cls:e.kind==='king'?'sniper':'rifle',hair:'#1b1424'}),tg=e.tgt&&!e.tgt.dead?toW(e.tgt.u,e.tgt.v):null;
+        const dx=tg?tg[0]-x:1,dy=tg?tg[1]-y:0,v=viewOf(dx,dy);drawSpr(sp.get(v,tg&&e.atk>0?'aim':'idle',0),x,y+4-f.h*2.4*.64/RZ,v==='side'&&dx<0?-1:1)}
+    else{const f=NEST[((b.t*4+x)|0)%4],s=e.kind==='king'?1.5:1.1;shadow(x,y+3,f.w*s*.8);ctx.save();ctx.translate(x*RZ,y*RZ+40);ctx.scale(s,s);ctx.drawImage(f.r,-(f.w>>1),-f.h);if(e.flash>0){ctx.globalAlpha=.55;ctx.drawImage(f.wr,-(f.w>>1),-f.h)}ctx.restore()}
+    ctx.globalAlpha=1;clashBar(x,y-(e.kind==='king'?44:34),e.kind==='king'?150:110,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff');return}
+  if(e.kind==='building'){const k=e.k;if(k==='turret'){const tg=e.tgt&&!e.tgt.dead?toW(e.tgt.u,e.tgt.v):null,dir=tg?Math.round(((Math.atan2(tg[1]-y,tg[0]-x)/(Math.PI*2))*16+16))%16:4;drawSpr(turretSprite(dir),x,y,1,e.flash>0)}
+    else if(k==='sand'){shadow(x,y,90);drawSpr(sandSprites().h,x-1,y+3,1,e.flash>0)}else if(k==='nest'){const f=NEST[((b.t*4+x)|0)%4];ctx.drawImage(f.r,x*RZ-(f.w>>1),y*RZ-f.h+40);if(e.flash>0){ctx.globalAlpha=.55;ctx.drawImage(f.wr,x*RZ-(f.w>>1),y*RZ-f.h+40)}}
+    ctx.globalAlpha=1;clashBar(x,y-18,70,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff');return}
+  const c=e.c,[sx,sy]=CLV.port?[e.dv,-e.du]:[e.du,e.dv],face=sx<0?-1:1;shadow(x,y,c.z==='boss'?120:c.z==='brute'?80:48);
+  if(c.z){const dir=dirOf(sx,sy),dr=dir*64;let fr,row;if(e.dead){fr=Math.min(5,e.deadT/.1|0);row=512}else if(e.atk>0){fr=Math.min(5,(1-e.atk/.3)*6|0);row=256+dr}else if(e.mv){fr=1+((b.t*(c.z==='runner'?13:6)+e.seed)|0)%8;row=c.z==='runner'?832+dr:dr}else{fr=((b.t*1.7+e.seed)|0)%2;row=576+dr}
+    if(!drawInfected(e.art,c.z,x,y,fr,row,e.flash>0&&!e.dead)){const zf=ZSPR[c.z][0];drawSpr(zf[((b.t*3)|0)%zf.length],x,y,face,e.flash>0)}}
+  else if(c.hero){const hs=himeSprite(HMAP[c.hero]),v=viewOf(sx,sy),pose=e.dead?'hurt':e.atk>0?'attack':e.mv?'walk':'idle',f=pose==='walk'?(e.anim|0)%8:pose==='attack'?Math.min(3,(1-e.atk/.3)*4|0):pose==='hurt'?1:((b.t*3.2)|0)%4;
+    drawSpr(hs.get(v,pose,f),x,y,v==='side'?face:1,e.flash>0&&!e.dead)}
+  else{const sp=soldierSprite({cls:c.cls,hair:e.hair}),v=viewOf(sx,sy),pose=e.atk>0?'aim':e.mv?'walk':'idle',f=pose==='walk'?((e.anim|0)%4)*2:0;drawSpr(sp.get(v,pose,f),x,y,v==='side'?face:1,e.flash>0&&!e.dead)}
+  ctx.globalAlpha=1;if(!e.dead&&e.hp<e.max)clashBar(x,y-(c.z==='boss'?44:c.hero?33:28),c.hero||c.z==='boss'||c.z==='brute'?60:36,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff')}
+function drawScaled(f,wx,wy,s,white){ctx.save();ctx.translate(Math.round(wx*RZ),Math.round(wy*RZ));ctx.scale(s,s);ctx.drawImage(white?f.wr:f.r,-(f.w>>1),-f.h);ctx.restore()}
+function clashBar(wx,wy,w,r,c){const x=Math.round(wx*RZ-w/2),y=Math.round(wy*RZ);ctx.fillStyle='#000';ctx.fillRect(x-3,y-3,w+6,13);ctx.fillStyle='#2a1020';ctx.fillRect(x,y,w,7);ctx.fillStyle=c;ctx.fillRect(x,y,Math.max(0,Math.round(w*r)),7)}
+const canDeploy=(k,u,v)=>{const c=CCARDS[k];if(!c)return false;if(u<4||v<4||u>CL.LEN-4||v>CL.WID-4)return false;return c.type==='spell'||u<CL.RIV-CL.RW-4};
+/* ----- Volt Clash HUD: crowns, timer, energy and the hand ----- */
+const CART={};
+function cardArt(k){if(CART[k])return CART[k];const c=CCARDS[k],cv2=document.createElement('canvas');cv2.width=48;cv2.height=48;const x=cv2.getContext('2d');x.imageSmoothingEnabled=false;
+  const g=x.createLinearGradient(0,0,0,48);g.addColorStop(0,c.type==='spell'?'#3a2a5a':c.type==='building'?'#3a3a2a':c.hero?'#4a2240':'#2a3a2a');g.addColorStop(1,'#120e1a');x.fillStyle=g;x.fillRect(0,0,48,48);
+  const fit=(img,sx,sy,sw,sh)=>{const k2=Math.min(46/sw,46/sh);x.drawImage(img,sx,sy,sw,sh,(48-sw*k2)/2,(48-sh*k2)/2,sw*k2,sh*k2)};
+  if(c.hero){const p=heroPortrait(HMAP[c.hero]);fit(p,0,0,p.width,p.height)}
+  else if(c.cls){const f=soldierSprite({cls:c.cls,hair:'#3a2418'}).get('front','idle',0,true).r;fit(f,0,0,f.width,f.height*.62)}
+  else if(k==='turret'){const f=turretSprite(6).r;fit(f,0,0,f.width,f.height)}else if(k==='sand'){const f=sandSprites().h.r;fit(f,0,0,f.width,f.height)}
+  else{const f=weaponIcon(k==='storm'?'tesla':k==='judge'?'hammer':'innate',k==='zap'?'#ffe14d':null).r;fit(f,0,0,f.width,f.height)}
+  return CART[k]=cv2}
+function clashHandUI(){const h=$('#chHand');h.innerHTML=B.hand.map((k,i)=>`<button class="ccard${B.sel===i?' sel':''}" data-ci="${i}"><span class="cimg"></span><b>${CCARDS[k].cost}</b><small>${CCARDS[k].name}</small></button>`).join('');
+  h.querySelectorAll('.ccard').forEach((el,i)=>{const c=cardArt(B.hand[i]),cp=document.createElement('canvas');cp.width=48;cp.height=48;cp.getContext('2d').drawImage(c,0,0);cp.className='px';el.querySelector('.cimg').appendChild(cp)});
+  const nx=$('#chNext');nx.innerHTML='<span class="label">Next</span>';const c=cardArt(B.queue[0]),cp=document.createElement('canvas');cp.width=48;cp.height=48;cp.getContext('2d').drawImage(c,0,0);cp.className='px';nx.appendChild(cp)}
+function clashHud(){const b=B,left=Math.max(0,(b.t<CL.TIME?CL.TIME:CL.TIME+CL.OT)-b.t);$('#chTime').textContent=`${b.t>=CL.TIME?'Overtime ':''}${Math.floor(left/60)}:${String(Math.floor(left%60)).padStart(2,'0')}`;
+  $('#chP').textContent=b.crowns[0];$('#chE').textContent=b.crowns[1];$('#chEn').style.width=(b.en[0]*10)+'%';$('#chEnN').textContent=Math.floor(b.en[0]);$('#chDbl').hidden=!(b.t>CL.TIME-60);
+  document.querySelectorAll('#chHand .ccard').forEach((el,i)=>el.classList.toggle('poor',CCARDS[b.hand[i]].cost>b.en[0]))}
+function useCard(i,u,v){const b=B,k=b.hand[i];if(!canDeploy(k,u,v)){toast('Place troops and buildings on your side of the canal');return false}if(CCARDS[k].cost>b.en[0]){toast('Not enough energy');return false}
+  if(!playCard(0,k,u,v))return false;b.hand[i]=b.queue.shift();b.queue.push(k);b.sel=-1;b.ghost=null;clashHandUI();return true}
+function clashPoint(cx,cy){const f=LW/innerWidth,lx=cx*f,ly=cy*f,wx=(lx-CLV.ox)/CLV.z/RZ,wy=(ly-CLV.oy)/CLV.z/RZ;return toUV(wx,wy)}
+R.clash=()=>{const s=save.clash,deck=clashDeck(),r=B&&B.result,tier=Math.min(s.tier,CTIERS.length-1),pick2=CLASH_PICK.t??tier,editing=CLASH_PICK.edit;
+  const cardHTML=(k,on,act)=>{const c=CCARDS[k];return`<button class="panel dcard ${on?'on':''}" ${act}="${k}"><span class="cimg" data-card="${k}"></span><span><b>${c.name}</b> <span class="label">${c.cost} energy</span><br><span class="muted" style="font-size:15px">${c.d}</span></span></button>`};
+  $('#scr-clash').innerHTML=`<div class="wrap">${head('Volt Clash')}<p class="muted">A card battle against the horde, played offline. Deploy troops on your side of the canal, take down the infected nests and protect your towers. Three minutes; the last minute gives double energy. Destroy the big nest to win at once.</p>
+    ${r?`<div class="panel result" style="margin:0;gap:8px"><h2 style="font-size:40px;color:${r.win?'var(--volt)':r.draw?'var(--ink)':'var(--danger)'}">${r.win?'Victory':r.draw?'Draw':'Defeat'} ${r.crowns[0]} - ${r.crowns[1]}</h2>
+      <p class="xpline">${r.sup?`<b>+${r.sup} supplies</b> · `:''}<b>+${r.xp} XP</b>${r.up?` · <b class="lvup">Level ${r.up}!</b>`:''}${r.unlocked?` · <b class="lvup">${CTIERS[s.tier]} unlocked</b>`:''}</p>${r.loot?`<div class="loot">${wIconHTML(r.loot.id,1)}<span>${weaponMsg(r.loot)}</span></div>`:''}</div>`:''}
+    <div class="bar" style="flex-wrap:wrap;gap:8px"><span class="label">Record ${s.wins} won · ${s.losses} lost</span></div>
+    <span class="label">Opponent</span><div class="hpick">${CTIERS.map((n,i)=>`<button class="btn small ${i===pick2?'primary':''}" data-ctier="${i}" ${i>s.tier?'disabled':''}>${i+1}. ${n}</button>`).join('')}</div>
+    <button class="btn primary" data-act="cfight" style="width:min(420px,100%)">Battle ${CTIERS[pick2]}</button>
+    <div class="bar"><span class="label">Your deck (8 cards)</span><button class="btn small" data-act="cedit">${editing?'Done':'Edit deck'}</button></div>
+    ${editing?`<p class="muted">Tap cards to swap them in and out: 8 cards (${deckRaw().length} chosen). A short deck is filled from the starter cards.</p><div class="grid wide">${Object.keys(CCARDS).map(k=>cardHTML(k,deckRaw().includes(k),'data-ctog')).join('')}</div>`
+      :`<div class="grid wide">${deck.map(k=>cardHTML(k,true,'data-cview')).join('')}</div>`}</div>`;
+  document.querySelectorAll('#scr-clash [data-card]').forEach(n=>{const c=cardArt(n.dataset.card),cp=document.createElement('canvas');cp.width=48;cp.height=48;cp.getContext('2d').drawImage(c,0,0);cp.className='px';cp.style.width=cp.style.height='48px';n.appendChild(cp)})};
+const CLASH_PICK={t:undefined,edit:false};
 
 /* ---------------- INPUT ---------------- */
 const gameEl=$('#game');
@@ -2365,6 +2862,15 @@ gameEl.addEventListener('click',e=>{Sfx.init();const b=e.target.closest('button'
   if(b.dataset.go){Sfx.play('ui');const go=b.dataset.go;if(go==='slots')delConfirm=0;if(go==='god'&&state!=='play')returnTo='title';if(go==='pause'){showScreen('pause');return}if(go==='title'||state!=='play'){G=state==='play'?G:null}showScreen(go);return}
   if(b.dataset.city!==undefined){const i=+b.dataset.city;if(b.dataset.mode==='map'&&!unlocked(i)){toast('Liberate the previous city first');return}startMission(i,b.dataset.mode==='sandbox');return}
   if(b.dataset.hero){save.heroine=b.dataset.hero;persist();Sfx.play('ui');refresh('heroines');return}
+  if(b.dataset.ctier!==undefined){CLASH_PICK.t=+b.dataset.ctier;Sfx.play('ui');refresh('clash');return}
+  if(b.dataset.ctog){const d=deckRaw(),k=b.dataset.ctog,j=d.indexOf(k);if(j>=0)d.splice(j,1);else if(d.length<8)d.push(k);else{toast('The deck is full: take a card out first');return}save.clash.deck=d;persist();Sfx.play('ui');refresh('clash');return}
+  if(b.dataset.cview)return;
+  if(b.dataset.gal){const k=b.dataset.gal,v=b.dataset.v;GS[k]=k==='res'?+v:v;if(k==='hero'||k==='res')GS.cache={};Sfx.play('ui');refresh('gallery');return}
+  if(b.dataset.phero){patrolPick.hero=b.dataset.phero;Sfx.play('ui');refresh('patrol');return}
+  if(b.dataset.pcity!==undefined){patrolPick.city=+b.dataset.pcity;Sfx.play('ui');refresh('patrol');return}
+  if(b.dataset.whero){save.heroine=b.dataset.whero;persist();Sfx.play('ui');refresh('weapons');return}
+  if(b.dataset.wequip){save.equip[save.heroine]=b.dataset.wequip;persist();Sfx.play('ui');toast(`${HMAP[save.heroine].name} equips ${WEAPONS[b.dataset.wequip].name}`);refresh('weapons');return}
+  if(b.dataset.wup){const id=b.dataset.wup,lv=wLevel(id),c=wUpCost(lv);if(lv>=WMAX)return;if(!save.god.infSup){if(save.supplies<c)return;save.supplies-=c}save.weapons[id]=lv+1;persist();Sfx.play('ui');toast(`${WEAPONS[id].name} level ${lv+1}`);refresh('weapons');return}
   if(b.dataset.slotuse){const n=+b.dataset.slotuse;useSlot(n);delConfirm=0;Sfx.play('ui');toast(`Playing slot ${n}`);showScreen('title');return}
   if(b.dataset.slotdel){const n=+b.dataset.slotdel;if(delConfirm!==n){delConfirm=n;refresh('slots');return}deleteSlot(n);delConfirm=0;toast(`Slot ${n} deleted`);refresh('slots');return}
   if(b.dataset.slot!==undefined){selSlot=+b.dataset.slot;refresh('powers');return}
@@ -2380,6 +2886,17 @@ gameEl.addEventListener('click',e=>{Sfx.init();const b=e.target.closest('button'
   if(a==='resume'){paused=false;showScreen(null);$('#hud').hidden=false}
   else if(a==='pgod'){returnTo='pause';showScreen('god')}
   else if(a==='sound'){save.sound=!save.sound;persist();showScreen('pause')}
+  else if(a==='pstart'){const lib=CITIES.map((c,i)=>i).filter(i=>save.cleared[CITIES[i].id]);startPatrol(patrolPick.hero||save.heroine,lib.includes(patrolPick.city)?patrolPick.city:(lib[0]||0));lastClaim=null;Sfx.play('ui');toast('Patrol started');refresh('patrol')}
+  else if(a==='pclaim'||a==='precall'){const r=claimPatrol(a==='precall');if(r){lastClaim=r;Sfx.play(r.loot.length||r.up?'win':'ui');toast(`+${r.sup} supplies · +${r.xp} XP`)}refresh('patrol')}
+  else if(a==='cfight'){if(B)B.result=null;startClash(Math.min(CLASH_PICK.t??save.clash.tier,save.clash.tier))}
+  else if(a==='cedit'){CLASH_PICK.edit=!CLASH_PICK.edit;refresh('clash')}
+  else if(a==='cresume'){if(B){B.paused=false;$('#clashMenu').hidden=true}}
+  else if(a==='cquit'){if(B&&!B.over){B.paused=false;$('#clashMenu').hidden=true;B.crowns[1]=3;endClash()}}
+  else if(a==='bkmake'){persist();$('#bkCode').value=saveCode()}
+  else if(a==='bkcopy'){const t=$('#bkCode');if(!t.value)t.value=saveCode();t.select();const done=()=>toast('Backup code copied');
+    try{navigator.clipboard.writeText(t.value).then(done,()=>{document.execCommand('copy');done()})}catch(e){try{document.execCommand('copy');done()}catch(_){toast('Select the code and copy it')}}}
+  else if(a==='bkload'){const s2=readCode($('#bkCode').value);if(!s2){toast('That code does not look right');return}save=s2;persist();resize();toast(`Progress restored into slot ${activeSlot}`);showScreen('slots')}
+  else if(a==='zoom'){cycleZoom();showScreen('pause')}
   else if(a==='autofire'){save.autoFire=!save.autoFire;persist();toast(save.autoFire?'Auto-fire on: it shoots when you are not aiming':'Auto-fire off: aim with the right side to shoot');showScreen('pause')}
   else if(a==='quit'){persist();paused=false;state='menu';$('#hud').hidden=true;G=null;showScreen('title')}
   else if(a==='retry'){startMission(G.idx,G.sandbox)}
@@ -2393,6 +2910,7 @@ $('#btnBuild').addEventListener('click',()=>{if(!G)return;const bar=$('#buildBar
 $('#buildBar').addEventListener('click',e=>{const b=e.target.closest('[data-build]');if(!b)return;placeBuild(b.dataset.build);$('#buildBar').hidden=true});
 $('#btnSquad').addEventListener('click',()=>{if(!G)return;G.squadMode=G.squadMode==='follow'?'hold':'follow';G.hold={x:G.p.x,y:G.p.y};if(G.squadMode==='hold'){G.holdFlow=G.holdFlow||new Int16Array(G.flow.length);bfsFrom(G.hold.x,G.hold.y,G.holdFlow)}$('#btnSquad').textContent=G.squadMode==='follow'?'Follow':'Hold';toast(G.squadMode==='follow'?'Squad: follow me':'Squad: hold this position')});
 $('#btnSound').addEventListener('click',()=>{save.sound=!save.sound;persist();R.title()});
+$('#btnZoom').addEventListener('click',()=>{cycleZoom();R.title()});
 $('#btnFull').addEventListener('click',()=>{const d=document.documentElement;try{const r=document.fullscreenElement?document.exitFullscreen():(d.requestFullscreen||d.webkitRequestFullscreen).call(d);if(r&&r.catch)r.catch(()=>toast('Fullscreen is not available here'))}catch(e){toast('Fullscreen is not available here')}});
 for(let i=0;i<5;i++){const b=$('#pw'+i);
   b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();Sfx.init();held[i]=true;heldT[i]=0;try{b.setPointerCapture(e.pointerId)}catch(_){}
@@ -2430,22 +2948,37 @@ const endAim=e=>{if(e.pointerId!==aim.id||aim.pw>=0)return;const v=aimVec(),quic
 addEventListener('pointerup',endAim);addEventListener('pointercancel',e=>{if(e.pointerId===aim.id&&aim.pw<0)clearAim()});
 const endStick=e=>{if(e.pointerId!==stick.id)return;stick.id=null;stick.dx=stick.dy=0;$('#stick').hidden=true};
 addEventListener('pointerup',endStick);addEventListener('pointercancel',endStick);
-addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys.add(k);if(k==='escape'&&state==='play'&&!paused)$('#btnPause').click();if(k==='f'&&state==='play')$('#btnSquad').click()});
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys.add(k);if(k==='escape'&&state==='clash'&&B&&!B.over){B.paused=!B.paused;$('#clashMenu').hidden=!B.paused;return}if(k==='escape'&&state==='play'&&!paused)$('#btnPause').click();if(k==='f'&&state==='play')$('#btnSquad').click()});
 addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 addEventListener('blur',()=>{keys.clear();held.fill(false);clearAim()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='clash'&&B&&!B.over){B.paused=true;$('#clashMenu').hidden=false}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='play'&&!paused&&G&&!G.ended)$('#btnPause').click()});
 gameEl.addEventListener('contextmenu',e=>e.preventDefault());
+
+// Volt Clash: tap a card then tap the arena, or drag the card onto it
+let cdrag=null;
+$('#chHand').addEventListener('pointerdown',e=>{const c=e.target.closest('.ccard');if(!c||!B||B.over)return;e.preventDefault();Sfx.init();const i=+c.dataset.ci;B.sel=B.sel===i?-1:i;B.ghost=null;
+  cdrag={id:e.pointerId,i,x:e.clientX,y:e.clientY,moved:false};try{c.setPointerCapture(e.pointerId)}catch(_){}document.querySelectorAll('#chHand .ccard').forEach((el,j)=>el.classList.toggle('sel',j===B.sel))});
+addEventListener('pointermove',e=>{if(state!=='clash'||!B)return;if(cdrag&&e.pointerId===cdrag.id){if(Math.hypot(e.clientX-cdrag.x,e.clientY-cdrag.y)>12){cdrag.moved=true;B.sel=cdrag.i}}
+  if(B.sel>=0&&(cdrag&&cdrag.moved||e.pointerType==='mouse')){const[u,v]=clashPoint(e.clientX,e.clientY);B.ghost={u,v}}});
+addEventListener('pointerup',e=>{if(!cdrag||e.pointerId!==cdrag.id)return;const d=cdrag;cdrag=null;if(!d.moved||!B||B.over)return;
+  const over=document.elementFromPoint(e.clientX,e.clientY);if(over&&over.closest('.ch-bar')){B.ghost=null;return}const[u,v]=clashPoint(e.clientX,e.clientY);if(!useCard(d.i,u,v))B.ghost=null});
+cv.addEventListener('pointerdown',e=>{if(state!=='clash'||!B||B.over||B.sel<0)return;const[u,v]=clashPoint(e.clientX,e.clientY);B.ghost={u,v};useCard(B.sel,u,v)});
+$('#chPause').addEventListener('click',()=>{if(!B||B.over)return;B.paused=true;$('#clashMenu').hidden=false});
 
 /* ---------------- BOOT ---------------- */
 buildZombieSprites();loadInfectedArt();
 let last=performance.now(),pfN=0,pfT=0,pumped=0;
 function frame(t){const raw=(t-last)/1000,dt=Math.min(.05,raw);last=t;
   // adaptive resolution: if the device can't hold ~38fps, render fewer pixels
-  if(state==='play'&&!paused&&raw<.5&&!pumped){pfN++;pfT+=raw;if(pfN>=120){if(pfT/pfN>.026&&PXCAP>1.1e6){PXCAP*=.72;resize()}pfN=pfT=0}}try{if(state==='play'&&!paused&&G&&!G.ended)update(dt);else if(G&&G.ended){G.time+=dt;for(let i=G.fx.length-1;i>=0;i--){G.fx[i].t-=dt;if(G.fx[i].t<=0)G.fx.splice(i,1)}}render()}catch(err){console.error(err)}
+  if(state==='play'&&!paused&&raw<.5&&!pumped){pfN++;pfT+=raw;if(pfN>=120){if(pfT/pfN>.026&&PXCAP>1.1e6){PXCAP*=.72;resize()}pfN=pfT=0}}
+  if(state==='clash'){try{updClash(dt);renderClash()}catch(err){console.error(err)}}else try{if(state==='play'&&!paused&&G&&!G.ended)update(dt);else if(G&&G.ended){G.time+=dt;for(let i=G.fx.length-1;i>=0;i--){G.fx[i].t-=dt;if(G.fx[i].t<=0)G.fx.splice(i,1)}}render()}catch(err){console.error(err)}
   // squad frames not drawn yet; those frames don't count toward the resolution check
+  if(!$('#scr-patrol').hidden)try{drawPatrol()}catch(err){console.error(err)}
+  if(!$('#scr-gallery').hidden)try{drawGallery()}catch(err){console.error(err)}
   pumped=pumpSprites(t);requestAnimationFrame(frame)}
 showScreen('title');requestAnimationFrame(frame);
-window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite,spawnZombie,placeBuild,step:dt=>update(dt)};
+window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite,spawnZombie,placeBuild,step:dt=>update(dt),show:id=>{state="menu";G=null;$("#hud").hidden=true;$("#clashHud").hidden=true;showScreen(id)},get B(){return B},startClash,playCard,updClash};
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/claude|anthropic/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
