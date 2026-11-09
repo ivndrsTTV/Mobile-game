@@ -1,6 +1,6 @@
 # Voltfall
 
-A detailed pixel-art zombie game for phones that plays fully offline. You play as one of eight anime heroines (lightning girls with hime cuts, a cat girl, a battle maid, an idol and a kitsune shrine maiden), lead a squad of soldiers and clear the infected out of 18 missions. It also has a card battle mode, AFK patrols, weapons to collect, heroine levels, a character gallery, a sandbox and a God Mode panel where you can set your power as high as you like.
+A detailed pixel-art zombie game for phones that plays fully offline. You play as one of sixteen anime heroines (lightning girls with hime cuts, a cat girl, a battle maid, an idol, a kitsune shrine maiden, a tsundere rich girl, a kuudere, a sports girl, a yandere, a bookworm, a gyaru, a chuunibyou and a nurse), lead a squad of soldiers and clear the infected out of 18 missions. It also has a card battle mode, AFK patrols, weapons to collect, heroine levels, a character gallery, a sandbox and a God Mode panel where you can set your power as high as you like.
 
 ## Play it
 
@@ -22,13 +22,22 @@ A detailed pixel-art zombie game for phones that plays fully offline. You play a
 
 ## What's in it
 
-- **8 heroines**, each with her own look, basic attack and starting powers:
+- **16 heroines**, each with her own look, build, personality, basic attack and three signature powers:
   - Raiko (storm caller), Hayate (speedster), Shiden (railgun) and Kurenai (afterimages): hime-cut schoolgirls with lightning bolts
   - Mikan, a cat girl in a hoodie whose attack is a fast claw swipe
   - Shizuku, a battle maid who throws knives
   - Hoshimi, a star-eyed twin-tail idol who fires music notes
   - Kohaku, a fox-eared shrine maiden with homing foxfire
-- **21 powers** you can put in any slot on any heroine:
+  - Erika, a blonde rich girl with twin drills and a tsundere streak: gold coins, family bodyguards and a stunning "Ohohoho!"
+  - Rei, a quiet kuudere student council president with short silver hair and ice powers
+  - Akane, a genki sports girl with a red ponytail who kicks fireballs
+  - Sayo, a sweet, slightly too devoted yandere in a gothic dress: red strings, lifesteal and a heart lock
+  - Shion, a shy bookworm with braids and glasses: paper cranes, a book barrier and a forbidden spell
+  - Marin, a tanned gyaru: selfie flashes, glitter bombs that charm, and vibe checks
+  - Kaguya, a chuunibyou with an eyepatch and side ponytail: dark flame pillars, a sealed-eye beam and a black hole
+  - Misaki, the big-sister field nurse: heals and revives the squad, sleep mist and a defibrillator chain
+  - Builds range from petite and flat to tall and full-figured; each heroine has her own lines at the start and end of a mission, and her face cam reacts in character.
+- **45 powers** you can put in any slot on any heroine, including:
   - Lightning and speed: Chain Lightning, Thunder Dash, Storm Field, Speed Force, Afterimages, Heaven's Judgment, Railgun, Blitz Barrage, Ball Lightning
   - Mikan: Static Pounce, Thunder Claws, Nine Lives
   - Shizuku: Knife Storm, Broom Sweep, Tea Time

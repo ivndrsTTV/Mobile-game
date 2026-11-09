@@ -1,16 +1,20 @@
-Download **Voltfall.apk** on your Android phone and open it to install. Android will ask you to allow installs from your browser or file manager the first time.
+Download **Voltfall.apk** on your Android phone and open it to install. If you already have v1.0.0, this installs over it and keeps your saves.
 
-**Updating from an older APK:** builds before v1.0.0 were each signed with a different key, so Android won't install this one over them. Open the old game, go to **Save slots → Backup code**, tap **Show my code** and **Copy**, and keep the code in a note. Then uninstall the old game, install this one and paste the code under **Restore from code**. From v1.0.0 on, updates install over each other and keep your saves.
+**Coming from an APK older than v1.0.0?** Those were each signed with a different key. Copy your progress first with **Save slots → Backup code → Show my code → Copy**, uninstall the old game, install this one, and paste the code under **Restore from code**.
 
-## What's new in v1.0.0
+## What's new in v1.1.0: eight new heroines
 
-- **Volt Clash:** a card battle against the horde, played offline. Two lanes, a canal, three towers a side, energy that refills over time, and a hand of four cards out of an eight-card deck. Ten opponents to climb.
-- **Weapons:** seven weapons that replace a heroine's basic attack, from the Raikiri Katana to the Thunder Hammer. Find them in crates, from bosses and nests, on patrols and in Volt Clash. Level them up to 10.
-- **Heroine levels:** XP from everything you do; every level adds health and damage.
-- **Patrol (AFK):** a heroine and the squad patrol a city and keep earning supplies, XP and weapons while the game is closed, for up to 12 hours.
-- **Gallery:** every heroine at four pixel resolutions, far, full body and close-up, in every view, pose and expression.
-- **Camera zoom:** far, normal, close or closer.
-- **Backup codes** for your progress.
-- Fixes: continuous border walls, readable numbers, fonts that work offline, trouser legs, Kohaku's fox ears and face cam, buildings no longer stand in the harbour water.
+Sixteen heroines now, each with her own personality, hairstyle, build, basic attack and three signature powers:
 
-Voltfall is a pixel-art zombie apocalypse: eight anime heroines, a squad of soldiers, adjustable God Mode, and 18 infected missions to clear, from the streets to the metro, the sewers and the rooftops.
+- **Erika**, the tsundere rich girl: blonde twin drills, gold coin shots, Golden Rain, Family Bodyguards and an "Ohohoho!" that stuns everything around her.
+- **Rei**, the kuudere council president: short silver hair, ice shards that slow, Frost Nova, Ice Lance and Absolute Zero.
+- **Akane**, the genki sports girl: red ponytail, fire kicks, Meteor Kick, a bouncing Spike Ball and Fighting Spirit for the whole squad.
+- **Sayo**, the yandere: gothic dress, crimson slashes that heal her, Red String of Fate, Crimson Devotion and Heart Lock.
+- **Shion**, the shy bookworm: braids and glasses, homing pages, Paper Cranes, Book Barrier and the Forbidden Chapter.
+- **Marin**, the gyaru: tanned, wavy hair, hearts that can charm, Selfie Flash, Glitter Bomb and Vibe Check.
+- **Kaguya**, the chuunibyou: eyepatch and side ponytail, dark flame shots, Dark Flame Master, Sealed Eye Release and Abyss Gate.
+- **Misaki**, the big-sister nurse: syringe darts that heal her, First Aid that revives fallen soldiers, Sedative Mist and the Defibrillator.
+
+Builds now range from petite and flat to tall and full-figured. Every heroine (the original eight too) has an archetype, says her own lines when a mission starts and ends, and her face cam reacts in character. The new heroines also play as Volt Clash cards, show up in the Gallery, on patrol and in the Weapons screen.
+
+Also: the title lineup scrolls through all sixteen, and long messages wrap on narrow screens.

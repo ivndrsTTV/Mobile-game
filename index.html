@@ -68,7 +68,9 @@ p{margin:0}
 .logo .l1{font-size:clamp(44px,13vw,96px);color:var(--ink);text-shadow:4px 4px 0 var(--sakura),8px 8px 0 #000}
 .logo .l2{font-size:clamp(52px,16vw,120px);color:var(--volt);text-shadow:4px 4px 0 #b3541e,8px 8px 0 #000;letter-spacing:.04em}
 .tag{font-size:22px;color:var(--muted)}
-.lineup{display:flex;gap:6px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.lineup{display:flex;gap:6px;align-items:flex-end;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;max-width:100%;padding:4px 2px 6px;scrollbar-width:thin;scrollbar-color:var(--line) transparent;-webkit-overflow-scrolling:touch}
+.lineup .h{flex:none}
+.title-wrap>*{min-width:0;max-width:100%}.title-wrap .left{width:100%}
 .lineup .h{display:grid;justify-items:center;gap:4px;animation:bob 1.6s steps(2) infinite}
 .lineup .h:nth-child(2){animation-delay:.4s}.lineup .h:nth-child(3){animation-delay:.8s}.lineup .h:nth-child(4){animation-delay:1.2s}
 .lineup .n{font-family:var(--display);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -80,7 +82,6 @@ p{margin:0}
   .title-wrap{grid-template-columns:1fr 1fr;align-items:center;text-align:left;justify-items:start}
   .title-wrap .left{display:grid;gap:12px}
   .logo .l1{font-size:56px}.logo .l2{font-size:72px}
-  .lineup{justify-content:flex-start}
 }
 
 /* city cards */
@@ -115,7 +116,7 @@ p{margin:0}
 .btn .dot{display:inline-block;width:8px;height:8px;background:var(--toxic);margin-left:6px;vertical-align:middle;box-shadow:0 0 0 2px #000}
 .loot{display:flex;gap:10px;align-items:center;font-family:var(--display);font-size:16px;color:var(--volt)}
 .xpline{font-size:20px;margin:0}.xpline b{color:var(--volt);font-weight:400}.xpline .lvup{color:var(--toxic)}
-.hcard h3{font-family:var(--display);margin:0;font-size:22px}.hcard .chip{justify-self:start}
+.hcard h3{font-family:var(--display);margin:0;font-size:22px}.hcard .chip{justify-self:start}.hcard .quote{font-size:16px;color:var(--ink);opacity:.85;font-style:italic}
 .stat{display:grid;grid-template-columns:62px 1fr;gap:6px;align-items:center;font-size:16px;color:var(--muted)}
 .meter{height:8px;background:#0b0912;border:1px solid var(--line)}
 .meter i{display:block;height:100%;background:var(--volt)}
@@ -216,7 +217,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 #banner small{font-size:22px;color:var(--ink);text-shadow:2px 2px 0 #000}
 @keyframes ban{0%{opacity:0;transform:scale(1.3)}10%{opacity:1;transform:scale(1)}75%{opacity:1}100%{opacity:0}}
 #toast{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translateX(-50%);background:var(--panel);border:2px solid var(--line);padding:6px 12px;
-  font-size:18px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+  font-size:18px;opacity:0;transition:opacity .2s;pointer-events:none;width:max-content;max-width:min(560px,calc(100% - 24px));text-align:center}
 #toast.show{opacity:1}
 @media (max-width:640px){
   #objective{left:calc(env(safe-area-inset-left,0px) + 8px);transform:none;top:calc(env(safe-area-inset-top,0px) + 112px);font-size:11px}
@@ -380,8 +381,44 @@ const HEROINES=[
    loadout:['encore','starshower','fanclub'],blurb:'Her songs power up the squad and turn the infected into fans.',look:{build:'slim',hs:'twin',bangs:'fluffy',outfit:'idol',sleeve:'puffWhite',bottom:'idol',legs:'kneeboots',shoe:'boot',eyes:'star',mouth:'open',head:'idol',neck:'choker',gloves:true}},
   {id:'kohaku',age:23,name:'Kohaku',title:'Kitsune Shrine Maiden',hair:'#f4e2bf',eye:'#ffad33',outfit:'#d42a3a',accent:'#ffd84a',rib:'#d42a3a',stk:'#ffffff',boot:'#7a4a2a',col:'#f8f6f2',bolt:'#7ad8ff',hp:115,spd:74,atk:12,trail:false,auto:'fox',
    loadout:['foxfire','talisman','ward'],blurb:'A fox-spirit shrine maiden with homing foxfire and exploding charms.',look:{build:'tall',hs:'long',bangs:'parted',outfit:'miko',sleeve:'wide',bottom:'hakama',legs:'hakama',shoe:'zori',eyes:'round',mouth:'smile',ears:'fox',tail:'fox',head:'miko'}},
+  {id:'erika',age:21,name:'Erika',title:'Golden Ojou-sama',hair:'#f2cf5c',eye:'#4aa8ff',outfit:'#24326e',accent:'#e8b84a',rib:'#d42a3a',stk:'#ffffff',boot:'#5a2a1a',col:'#ffffff',bot:'#2a3a7a',bolt:'#ffd84a',hp:105,spd:72,atk:12,trail:false,auto:'coin',
+   loadout:['goldrain','butlers','ohoho'],blurb:'A rich girl who pays for everything, including your rescue. Not that she cares about you or anything.',look:{build:'slim',hs:'drills',bangs:'parted',outfit:'blazer',tie:'ribbon',sleeve:'long',bottom:'skirt',skirt:14,plaid:true,legs:'stockings',shoe:'mary',eyes:'round',mouth:'neutral'}},
+  {id:'rei',age:20,name:'Rei',title:'Frost Council President',hair:'#d2e4f6',eye:'#5ad0ff',outfit:'#1e2a4a',accent:'#9fe8ff',rib:'#3a7ad8',stk:'#1a2030',boot:'#1a1a24',col:'#f2f6fb',bot:'#1e2a4a',bolt:'#9fe8ff',hp:100,spd:76,atk:13,trail:false,auto:'ice',
+   loadout:['frostnova','icelance','zero'],blurb:'Calm, quiet and always right. Her ice stops the horde dead, and she will not tell you how she feels about it.',look:{build:'lithe',hs:'short',bangs:'swept',outfit:'blazer',tie:'tie',sleeve:'long',bottom:'skirt',skirt:16,legs:'tights',shoe:'boot',eyes:'sleepy',mouth:'neutral',head:'clip'}},
+  {id:'akane',age:19,name:'Akane',title:'Blazing Ace Striker',hair:'#e8452c',eye:'#ffb02e',outfit:'#ff5a2a',accent:'#ffd23f',rib:'#ffd23f',stk:'#ffffff',boot:'#ff5a2a',col:'#ffffff',bot:'#1e2440',bolt:'#ff8a2a',hp:120,spd:92,atk:12,trail:true,auto:'kick',
+   loadout:['meteorkick','spikeball','spirit'],blurb:'The school ace. Kicks the infected like penalty shots and never runs out of energy.',look:{build:'athletic',hs:'pony',bangs:'fluffy',outfit:'track',sleeve:'track',bottom:'shorts',legs:'socks',shoe:'sneaker',eyes:'round',mouth:'open',head:'band'}},
+  {id:'sayo',age:22,name:'Sayo',title:'Crimson Devotion',hair:'#2a1c34',eye:'#e0203a',outfit:'#4a1424',accent:'#e0203a',rib:'#c2182b',stk:'#1c1622',boot:'#2a1420',col:'#f2eef6',bot:'#3a101c',bolt:'#ff3355',hp:110,spd:80,atk:13,trail:false,auto:'blade',
+   loadout:['redstring','devotion','heartlock'],blurb:'Sweet, devoted and a little too attached. Anything that touches you answers to her.',look:{build:'curvy',hs:'long',bangs:'blunt',outfit:'dress',sleeve:'puff',bottom:'gothic',skirt:22,legs:'stockings',shoe:'mary',eyes:'round',mouth:'smile',head:'bow'}},
+  {id:'shion',age:22,name:'Shion',title:'Library of Spells',hair:'#2f5a5a',eye:'#7acb8a',outfit:'#b89a6a',accent:'#7a5a3a',rib:'#3a6ad8',stk:'#2a2a3a',boot:'#3a2a1a',col:'#ffffff',bot:'#3a3a5a',bolt:'#a8f0b8',hp:95,spd:68,atk:14,trail:false,auto:'page',
+   loadout:['cranes','barrier','forbidden'],blurb:'A shy bookworm hiding behind her glasses. Her spellbooks hit much harder than she talks.',look:{build:'curvy',hs:'braids',bangs:'blunt',outfit:'sweater',tie:'ribbon',sleeve:'long',bottom:'skirt',skirt:20,plaid:true,legs:'socks',shoe:'mary',eyes:'round',mouth:'neutral',face:'glasses'}},
+  {id:'marin',age:20,name:'Marin',title:'Glitter Gyaru',hair:'#f4c06a',eye:'#ff6ab4',skin:'#dfa078',outfit:'#fbf8ff',accent:'#8fd0ff',rib:'#ff3d8a',stk:'#ffffff',boot:'#3a2a2a',col:'#ffffff',bot:'#c8467a',bolt:'#ff8ad8',hp:105,spd:80,atk:11,trail:false,auto:'heart',
+   loadout:['selfie','glitter','vibecheck'],blurb:'Loud, tanned and loyal to the end. Her selfies stun, her glitter charms and her vibes are immaculate.',look:{build:'tall',hs:'wavy',bangs:'swept',outfit:'shirt',tie:'ribbon',sleeve:'short',bottom:'skirt',skirt:10,plaid:true,legs:'loose',shoe:'mary',eyes:'round',mouth:'grin',waist:'cardigan'}},
+  {id:'kaguya',age:19,name:'Kaguya',title:'Dark Flame Master',hair:'#3a2a5a',eye:'#c84aff',outfit:'#16121e',accent:'#b8b0c8',rib:'#c84aff',stk:'#16121e',boot:'#2a1a34',col:'#e8e2f2',bot:'#2a2236',bolt:'#b05aff',hp:95,spd:78,atk:14,trail:false,auto:'dark',
+   loadout:['darkflame','sealedeye','abyss'],blurb:'Claims to be a fallen demon queen with a sealed eye. Her black flames are, unfortunately for the horde, real.',look:{build:'petite',hs:'side',bangs:'swept',outfit:'coat',sleeve:'long',bottom:'skirt',skirt:12,legs:'stockings',shoe:'boot',eyes:'round',mouth:'grin',face:'eyepatch'}},
+  {id:'misaki',age:26,name:'Misaki',title:'Angel of the Ward',hair:'#c08ad8',eye:'#a85ad8',outfit:'#fbf6fb',accent:'#ff8ab4',rib:'#ff6a9a',stk:'#ffffff',boot:'#f4eef6',col:'#ffffff',bot:'#fbf6fb',bolt:'#ff9ac8',hp:125,spd:70,atk:11,trail:false,auto:'needle',
+   loadout:['firstaid','sedative','defib'],blurb:'The squad\'s big sister and field nurse. Patches everyone up with a smile, then sedates the horde.',look:{build:'glamour',hs:'lowside',bangs:'swept',outfit:'nurse',sleeve:'short',bottom:'skirt',skirt:12,plainSkirt:true,legs:'stockings',shoe:'mary',eyes:'round',mouth:'smile',head:'nurse'}},
 ];
 const HMAP=Object.fromEntries(HEROINES.map(h=>[h.id,h]));
+// personalities: a dating-sim archetype, a few lines, and how the face cam's moods shift for her
+const PERSONA={
+  raiko:{type:'Yamato Nadeshiko',start:'Please excuse me. I will be clearing this street now.',win:'Thank you for your patience. The storm has passed.',lose:'How unbecoming of me... I will not fall twice.'},
+  hayate:{type:'Speed-freak tomboy',start:'Too slow! Try to keep up!',win:'Done already? That was a warm-up.',lose:'Tch... I was faster. I know I was.'},
+  shiden:{type:'Honor student sharpshooter',start:'Trajectory calculated. Firing.',win:'One hundred percent accuracy. As expected.',lose:'...I need to recalculate everything.'},
+  kurenai:{type:'Delinquent big sister',start:'Hah! Which of you wants a piece of me first?',win:'That all you got? Somebody get me a soda.',lose:'Next time I\'m bringing the whole gang.'},
+  mikan:{type:'Cat-girl little sister',start:'Nya~ leave the big ones to me!',win:'Head pats now, please! I earned them!',lose:'Mrrow... can I have a nap first...?'},
+  shizuku:{type:'Perfect maid',start:'Your mess will be cleaned up shortly, Master.',win:'The street is spotless. Shall I prepare tea?',lose:'Unforgivable. I will polish my knives twice as hard.'},
+  hoshimi:{type:'Idol',start:'Everyone, are you ready? Let\'s make some noise!',win:'Thank you, thank you! Encore next city!',lose:'Even idols have off days... I\'ll practice more!'},
+  kohaku:{type:'Mysterious fox spirit',start:'The spirits whisper... this town needs a cleansing.',win:'Purified. You may leave an offering of fried tofu.',lose:'Hmm. The spirits are cross with me today.'},
+  erika:{type:'Tsundere rich girl',start:'I-it\'s not like I came to save this city for YOU! Ohohoho!',win:'Hmph. Naturally. Don\'t get the wrong idea!',lose:'Th-this isn\'t over! I\'ll buy a better army!',moods:{happy:'smug',victory:'smug'}},
+  rei:{type:'Kuudere',start:'...Infected detected. Commencing extermination.',win:'Area secured. ...You may praise me. If you want.',lose:'...A miscalculation. It will not happen again.',moods:{happy:'calm',fierce:'calm',scared:'pain'}},
+  akane:{type:'Genki sports girl',start:'Let\'s gooo! Last one to the nest buys ramen!',win:'Yeah! Victory lap, everyone!',lose:'Ugh! I\'m training twice as hard tomorrow!',moods:{calm:'happy'}},
+  sayo:{type:'Yandere',start:'Don\'t worry. Nothing will ever touch you again. Nothing.',win:'See? You only need me. Only me~',lose:'Who did this to you...? Tell me their names.',moods:{fierce:'smug',happy:'smug'}},
+  shion:{type:'Shy bookworm',start:'U-um... I read about this in a book... I\'ll do my best...',win:'W-we did it...? Can I go back to reading now?',lose:'I\'m sorry... I\'m so, so sorry...',moods:{smug:'happy',fierce:'scared'}},
+  marin:{type:'Gyaru',start:'Omg, these zombies are sooo not cute. Let\'s fix that~',win:'Yaaas! Group selfie, everyone!',lose:'Ugh, my nails... so not okay.',moods:{calm:'smug'}},
+  kaguya:{type:'Chuunibyou',start:'Kukuku... my sealed eye throbs. The Dark Flame Master descends!',win:'Just as the abyss foretold. Kneel, mortals!',lose:'Impossible... my seal... was weakened...',moods:{smug:'fierce',happy:'fierce'}},
+  misaki:{type:'Big-sister nurse',start:'Ara ara~ Did somebody get hurt? Big sis is here now.',win:'Good job, everyone. Line up for your check-ups~',lose:'Oh dear... time for some bed rest, hmm?'},
+};
+
 
 const POWERS={
   chain:{name:'Chain Lightning',short:'CHAIN',cd:2.6,desc:'A bolt leaps between up to 8 infected.'},
@@ -405,6 +442,30 @@ const POWERS={
   foxfire:{name:'Fox Fire',short:'FOX FIRE',cd:4,desc:'Six blue spirit flames that hunt down targets.'},
   talisman:{name:'Talisman Seal',short:'SEAL',cd:8,desc:'Stick paper charms on 8 infected. They explode a moment later.'},
   ward:{name:'Sacred Ward',short:'WARD',cd:14,desc:'A 6s barrier the infected cannot enter. It burns them.'},
+  goldrain:{name:'Golden Rain',short:'GOLD',cd:6,desc:'Gold coins rain on the infected. Some of them stay in your pocket.'},
+  butlers:{name:'Butler Brigade',short:'BUTLERS',cd:16,desc:'Two butlers with submachine guns guard you for 14s.'},
+  ohoho:{name:'Ohohoho!',short:'OHOHO',cd:8,desc:'A laugh so haughty it knocks back and stuns everything nearby.'},
+  frostnova:{name:'Frost Nova',short:'NOVA',cd:7,desc:'A ring of ice freezes the infected around you for 2s.'},
+  icelance:{name:'Ice Lance',short:'LANCE',cd:4,desc:'A spear of ice that pierces a whole line and slows them.'},
+  zero:{name:'Absolute Zero',short:'ZERO',cd:18,desc:'Everything nearby slows to a crawl for 6s and takes frost damage.'},
+  meteorkick:{name:'Meteor Kick',short:'KICK',cd:4,desc:'Dash forward on fire, then crash down in an explosion.'},
+  spikeball:{name:'Spike Ball',short:'SPIKE',cd:6,desc:'A blazing ball that bounces between seven infected.'},
+  spirit:{name:'Fighting Spirit',short:'SPIRIT',cd:16,desc:'You and the squad move faster and attack twice as fast for 6s.'},
+  redstring:{name:'Red String of Fate',short:'STRING',cd:7,desc:'Ties up to six infected, then yanks them to you and slashes them.'},
+  devotion:{name:'Crimson Devotion',short:'DEVOTE',cd:15,desc:'For 6s your damage rises by 60% and every kill heals you.'},
+  heartlock:{name:'Heart Lock',short:'LOCK',cd:9,desc:'Marks the toughest infected nearby. It takes triple damage for 8s.'},
+  cranes:{name:'Paper Cranes',short:'CRANES',cd:5,desc:'A flock of folded cranes hunts the infected down.'},
+  barrier:{name:'Book Barrier',short:'BOOKS',cd:14,desc:'Spellbooks orbit you for 7s, blocking most damage and battering the infected.'},
+  forbidden:{name:'Forbidden Chapter',short:'CHAPTER',cd:12,desc:'A magic circle opens where you aim and erupts a second later.'},
+  selfie:{name:'Selfie Flash',short:'SELFIE',cd:5,desc:'A blinding flash stuns everything in front of you.'},
+  glitter:{name:'Glitter Bomb',short:'GLITTER',cd:8,desc:'An explosion of glitter. The infected who survive fight for you.'},
+  vibecheck:{name:'Vibe Check',short:'VIBES',cd:11,desc:'Shoves everything away, slows it, and heals you a quarter.'},
+  darkflame:{name:'Dark Flame Master',short:'FLAME',cd:6,desc:'A line of black flame pillars erupts along your aim.'},
+  sealedeye:{name:'Sealed Eye Release',short:'EYE',cd:13,desc:'Her sealed eye opens: a huge beam that pierces everything.'},
+  abyss:{name:'Abyss Gate',short:'ABYSS',cd:15,desc:'A black hole pulls the infected in for 3s, then explodes.'},
+  firstaid:{name:'First Aid',short:'AID',cd:16,desc:'Heals you and the squad, and brings fallen soldiers back.'},
+  sedative:{name:'Sedative Mist',short:'MIST',cd:9,desc:'A sleepy pink cloud that slows and poisons the infected for 5s.'},
+  defib:{name:'Defibrillator',short:'SHOCK',cd:6,desc:'A shock that jumps between seven infected and stuns them.'},
 };
 
 const CLASSES={
@@ -763,7 +824,7 @@ const ORN={
   hayate:(D,y)=>{D.poly([[50,9+y],[44,5+y],[44,15+y]],'R');D.poly([[50,9+y],[57,5+y],[57,15+y]],'R');D.ell(50.5,9.5+y,2.2,2.2,'r');D.line(45,7+y,48,9+y,'5');D.poly([[49,11+y],[52,11+y],[54,20+y],[51,18+y],[48,20+y]],'R')},
   shiden:(D,y)=>{D.poly([[51,3+y],[53,8.5+y],[59,9+y],[54.5,12.6+y],[56,18.5+y],[51,15.2+y],[46,18.5+y],[47.5,12.6+y],[43,9+y],[49,8.5+y]],'R');D.px(50.4,8+y,'5');D.px(50.8,9+y,'5')},
   kurenai:(D,y)=>{D.sphere(48,10+y,3.4,3.4,'rrR5');D.sphere(53.5,14+y,3.4,3.4,'rrR5');D.line(46,10.5+y,50,10.5+y,'r');D.line(51.5,14.5+y,55.5,14.5+y,'r');D.line(50,6+y,53,4+y,'A')}};
-function heroPal(h){return{hair:h.hair,skin:h.skin||'#ffd9c4',blush:'#ff9aa6',lash:'#1c1028',eye:h.eye,white:'#ffffff',mouth:'#b5485d',out:h.outfit,col:h.col||'#efeaf6',acc:h.accent,rib:h.rib,stk:h.stk,boot:h.boot,glow:h.bolt}}
+function heroPal(h){return{hair:h.hair,skin:h.skin||'#ffd9c4',blush:'#ff9aa6',lash:'#1c1028',eye:h.eye,white:'#ffffff',mouth:'#b5485d',out:h.outfit,col:h.col||'#efeaf6',acc:h.accent,rib:h.rib,stk:h.stk,boot:h.boot,glow:h.bolt,bot:h.bot}}
 /* ---------- anime girl renderer: a posable skeleton with front/back/side views and body builds, drawn at a low native
    resolution (shown at 2x or 3x) as true pixel art: shapes snapped to pixels, cel shaded, hand-placed pixel eyes ---------- */
 const BUILDS={
@@ -771,14 +832,16 @@ const BUILDS={
   slim:{h:1,head:1.09,sh:11.8,bust:1.15,waist:8,hip:13.8,thigh:6.1,arm:2.5},
   athletic:{h:1.02,head:1.08,sh:12.6,bust:1.2,waist:8.8,hip:14,thigh:6.5,arm:2.8},
   curvy:{h:.99,head:1.09,sh:12,bust:1.8,waist:8.1,hip:16,thigh:7,arm:2.6},
-  tall:{h:1.06,head:1.07,sh:12.2,bust:1.5,waist:8.2,hip:14.6,thigh:6.4,arm:2.6}};
+  tall:{h:1.06,head:1.07,sh:12.2,bust:1.5,waist:8.2,hip:14.6,thigh:6.4,arm:2.6},
+  lithe:{h:1.04,head:1.08,sh:11.4,bust:.35,waist:7.6,hip:12.8,thigh:5.7,arm:2.4},
+  glamour:{h:1.04,head:1.07,sh:12.2,bust:2.25,waist:8.2,hip:16.4,thigh:7.1,arm:2.6}};
 const SKIN=['#a8606e','#f0b4a6','#ffdcc8','#fff1e8'];
 const GW=128,GH=232,GFB=226,GCX=64;
 // pixel eye templates (left eye; the right eye is mirrored). K lash, k soft lash, W white, w shaded white,
 // D/d dark iris, I iris, L/l light iris, P pupil, H catchlight
 const EYES={
   s:{front:[".KKKK.","KwdddW",".WHPIW",".WIILW","..kk.."],side:["KKKK.","KwddW",".WHPI",".WILL",".kk.."],
-    blink:["......","......","K....K",".KKKK.","......"],hurt:["K.....",".KK...","...KK.",".KK...","K....."]},
+    blink:["......","......","K....K",".KKKK.","......"],half:["......","KKKKKK","KwHPIW",".WIILW","..kk.."],hurt:["K.....",".KK...","...KK.",".KK...","K....."]},
   l:{front:["....KKKKKK..","..KKKKKKKKKK",".KwwdddddwwK","K.WWdPPPdWW.","..WWHHPPdWW.","..WWHIPIIWW.","..WWIIIIIWW.","..WWILLLHWW.","...WWlLlWW..","....kkkk...."],
     side:["..KKKKK..","KKKKKKKK.",".KwwdddK.","..WddPPd.","..WdHHPPd","..WIHHPPI","..WIIPPII","..WIIIILI","...WlLLlW","...kkk..."],
     blink:["............","............","............","............","............","KK........KK","..KKKKKKKK..","............","............","............"],
@@ -868,7 +931,9 @@ function renderGirl(L,p,o){
   const tone=new Int8Array(N).fill(-1),pid=new Int16Array(N).fill(-1),zb=new Int16Array(N).fill(-32000),rampOf=[],groupOf=[],flatOf=[];
   const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;const tc=tmp.getContext('2d',{willReadFrequently:true});
   const U=hex=>{const n=parseInt(hex.slice(1),16);return(0xff000000|((n&255)<<16)|(n&0xff00)|(n>>16))>>>0};
-  const R4=hex=>(hex==='skin'?SKIN:ramp(hex)).map(U);
+  // skin uses the standard ramp unless the heroine has her own tone (a tan, say)
+  const skinRamp=p.skin&&p.skin!=='#ffd9c4'?[shade(p.skin,-62),shade(p.skin,-26),p.skin,shade(p.skin,24)]:SKIN;
+  const R4=hex=>(hex==='skin'?skinRamp:ramp(hex)).map(U);
   const masks={};
   let bx0,by0,bx1,by1;
   function raster(draw){tc.setTransform(1,0,0,1,0,0);tc.clearRect(0,0,W,H);tc.setTransform(S,0,0,S,0,0);tc.fillStyle='#fff';tc.strokeStyle='#fff';tc.lineCap='round';tc.lineJoin='round';
@@ -933,6 +998,7 @@ function renderGirl(L,p,o){
       part(z+1,c,x=>yclip(x,top,400,()=>legShape(x,l,.35)),{dim});
       if(lg==='striped')for(let y=top+3;y<l.ankle[1];y+=4.4)part(z+2,p.acc,x=>{x.save();x.beginPath();x.rect(0,y,GW,2);x.clip();legShape(x,l,.4);x.restore()},{dim,band:1});
       if(lg==='stockings'||lg==='striped')part(z+3,shade(c==='#fff4f8'?p.acc:c,-20),x=>{x.save();x.beginPath();x.rect(0,top,GW,2.2);x.clip();legShape(x,l,.6);x.restore()},{dim,band:1})}
+    if(lg==='loose'){const top=l.knee[1]+4;const id=part(z+1,p.stk,x=>yclip(x,top,400,()=>legShape(x,l,1.3)),{dim});for(let y=top+3;y<l.ankle[1]-2;y+=3.6)tint([id],x=>{x.fillRect(-50,y,GW+100,Math.max(1/S,1))},-1)}
     if(lg==='kneeboots'||L.shoe==='boot'){const top=lg==='kneeboots'?l.knee[1]+3:l.ankle[1]-11;part(z+4,p.boot,x=>yclip(x,top,400,()=>{legShape(x,l,.8)}),{dim});
       if(lg==='kneeboots')part(z+5,p.acc,x=>yclip(x,top,top+2.4,()=>legShape(x,l,1.2)),{dim,band:1})}
     // small feet
@@ -950,6 +1016,7 @@ function renderGirl(L,p,o){
     part(z,skin==='skin'?'skin':skin,x=>armShape(x,a),{dim});
     if(sl==='long'||sl==='hoodie')part(z+1,sl==='hoodie'?outC:sc,x=>armShape(x,a,sl==='hoodie'?1.4:.6,0,1.82),{dim});
     if(sl==='short')part(z+1,sc,x=>armShape(x,a,.8,0,.6),{dim});
+    if(sl==='track'){part(z+1,sc,x=>armShape(x,a,.9,0,1.86),{dim});part(z+2,colC,x=>{const o=side?0:a.s*(B.arm+.6),sh=[a.sho[0]+o,a.sho[1]],el=[a.elb[0]+o,a.elb[1]],wr=[a.wri[0]+o*.8,a.wri[1]];cap(x,sh,el,.8,.8);cap(x,el,wr,.8,.7)},{dim,flat:true,tone:2})}
     if(sl==='puff'||sl==='puffWhite'){part(z+1,sc,x=>{const c=lerp(a.sho,a.elb,.26);ell(x,c[0]+(side?0:a.s*1),c[1],B.arm+2.8,5.6)},{dim});
       part(z+2,colC,x=>{x.save();const c=lerp(a.sho,a.elb,.5);x.beginPath();x.rect(c[0]-12,c[1]-1,24,2.2);x.clip();armShape(x,a,1,.3,.7);x.restore()},{dim,band:1})}
     if(sl==='wide'){part(z+1,colC,x=>{x.beginPath();const s=side?1:a.s,w=a.wri;x.moveTo(a.sho[0]-s*3.6,a.sho[1]-2);x.lineTo(a.sho[0]+s*4.4,a.sho[1]);
@@ -975,10 +1042,14 @@ function renderGirl(L,p,o){
     if(O==='vest'){topId=part(60,outC,fitted(.6,J.waist+3));bustShade(topId,outC)}
     if(O==='hoodie'){topId=part(60,outC,x=>{torsoPath(x,1.6);yclip(x,0,J.crotch+8,()=>{const l=side?GCX-11:GCX-B.hip-2.4,r=side?GCX+9:GCX+B.hip+2.4;x.beginPath();x.moveTo(l,J.hip-2);x.lineTo(r,J.hip-2);x.lineTo(r+1.4,J.crotch+7);x.lineTo(l-1.4,J.crotch+7);x.fill()})});bustShade(topId,outC,.7)}
     if(O==='miko'){topId=part(60,colC,fitted(1.3,J.waist+2));bustShade(topId,colC)}
+    if(O==='blazer'||O==='track'||O==='coat'){topId=part(60,outC,fitted(O==='coat'?1.6:O==='track'?1.3:1,J.waist+5));bustShade(topId,outC,O==='coat'?.8:1)}
+    if(O==='sweater'||O==='shirt'||O==='dress'||O==='nurse'){topId=part(60,outC,fitted(O==='sweater'?1:.6,J.waist+(O==='sweater'?5:2)));bustShade(topId,outC)}
     // skirts and lower garments
     const B2=L.bottom;
-    if(B2==='skirt'){const hem=J.crotch+(L.skirt||14);skId=part(55,outC,x=>skirtPath(x,J.waist-1,hem,5));
-      const n=side?4:7;for(let k=0;k<n;k++){const t=(k+.5)/n,x0=side?GCX-6+t*12:GCX-B.waist+t*B.waist*2,x1=side?GCX-10+t*19-sw*1.6:GCX-(B.hip+5)+t*(B.hip+5)*2+sw*1.6;
+    const botC=p.bot||outC;
+    if(B2==='skirt'){const hem=J.crotch+(L.skirt||14);skId=part(55,botC,x=>skirtPath(x,J.waist-1,hem,5));
+      if(L.plaid){for(let y=J.waist+3;y<hem;y+=4.6)tint([skId],x=>{x.fillRect(-50,y,GW+100,Math.max(1/S,1))},-1);tint([skId],x=>{for(let k=-3;k<=3;k++)x.fillRect(GCX+k*4.6-.5,J.waist,Math.max(1/S,1),hem-J.waist+4)},1)}
+      const n=L.plainSkirt?0:side?4:7;for(let k=0;k<n;k++){const t=(k+.5)/n,x0=side?GCX-6+t*12:GCX-B.waist+t*B.waist*2,x1=side?GCX-10+t*19-sw*1.6:GCX-(B.hip+5)+t*(B.hip+5)*2+sw*1.6;
         tint([skId],x=>{x.lineWidth=1.1;x.beginPath();x.moveTo(x0,J.waist+2);x.lineTo(x1,hem+1);x.stroke()},-1)}
       part(56,p.acc,x=>{x.save();x.beginPath();x.rect(-50,hem-2.6,GW+100,1.8);x.clip();skirtPath(x,J.waist-1,hem,5,.2);x.restore()},{flat:true,tone:2})}
     if(B2==='maid'){const hem=J.crotch+(L.skirt||22);part(53,colC,x=>{skirtPath(x,J.waist,hem+2.6,9);},{band:1.2});
@@ -999,6 +1070,13 @@ function renderGirl(L,p,o){
           x.quadraticCurveTo(c+9,J.hip,fx,hem);x.lineTo(bx,hem);x.quadraticCurveTo(c-12,J.hip+6,c-8.4,J.waist-4);x.closePath();x.fill()}});
       for(let k=0;k<4;k++){const t=(k+.5)/4;tint([skId],x=>{x.lineWidth=1.2;x.beginPath();x.moveTo(GCX-B.waist+t*B.waist*2,J.waist);x.lineTo(GCX-(B.hip+8)+t*(B.hip+8)*2+sw*1.5,hem);x.stroke()},-1)}
       if(!back)part(58,p.rib,x=>{const c=side?GCX+5:GCX,y=J.waist-2;x.beginPath();x.moveTo(c,y);x.lineTo(c-5.4,y-3);x.lineTo(c-5.4,y+3);x.closePath();x.moveTo(c,y);x.lineTo(c+5.4,y-3);x.lineTo(c+5.4,y+3);x.closePath();x.fill();cap(x,[c-1,y],[c-3,y+11],1.1,1.1);cap(x,[c+1,y],[c+3,y+10],1.1,1.1)},{band:1})}
+    if(B2==='shorts'){const sid=part(55,botC,x=>{yclip(x,J.waist-2,J.crotch+6,()=>torsoPath(x,.9));for(const l of J.legs)cap(x,l.hip,lerp(l.hip,l.knee,.38),B.thigh+.9,B.thigh+.5)});
+      part(56,colC,x=>{for(const l of J.legs){const e=lerp(l.hip,l.knee,.38);x.save();x.beginPath();x.rect(-50,e[1]-1.6,GW+100,1.6);x.clip();cap(x,l.hip,e,B.thigh+1.1,B.thigh+.7);x.restore()}},{flat:true,tone:2});
+      if(!side)tint([sid],x=>{x.lineWidth=Math.max(1.2,1.4/S);x.beginPath();x.moveTo(GCX,J.crotch-2);x.lineTo(GCX,J.crotch+5);x.stroke()},-2)}
+    if(B2==='gothic'){const hem=J.crotch+(L.skirt||22);part(53,colC,x=>skirtPath(x,J.waist,hem+3.4,13),{band:1.2});
+      skId=part(55,botC,x=>skirtPath(x,J.waist-1,hem,11));for(let k=0;k<7;k++){const t=(k+.5)/7;tint([skId],x=>{x.lineWidth=1.1;x.beginPath();x.moveTo(GCX-B.waist+t*B.waist*2,J.waist+3);x.lineTo(GCX-(B.hip+11)+t*(B.hip+11)*2+sw*1.6,hem);x.stroke()},-1)}
+      part(56,p.rib,x=>{x.save();x.beginPath();x.rect(-50,hem-5,GW+100,1.6);x.clip();skirtPath(x,J.waist-1,hem,11,.2);x.restore()},{flat:true,tone:2});
+      if(!back)part(57,p.rib,x=>{for(let y=J.waist+1;y<J.waist+9;y+=3){x.fillRect(GCX-2.4,y,4.8,1)}},{flat:true,tone:1})}
     if(B2==='pants'){const pid=part(55,outC,x=>{yclip(x,J.waist-2,J.crotch+6,()=>torsoPath(x,.9));for(const l of J.legs)cap(x,l.hip,lerp(l.knee,l.ankle,.85),B.thigh+.7,4.2)});
       // the inseam crease between the legs, and a fold at each knee, so the trousers read as two legs
       if(!side){const[l0,l1]=J.legs,mid=k=>(l0[k][0]+l1[k][0])/2;
@@ -1032,6 +1110,40 @@ function renderGirl(L,p,o){
       else part(66,shade(outC,-10),x=>{x.beginPath();x.ellipse(GCX-5,T+2,5.4,6.4,0,0,7);x.fill()},{band:1.4})}
     if(O==='vest'){const v=part(64,p.vest,x=>yclip(x,T-2,J.waist+4,()=>torsoPath(x,1.2)));if(front){tint([v],x=>{x.fillRect(GCX-.6,T,1.2,40)},-1);part(65,shade(p.vest,-12),x=>{x.fillRect(GCX-8,J.bust+3,5,6);x.fillRect(GCX+3,J.bust+3,5,6)},{band:1});part(66,p.acc,x=>{x.fillRect(GCX-7,T+5,4.4,3.2)},{band:1})}
       part(67,p.boot,x=>{x.save();x.beginPath();x.rect(-50,J.waist+1,GW+100,3);x.clip();torsoPath(x,1.4);x.restore()},{band:1})}
+    if(O==='blazer'||O==='sweater'||O==='shirt'||O==='nurse'){const shirt=O==='nurse'?outC:colC;
+      if(front){if(O!=='shirt')part(66,shirt,x=>{x.beginPath();x.moveTo(GCX-4.8,T-3.6);x.lineTo(GCX,O==='nurse'?T+7:J.bust+2);x.lineTo(GCX+4.8,T-3.6);x.closePath();x.fill()},{band:1.2});
+        if(O==='blazer')part(67,shade(outC,-22),x=>{x.lineWidth=1.5;x.beginPath();x.moveTo(GCX-B.sh+1.6,T-.6);x.lineTo(GCX-1.2,J.bust+3);x.moveTo(GCX+B.sh-1.6,T-.6);x.lineTo(GCX+1.2,J.bust+3);x.stroke()},{flat:true});
+        if(O==='shirt'||O==='nurse')part(67,O==='nurse'?p.acc:shade(outC,-26),x=>{x.lineWidth=1.1;x.beginPath();x.moveTo(GCX-5,T-3.4);x.lineTo(GCX-1,T+5);x.lineTo(GCX-6.4,T+1);x.moveTo(GCX+5,T-3.4);x.lineTo(GCX+1,T+5);x.lineTo(GCX+6.4,T+1);x.stroke()},{flat:true});
+        if(O==='sweater')part(67,shade(outC,-16),x=>{x.save();x.beginPath();x.rect(-50,J.waist+2,GW+100,3);x.clip();torsoPath(x,1.3);x.restore()},{band:1});
+        if(L.tie==='tie')part(69,p.rib,x=>{x.beginPath();x.moveTo(GCX-1.6,T-2.4);x.lineTo(GCX+1.6,T-2.4);x.lineTo(GCX+1,T+.6);x.lineTo(GCX+2.2,J.bust+5);x.lineTo(GCX,J.bust+7.4);x.lineTo(GCX-2.2,J.bust+5);x.lineTo(GCX-1,T+.6);x.closePath();x.fill()},{band:1.2});
+        if(L.tie==='ribbon'){const y=O==='shirt'?T+4:T+1.4;part(69,p.rib,x=>{x.beginPath();x.moveTo(GCX,y);x.lineTo(GCX-4.6,y-2.6);x.lineTo(GCX-4,y+2.8);x.closePath();x.moveTo(GCX,y);x.lineTo(GCX+4.6,y-2.6);x.lineTo(GCX+4,y+2.8);x.closePath();x.fill();
+          cap(x,[GCX-.6,y],[GCX-2,y+(O==='shirt'?9:6)],1,.9);cap(x,[GCX+.6,y],[GCX+2.2,y+(O==='shirt'?8:5.4)],1,.9)},{band:1.1})}
+        if(O==='blazer'||O==='nurse')solid(70,O==='nurse'?p.acc:p.acc,x=>{ell(x,GCX-(O==='nurse'?0:1.8),J.waist-1.4,.9,.9);ell(x,GCX-(O==='nurse'?0:1.8),J.waist+2.4,.9,.9);if(O==='nurse')ell(x,GCX,J.bust+4,.9,.9)});
+        if(O==='blazer')part(70,p.acc,x=>{x.fillRect(GCX+B.sh-6.4,J.bust-6,3,3.4)},{band:1});
+        if(O==='nurse')part(68,p.acc,x=>{x.save();x.beginPath();x.rect(-50,J.waist-1,GW+100,2.4);x.clip();torsoPath(x,1);x.restore()},{band:1})}
+      else if(back){tint([topId],x=>{x.fillRect(GCX-.5,T+4,1,J.waist-T)},-1);part(66,O==='nurse'?p.acc:shade(outC,-14),x=>{x.beginPath();x.ellipse(GCX,T-1.2,6.4,2.6,0,0,Math.PI);x.fill()},{band:1})}
+      else{part(66,shirt,x=>{x.beginPath();x.moveTo(GCX+2,T-3.4);x.lineTo(GCX+5.6,T+5);x.lineTo(GCX+3.4,T-3);x.closePath();x.fill()},{band:1});
+        if(L.tie)part(69,p.rib,x=>{cap(x,[GCX+4.4,T+1],[GCX+5.8+B.bust*2,T+(L.tie==='tie'?12:6)],1.2,1)},{band:1})}}
+    if(L.waist==='cardigan'){part(71,p.acc,x=>{x.save();x.beginPath();x.rect(-50,J.waist,GW+100,4.4);x.clip();torsoPath(x,1.8);x.restore()},{band:1.2});
+      if(front)part(72,p.acc,x=>{cap(x,[GCX-2,J.waist+2],[GCX-4+sw,J.crotch+8],1.8,1.4);cap(x,[GCX+2,J.waist+2],[GCX+3.4+sw,J.crotch+6],1.8,1.4);ell(x,GCX,J.waist+2.4,2.2,2)},{band:1.2});
+      if(back||side)part(54,p.acc,x=>{x.beginPath();const l=side?GCX-10:GCX-B.hip-1,r=side?GCX+2:GCX+B.hip+1;x.moveTo(l,J.waist+1);x.lineTo(r,J.waist+1);x.lineTo(r+1+sw,J.crotch+10);x.lineTo(l-1+sw,J.crotch+10);x.closePath();x.fill()},{band:1.4})}
+    if(O==='track'){if(front){part(66,colC,x=>{x.beginPath();x.ellipse(GCX,T-1.4,6,2.8,0,0,Math.PI);x.fill()},{band:1});part(67,colC,x=>{x.fillRect(GCX-.6,T,1.2,J.waist+5-T)},{flat:true,tone:2});
+        part(68,colC,x=>{x.fillRect(GCX-B.sh+.5,J.sh+2,1.6,J.waist-J.sh);x.fillRect(GCX+B.sh-2.1,J.sh+2,1.6,J.waist-J.sh)},{flat:true,tone:1})}
+      else if(back)part(66,colC,x=>{x.fillRect(GCX-5,J.bust-6,10,2);x.fillRect(GCX-1,J.bust-4,2,8)},{band:1});
+      else part(66,colC,x=>{x.beginPath();x.ellipse(GCX+2,T-1,4,2.6,0,0,7);x.fill()},{band:1})}
+    if(O==='dress'){if(!back){part(66,colC,x=>{x.beginPath();x.ellipse(side?GCX+2:GCX,T-1,side?6:9.4,4.4,0,0,Math.PI);x.fill();for(let k=-3;k<=3;k++){if(side&&k<-1)continue;ell(x,(side?GCX+2:GCX)+k*2.7,T+3.4-Math.abs(k)*.5,1.5,1.5)}},{band:1});
+        part(67,p.rib,x=>{const c=side?GCX+6:GCX,y=T+4.4;x.beginPath();x.moveTo(c,y);x.lineTo(c-6,y-3.6);x.lineTo(c-6,y+3.6);x.closePath();x.moveTo(c,y);x.lineTo(c+6,y-3.6);x.lineTo(c+6,y+3.6);x.closePath();x.fill();if(!side){cap(x,[c-1,y],[c-3,y+12],1.1,1);cap(x,[c+1,y],[c+3,y+11],1.1,1)}},{band:1.2});
+        if(front)part(68,colC,x=>{for(let y=J.bust+8;y<J.waist;y+=3.4){x.fillRect(GCX-2.6,y,1.2,1.2);x.fillRect(GCX+1.4,y,1.2,1.2)}},{flat:true,tone:2})}
+      else part(66,p.rib,x=>{const c=GCX,y=J.waist-1;x.beginPath();x.moveTo(c,y);x.lineTo(c-7,y-4.4);x.lineTo(c-7,y+4.4);x.closePath();x.moveTo(c,y);x.lineTo(c+7,y-4.4);x.lineTo(c+7,y+4.4);x.closePath();x.fill();cap(x,[c-1,y],[c-4+sw,y+15],1.4,1.2);cap(x,[c+1,y],[c+4+sw,y+14],1.4,1.2)},{band:1.2})}
+    if(O==='coat'){const knee=J.crotch+28;
+      if(front){part(57,outC,x=>{for(const s of[-1,1]){x.beginPath();x.moveTo(GCX+s*(B.waist-1),J.waist);x.lineTo(GCX+s*(B.waist+3),J.waist);x.quadraticCurveTo(GCX+s*(B.hip+4),J.hip,GCX+s*(B.hip+7)+sw*1.2,knee);x.lineTo(GCX+s*(B.hip-1)+sw*1.2,knee+1);x.quadraticCurveTo(GCX+s*(B.hip-2),J.hip+4,GCX+s*(B.waist-1),J.waist);x.closePath();x.fill()}},{band:1.6});
+        part(66,colC,x=>{x.beginPath();x.moveTo(GCX-4,T-3.6);x.lineTo(GCX,J.bust+4);x.lineTo(GCX+4,T-3.6);x.closePath();x.fill()},{band:1});
+        part(67,shade(outC,-12),x=>{for(const s of[-1,1]){x.beginPath();x.moveTo(GCX+s*3.4,T-3.6);x.lineTo(GCX+s*8.4,hy+R*.95);x.lineTo(GCX+s*B.sh,T);x.lineTo(GCX+s*4.6,J.bust);x.closePath();x.fill()}},{band:1.2});
+        solid(70,p.acc,x=>{for(let y=J.bust+4;y<J.waist+4;y+=4){ell(x,GCX-3.4,y,.9,.9);ell(x,GCX+3.4,y,.9,.9)}});part(69,p.acc,x=>{x.lineWidth=1.1;x.beginPath();x.moveTo(GCX-B.waist,J.waist+1);x.quadraticCurveTo(GCX,J.waist+6,GCX+B.waist,J.waist+1);x.stroke()},{flat:true,tone:2})}
+      else if(back){part(61,outC,x=>{x.beginPath();x.moveTo(GCX-B.sh-1,J.sh);x.lineTo(GCX+B.sh+1,J.sh);x.lineTo(GCX+B.waist+3,J.waist);x.quadraticCurveTo(GCX+B.hip+4,J.hip,GCX+B.hip+7+sw*1.2,knee);x.lineTo(GCX-B.hip-7+sw*1.2,knee);x.quadraticCurveTo(GCX-B.hip-4,J.hip,GCX-B.waist-3,J.waist);x.closePath();x.fill()},{band:1.6});
+        part(67,shade(outC,-12),x=>{x.beginPath();x.moveTo(GCX-8,T-3);x.lineTo(GCX+8,T-3);x.lineTo(GCX+6,hy+R*.95);x.lineTo(GCX-6,hy+R*.95);x.closePath();x.fill()},{band:1})}
+      else{part(24,outC,x=>{x.beginPath();x.moveTo(GCX-9,J.waist);x.lineTo(GCX+2,J.waist);x.lineTo(GCX-2+sw*-2,knee);x.lineTo(GCX-16-sw*2,knee+1);x.quadraticCurveTo(GCX-13,J.hip,GCX-9,J.waist);x.closePath();x.fill()},{band:1.6});
+        part(67,shade(outC,-12),x=>{x.beginPath();x.moveTo(GCX-1,T-3);x.lineTo(GCX-7,hy+R*.9);x.lineTo(GCX-8,T+3);x.closePath();x.fill()},{band:1})}}
     if(L.neck==='bell'){part(71,p.rib,x=>{x.fillRect(GCX-(side?2:4.4),J.neck-1.6,side?6.4:8.8,2.1)},{band:1});part(72,'#ffd84a',x=>ell(x,GCX+(side?3.6:0),J.neck+2.2,2.1,2.1),{band:1})}
     if(!side&&!back&&bustK>0&&B.bust>.15){const b=B.bust*bustK,ids=[];for(let i=i0;i<rampOf.length;i++)if(!flatOf[i])ids.push(i);
       for(const s of[-1,1]){const cx=GCX+s*(3+b*1.1),cy=J.bust+1+b*.5,rx=3.4+b*1.5,ry=2.6+b*1.3;
@@ -1065,6 +1177,8 @@ function renderGirl(L,p,o){
       else tip=put(67,GCX-10,J.waist+4,-.8,g.len*.8)}}
   // ---------- head ----------
   const hs=L.hs||'long',bangs=L.bangs||'blunt';
+  // how far the side locks reach, per hairstyle; the short styles share a cap with hair to the nape
+  const LOCK={hime:1.08,bob:1,twin:.85,short:.5,pony:.75,side:.8,lowside:.9,drills:.95,braids:.7,wavy:2.4,long:2.3},SHORTHAIR=['bob','twin','messy','short','pony','side','lowside','drills','braids'];
   function faceShape(x){x.beginPath();
     if(!side){x.moveTo(hx-R,hy-R*.2);x.bezierCurveTo(hx-R*1.01,hy+R*.5,hx-R*.6,hy+R*.9,hx,hy+R*1.12);x.bezierCurveTo(hx+R*.6,hy+R*.9,hx+R*1.01,hy+R*.5,hx+R,hy-R*.2);x.arc(hx,hy-R*.2,R,0,Math.PI,true)}
     else{x.moveTo(hx-R*.9,hy-R*.2);x.arc(hx-R*.05,hy-R*.18,R*.98,Math.PI,Math.PI*1.86);x.quadraticCurveTo(hx+R*.92,hy-R*.36,hx+R*.9,hy+R*.12);x.quadraticCurveTo(hx+R*.92,hy+R*.36,hx+R*1.04,hy+R*.48);
@@ -1076,17 +1190,20 @@ function renderGirl(L,p,o){
       x.beginPath();if(!inner){x.moveTo(bx-base,by+R*.3*(side?1:s));x.quadraticCurveTo(bx-base*.4,tipY+R*.4,tipX,tipY);x.quadraticCurveTo(bx+base*.8,tipY+R*.5,bx+base,by+R*.2*(side?1:-s))}
       else{const k=.55,cx=(bx+tipX)/2,cy=(by+tipY)/2+R*.18;x.moveTo(bx-base*k,by-R*.05);x.quadraticCurveTo(cx-base*.2,cy,tipX+(side?0:-s)*.5,tipY+R*.35);x.quadraticCurveTo(cx+base*.4,cy+R*.1,bx+base*k,by-R*.1)}
       x.closePath();x.fill()}}
-  function hairFront(x){const s1=hs==='hime'?1.08:hs==='bob'?1.0:hs==='twin'?.85:2.3;
+  function hairFront(x){const s1=LOCK[hs]??2.3;
     x.beginPath();x.arc(hx,hy-R*.12,R*1.17,Math.PI,0);x.closePath();x.fill();
     // side locks reach up to the temples so no skin shows between them and the bangs
     for(const s of[-1,1]){x.beginPath();const o1=hx+s*R*1.17,i1=hx+s*R*.8,e=hy+R*s1;
       if(hs==='hime'){x.moveTo(o1,hy-R*.3);x.lineTo(o1+s*.4,e);x.lineTo(i1,e);x.lineTo(i1,hy-R*.3)}
-      else if(hs==='bob'){x.moveTo(o1,hy-R*.3);x.quadraticCurveTo(o1+s*R*.12,hy+R*.6,hx+s*R*.86,e);x.quadraticCurveTo(hx+s*R*.7,hy+R*.6,i1,hy-R*.3)}
+      else if(hs==='bob'||hs==='short'){x.moveTo(o1,hy-R*.3);x.quadraticCurveTo(o1+s*R*.12,hy+R*.6*s1,hx+s*R*.86,e);x.quadraticCurveTo(hx+s*R*.7,hy+R*.6*s1,i1,hy-R*.3)}
       else{x.moveTo(o1,hy-R*.3);x.quadraticCurveTo(o1+s*R*.2,hy+R*.9,hx+s*R*(1.1+sw*.03),e);x.lineTo(hx+s*R*.86,e-R*.5);x.quadraticCurveTo(hx+s*R*.82,hy+R*.6,i1,hy-R*.3)}
       x.closePath();x.fill()}
     // bangs
     x.beginPath();const by=hy-R*.04;
     if(bangs==='blunt'){x.moveTo(hx-R*1.02,hy-R*.6);x.lineTo(hx-R*.88,by);x.lineTo(hx+R*.88,by);x.lineTo(hx+R*1.02,hy-R*.6);x.closePath();x.fill()}
+    else if(bangs==='swept'){const tips=[[-.98,.16],[-.74,.24],[-.5,.2],[-.26,.12],[-.02,.02],[.22,-.08],[.46,-.16],[.7,-.22],[.96,-.06]];
+      x.moveTo(hx-R*1.05,hy-R*.7);for(let k=0;k<tips.length;k++){const[tx,ty]=tips[k];x.lineTo(hx+R*tx,hy+R*ty);if(k<tips.length-1){const n=tips[k+1];x.lineTo(hx+R*(tx*.4+n[0]*.6),hy+R*(Math.min(ty,n[1])-.26))}}
+      x.lineTo(hx+R*1.05,hy-R*.7);x.closePath();x.fill()}
     else{const tips=bangs==='parted'?[[-.95,.1],[-.72,.1],[-.5,-.06],[-.3,.06],[-.08,-.3],[.04,-.38],[.18,-.08],[.38,.06],[.58,-.06],[.78,.1],[.95,.1]]:[[-.95,.08],[-.74,.1],[-.54,-.06],[-.36,.08],[-.16,-.04],[0,.08],[.16,-.04],[.36,.08],[.54,-.06],[.74,.1],[.95,.08]];
       x.moveTo(hx-R*1.05,hy-R*.7);for(let k=0;k<tips.length;k++){const[tx,ty]=tips[k];x.lineTo(hx+R*tx,hy+R*ty);if(k<tips.length-1){const n=tips[k+1];x.lineTo(hx+R*(tx+n[0])/2,hy+R*(Math.min(ty,n[1])-.22))}}
       x.lineTo(hx+R*1.05,hy-R*.7);x.closePath();x.fill()}
@@ -1094,12 +1211,14 @@ function renderGirl(L,p,o){
   function hairSide(x){x.beginPath();x.arc(hx-R*.16,hy-R*.14,R*1.15,Math.PI*.5,Math.PI*1.9);x.lineTo(hx+R*.2,hy-R*.3);x.lineTo(hx+R*.1,hy+R*.5);x.closePath();x.fill();
     // bangs over the forehead and a lock in front of the ear
     x.beginPath();x.moveTo(hx+R*.1,hy-R*1.1);x.quadraticCurveTo(hx+R*1.1,hy-R*.9,hx+R*1.06,hy+R*.02);x.lineTo(hx+R*.88,hy-R*.12);x.lineTo(hx+R*.78,hy+R*.08);x.lineTo(hx+R*.62,hy-R*.18);x.lineTo(hx+R*.4,hy-R*.2);x.closePath();x.fill();
-    const e=hy+R*(hs==='hime'?1.08:hs==='bob'?1.0:hs==='twin'?.8:2.1);x.beginPath();x.moveTo(hx-R*.05,hy-R*.4);x.lineTo(hx+R*.46,hy-R*.3);
+    const e=hy+R*Math.min(2.1,(LOCK[hs]??2.3)-(hs==='hime'||hs==='bob'?0:.05));x.beginPath();x.moveTo(hx-R*.05,hy-R*.4);x.lineTo(hx+R*.46,hy-R*.3);
     if(hs==='hime'){x.lineTo(hx+R*.44,e);x.lineTo(hx-R*.02,e)}else{x.quadraticCurveTo(hx+R*.5,hy+R*.6,hx+R*.36+sw*.4,e);x.lineTo(hx+R*.1,e-R*.4);x.quadraticCurveTo(hx,hy+R*.4,hx-R*.1,hy)}x.closePath();x.fill();
     earsPath(x)}
   // long hair that hangs behind the shoulders (front and side views) or covers the back
-  function backHair(x){const len={hime:J.hip+6,long:J.crotch+10,bob:hy+R*1.15,twin:hy+R*1.2,messy:hy+R*.9}[hs]??J.hip,wv=sw*1.2;
-    if(hs==='bob'||hs==='twin'||hs==='messy'){x.beginPath();x.arc(hx-(side?R*.16:0),hy-R*.1,R*1.17,0,Math.PI*2);x.fill();if(!side&&hs!=='messy'){x.beginPath();x.moveTo(hx-R*1.17,hy-R*.1);x.lineTo(hx+R*1.17,hy-R*.1);x.lineTo(hx+R*1.02,len);x.quadraticCurveTo(hx,len+R*.2,hx-R*1.02,len);x.closePath();x.fill()}return}
+  function backHair(x){const len={hime:J.hip+6,long:J.crotch+10,wavy:J.crotch+2,bob:hy+R*1.15,twin:hy+R*1.2,messy:hy+R*.9,short:hy+R*.75,pony:hy+R*.9,side:hy+R*.9,lowside:hy+R*1,drills:hy+R*1.15,braids:hy+R*1}[hs]??J.hip,wv=sw*1.2;
+    if(SHORTHAIR.includes(hs)){x.beginPath();x.arc(hx-(side?R*.16:0),hy-R*.1,R*1.17,0,Math.PI*2);x.fill();if(!side&&hs!=='messy'){x.beginPath();x.moveTo(hx-R*1.17,hy-R*.1);x.lineTo(hx+R*1.17,hy-R*.1);x.lineTo(hx+R*1.02,len);x.quadraticCurveTo(hx,len+R*.2,hx-R*1.02,len);x.closePath();x.fill()}return}
+    if(!side&&hs==='wavy'){const w=R*1.2,bw=R*1.36,y0=hy+R*.6,wave=(sx,t)=>[hx+sx*(w+(bw-w)*t+Math.sin(t*Math.PI*4.5)*2.2*t)+wv*t,y0+(len-y0)*t];x.beginPath();x.arc(hx,hy-R*.1,R*1.18,Math.PI,0);
+      for(let i=0;i<=12;i++)x.lineTo(...wave(1,i/12));for(let k=1;k<=6;k++){const t=k/7;x.lineTo(hx+bw-t*bw*2+wv,len+(k%2?5:-1))}for(let i=12;i>=0;i--)x.lineTo(...wave(-1,i/12));x.closePath();x.fill();return}
     if(!side){const w=R*1.2,bw=hs==='hime'?R*1.18:R*1.3;x.beginPath();x.arc(hx,hy-R*.1,R*1.18,Math.PI,0);x.lineTo(hx+w,hy+R*.6);x.quadraticCurveTo(hx+bw+2,(hy+len)/2,hx+bw+wv,len);
       if(hs==='hime')x.lineTo(hx-bw+wv,len);else{for(let k=1;k<=6;k++){const t=k/7;x.lineTo(hx+bw-t*bw*2+wv,len+(k%2?4:-1.5))}x.lineTo(hx-bw+wv,len)}
       x.quadraticCurveTo(hx-bw-2,(hy+len)/2,hx-w,hy+R*.6);x.closePath();x.fill()}
@@ -1112,6 +1231,31 @@ function renderGirl(L,p,o){
       for(let k=0;k<2;k++)tint([id],x=>{x.lineWidth=1;x.beginPath();x.moveTo(ax+dir*(2+k*3),ay+4);x.quadraticCurveTo(ax+dir*R*(1+k*.1),(ay+len)/2,ax+dir*R*(.5+k*.14)+sw*dir*2,len-3-k*3);x.stroke()},-1);
       tint([id],x=>{x.lineWidth=1.2;x.beginPath();x.moveTo(ax+dir*3,ay+2);x.quadraticCurveTo(ax+dir*R*.9,ay+20,ax+dir*R*.9,ay+38);x.stroke()},1);
       part(z+30,p.rib,x=>{ell(x,ax,ay,3.2,3);x.beginPath();x.moveTo(ax,ay);x.lineTo(ax-dir*1,ay-5.6);x.lineTo(ax+dir*4.6,ay-3.8);x.closePath();x.fill();x.beginPath();x.moveTo(ax,ay);x.lineTo(ax-dir*1,ay+5.6);x.lineTo(ax+dir*4.6,ay+3.8);x.closePath();x.fill()},{band:1.2})}}
+  // a tapered lock of hair along a curve from a root a, bent toward b, to a tip c
+  const qpt=(a,b,c,t)=>[(1-t)*(1-t)*a[0]+2*(1-t)*t*b[0]+t*t*c[0],(1-t)*(1-t)*a[1]+2*(1-t)*t*b[1]+t*t*c[1]];
+  function lockPath(x,a,b,c,w0,w1,tip=.7){const Ls=[],Rs=[],n=16;for(let i=0;i<=n;i++){const t=i/n,q=qpt(a,b,c,t),u=qpt(a,b,c,Math.min(1,t+.03)),v=qpt(a,b,c,Math.max(0,t-.03)),dx=u[0]-v[0],dy=u[1]-v[1],l=Math.hypot(dx,dy)||1,
+      w=(w0+(w1-w0)*t)*(t>.82?1-(t-.82)/.18*tip:1);Ls.push([q[0]-dy/l*w,q[1]+dx/l*w]);Rs.push([q[0]+dy/l*w,q[1]-dx/l*w])}
+    x.beginPath();x.moveTo(...Ls[0]);for(const q of Ls)x.lineTo(...q);for(const q of Rs.reverse())x.lineTo(...q);x.closePath();x.fill()}
+  // ponytails, a side tail, an over-the-shoulder tail, twin braids and drill curls; 'behind' the body, 'over' it, or 'deco' (ties drawn over the hair)
+  function extraHair(z,layer){const sx=sw*1.4,lock=(a,b,c,w0,w1,kind)=>{const id=part(z,hair,x=>lockPath(x,a,b,c,w0,w1,kind==='braid'?.4:.7),{group:'hair'});
+      if(kind==='drill')for(let k=1;k<6;k++){const t=k/6,q=qpt(a,b,c,t),u=qpt(a,b,c,t+.05),ang=Math.atan2(u[1]-q[1],u[0]-q[0])+Math.PI/2,w=(w0+(w1-w0)*t)*1.05;
+        tint([id],x=>{x.lineWidth=Math.max(1/S,1.1);x.beginPath();x.moveTo(q[0]-Math.cos(ang)*w,q[1]-Math.sin(ang)*w);x.quadraticCurveTo(q[0],q[1]+3.4,q[0]+Math.cos(ang)*w,q[1]+Math.sin(ang)*w);x.stroke()},-1);
+        tint([id],x=>{x.lineWidth=Math.max(1/S,1);x.beginPath();x.moveTo(q[0]-Math.cos(ang)*w*.5,q[1]-Math.sin(ang)*w*.5+2);x.quadraticCurveTo(q[0],q[1]+3.6,q[0]+Math.cos(ang)*w*.4,q[1]+Math.sin(ang)*w*.4+2);x.stroke()},1)}
+      else if(kind==='braid')for(let k=1;k<9;k++){const t=k/9.5,q=qpt(a,b,c,t),w=(w0+(w1-w0)*t);tint([id],x=>{x.lineWidth=Math.max(1/S,1.1);x.beginPath();x.moveTo(q[0]-w,q[1]-2);x.lineTo(q[0],q[1]+1.2);x.lineTo(q[0]+w,q[1]-2);x.stroke()},-2);tint([id],x=>{x.fillRect(q[0]-w*.5,q[1]-3.2,w*.5,1.2)},1)}
+      else tint([id],x=>{x.lineWidth=Math.max(1/S,1);x.beginPath();const q=qpt(a,b,c,.2),r=qpt(a,b,c,.85);x.moveTo(q[0],q[1]);x.quadraticCurveTo(b[0],b[1],r[0],r[1]);x.stroke()},-1);return id};
+    const tie=(cx,cy,r)=>part(z,p.rib,x=>ell(x,cx,cy,r,r*1.1),{band:1});
+    if(hs==='pony'){if(layer==='behind'&&front)lock([hx-R*.15,hy-R*1],[hx-R*1.7+sx*.4,hy-R*.2],[hx-R*1.3+sx,J.sh+12],R*.42,R*.3);
+      if(layer==='behind'&&side){lock([hx-R*.7,hy-R*.9],[hx-R*2.2,hy-R*1.05],[hx-R*1.95+sx,J.sh+14],R*.45,R*.32);tie(hx-R*.78,hy-R*.88,R*.2)}
+      if(layer==='behind'&&back){lock([hx,hy-R*.75],[hx+sx*.3,hy+R*.6],[hx+sx,J.sh+20],R*.42,R*.34);tie(hx,hy-R*.72,R*.22)}}
+    if(hs==='side'){const s=back?-1:1;if(layer==='behind'&&!side)lock([hx+s*R*.9,hy-R*.75],[hx+s*R*2.05,hy-R*.55],[hx+s*R*1.7+sx,J.bust+2],R*.4,R*.3);
+      if(layer==='behind'&&side)lock([hx-R*.6,hy-R*.6],[hx-R*1.9,hy-R*.6],[hx-R*1.7+sx,J.bust],R*.42,R*.3);
+      if(layer==='deco'&&!side)tie(hx+s*R*1.02,hy-R*.72,R*.18);if(layer==='deco'&&side)tie(hx-R*.62,hy-R*.6,R*.18)}
+    if(hs==='lowside'&&layer==='over'){if(front){lock([hx+R*.72,hy+R*.72],[hx+R*1.15,J.sh+4],[hx+R*.55+sx*.5,J.waist-1],R*.36,R*.32);tie(hx+R*.76,hy+R*.82,R*.17)}
+      if(side){lock([hx+R*.1,hy+R*.85],[hx+R*.65,J.sh+6],[hx+R*.4+sx*.4,J.bust+12],R*.32,R*.28);tie(hx+R*.14,hy+R*.92,R*.15)}}
+    if(hs==='braids'&&layer==='over'){const ss=side?[0]:[-1,1];for(const s of ss){const a=side?[hx+R*.2,hy+R*.6]:[hx+s*R*.98,hy+R*.42],b=side?[hx+R*.55,J.sh]:[hx+s*R*1.18,J.sh-2],c=side?[hx+R*.35+sx*.3,J.bust+4]:[hx+s*R*1.02,J.bust+6];
+        lock(a,b,c,R*.3,R*.24,'braid');const e=qpt(a,b,c,.86);part(z+.5,p.rib,x=>{x.fillRect(e[0]-R*.26,e[1]-1.2,R*.52,2.4)},{band:1})}}
+    if(hs==='drills'&&layer==='behind'){const ss=side?[-1]:[-1,1];for(const s of ss){const a=side?[hx-R*.8,hy-R*.3]:[hx+s*R*1,hy-R*.35],b=side?[hx-R*1.55,hy+R*.6]:[hx+s*R*1.6,hy+R*.6],c=side?[hx-R*1.25+sx,J.bust+10]:[hx+s*R*1.35+s*sx*.5,J.bust+10];lock(a,b,c,R*.5,R*.38,'drill')}}
+    if(hs==='drills'&&layer==='deco'){const ss=side?[-1]:back?[-1,1]:[-1,1];for(const s of ss){const cx=side?hx-R*.82:hx+s*R*1.02,cy=hy-R*.42;part(z,p.rib,x=>{x.beginPath();x.moveTo(cx,cy);x.lineTo(cx-4.6,cy-3.6);x.lineTo(cx-4.6,cy+3.6);x.closePath();x.moveTo(cx,cy);x.lineTo(cx+4.6,cy-3.6);x.lineTo(cx+4.6,cy+3.6);x.closePath();x.fill();ell(x,cx,cy,1.6,1.6)},{band:1})}}}
   function animalTail(z){const t=L.tail;if(!t)return;const sx=side?GCX-9:back?GCX+3:GCX+8,sy=J.hip+4,dir=side?-1:1,wag=Math.sin((f+(pose==='walk'?f:0))*.9)*2;
     if(t==='cat'){part(z,hair,x=>{x.lineWidth=4;x.beginPath();x.moveTo(sx,sy);x.bezierCurveTo(sx+dir*20,sy+10,sx+dir*28,sy-6,sx+dir*24+wag,sy-24);x.bezierCurveTo(sx+dir*22+wag,sy-30,sx+dir*26+wag,sy-36,sx+dir*30+wag,sy-34);x.stroke()});
       part(z+1,p.rib,x=>{x.lineWidth=4.8;x.beginPath();x.moveTo(sx+dir*20,sy+4);x.lineTo(sx+dir*22,sy+1);x.stroke()},{band:1})}
@@ -1125,7 +1269,7 @@ function renderGirl(L,p,o){
     const map={K:lashC,k:shade(lashC,50),W:'#ffffff',w:'#d6cfe8',D:shade(er[0],-10),d:er[0],I:er[1],L:er[2],l:er[3],P:shade(er[0],-45),H:'#ffffff'};
     if(ek==='star'){map.P='#fff2b0';map.H='#ffffff'}
     const list=side?[[hx+R*.62,1]]:[[hx-R*.45,0],[hx+R*.45,1]];
-    for(const[ex,right]of list){let rows=closed?T.blink:hurt?T.hurt:side?T.side:T.front;
+    for(const[ex,right]of list){let rows=closed?T.blink:hurt?T.hurt:side?T.side:ek==='sleepy'&&T.half?T.half:T.front;
       if(X&&!(o.blink&&(X.e==='front'||X.e==='wide'||X.e==='half'||X.e==='fierce')))rows=T[X.e]||rows;
       if((pose==='victory'&&f===3||X&&X.wink)&&right&&!side)rows=T.blink;
       if(ek==='cat'&&!closed&&!hurt)rows=rows.map(r=>{const i=r.indexOf('P');return i>=0&&r[i+1]==='P'?r.slice(0,i)+'I'+r.slice(i+1):r});
@@ -1142,7 +1286,24 @@ function renderGirl(L,p,o){
     const bl=small?["bb"]:[".b.b","b.b."],bmap={b:'#ff9fb0'};
     for(const bx of side?[hx+R*.4]:[hx-R*.58,hx+R*.58])stamp(bl,Math.round(bx*S-bl[0].length/2),Math.round((hy+R*.62)*S),bmap,94,false);
     if(!small&&!side)tint([faceId],x=>ell(x,hx+R*.06,hy+R*.56,R*.05,R*.05),-1)}
+  // glasses and an eyepatch sit over the eyes
+  function faceGear(){const fg=L.face;if(!fg||back)return;const ey=hy+R*.32,lw=Math.max(1/S,small?1:.9);
+    if(fg==='glasses'){const frame='#3a2a3a';solid(98,frame,x=>{x.lineWidth=lw;const eyesAt=side?[hx+R*.62]:[hx-R*.45,hx+R*.45];for(const ex of eyesAt)x.strokeRect(ex-R*.36,ey-R*.24,R*.72,R*.5);
+        x.beginPath();if(side){x.moveTo(hx+R*.26,ey-R*.1);x.lineTo(hx-R*.3,ey-R*.18)}else{x.moveTo(hx-R*.09,ey-R*.08);x.lineTo(hx+R*.09,ey-R*.08)}x.stroke()});
+      tint([faceId],x=>{const eyesAt=side?[hx+R*.62]:[hx-R*.45,hx+R*.45];for(const ex of eyesAt)x.fillRect(ex+R*.1,ey-R*.2,R*.18,R*.1)},1)}
+    if(fg==='eyepatch'){const ex=side?hx+R*.62:hx-R*.45;part(98,'#16121e',x=>{ell(x,ex,ey,R*.34,R*.3);x.lineWidth=Math.max(1/S,1.1);x.beginPath();
+        if(side){x.moveTo(ex,ey-R*.1);x.lineTo(hx-R*.6,ey-R*.5)}else{x.moveTo(ex-R*.3,ey-R*.12);x.lineTo(hx-R*1.12,ey-R*.4);x.moveTo(ex+R*.3,ey-R*.14);x.lineTo(hx+R*1.12,ey-R*.62)}x.stroke()},{band:1});
+      part(99,p.acc,x=>ell(x,ex,ey,R*.1,R*.1),{flat:true,tone:2})}}
   function headwear(){const hw=L.head;
+    if(hw==='band'){part(97,p.rib,x=>{x.lineWidth=R*.2;x.beginPath();if(side)x.ellipse(hx-R*.16,hy-R*.14,R*1.17,R*1.17,0,Math.PI*1.05,Math.PI*1.75);else x.ellipse(hx,hy-R*.12,R*1.19,R*1.16,0,Math.PI*1.04,Math.PI*1.96);x.stroke();
+        if(back){cap(x,[hx,hy-R*.6],[hx-R*.5+sw,hy+R*.6],1.2,1);cap(x,[hx,hy-R*.6],[hx+R*.4+sw,hy+R*.7],1.2,1)}},{band:1})}
+    if(hw==='clip'&&!back){const c=side?hx+R*.35:hx-R*.72,y=hy-R*.42;part(97,p.acc,x=>{x.lineWidth=Math.max(1/S,1.3);x.beginPath();x.moveTo(c-3,y-3);x.lineTo(c+3,y+3);x.moveTo(c-3,y+1);x.lineTo(c+3,y-5);x.stroke()},{flat:true,tone:2})}
+    if(hw==='nurse'){const c=side?hx:hx,w=side?R*.45:R*.62,y=hy-R*.98;const id=part(97,colC,x=>{x.beginPath();x.moveTo(c-w,y+R*.2);x.lineTo(c+w,y+R*.2);x.lineTo(c+w*.8,y-R*.32);x.lineTo(c-w*.8,y-R*.32);x.closePath();x.fill()},{band:1});
+      if(!back)part(98,p.rib,x=>{x.fillRect(c-R*.06,y-R*.22,R*.12,R*.34);x.fillRect(c-R*.17,y-R*.1,R*.34,R*.11)},{flat:true,tone:2})}
+    if(hw==='bow'){const c=back?hx+R*.4:side?hx-R*.2:hx+R*.55,y=hy-R*1.0,b=R*.5;
+      part(96,colC,x=>{x.lineWidth=R*.14;x.beginPath();if(side)x.ellipse(hx-R*.16,hy-R*.14,R*1.16,R*1.16,0,Math.PI*1.15,Math.PI*1.7);else x.ellipse(hx,hy-R*.12,R*1.18,R*1.15,0,Math.PI*1.1,Math.PI*1.9);x.stroke()},{band:1});
+      part(97,p.rib,x=>{x.beginPath();x.moveTo(c,y);x.lineTo(c-b*1.3,y-b);x.lineTo(c-b*1.2,y+b*.8);x.closePath();x.moveTo(c,y);x.lineTo(c+b*1.3,y-b);x.lineTo(c+b*1.2,y+b*.8);x.closePath();x.fill();ell(x,c,y,b*.35,b*.35);
+        cap(x,[c-1,y],[c-b*.9,y+b*2],1,.8);cap(x,[c+1,y],[c+b*.7,y+b*2.1],1,.8)},{band:1.2})}
     if(hw==='maid'){if(!side)part(97,colC,x=>{x.beginPath();x.ellipse(hx,hy-R*.98,R*.86,R*.2,0,Math.PI,0);x.fill();for(let k=-4;k<=4;k++)ell(x,hx+k*R*.2,hy-R*1.04-Math.cos(k/4*1.2)*R*.16,R*.11,R*.11)},{band:1});
       else part(97,colC,x=>{x.beginPath();x.ellipse(hx+R*.05,hy-R*1.12,R*.22,R*.5,1.15,0,7);x.fill();for(let k=0;k<4;k++)ell(x,hx-R*.3+k*R*.2,hy-R*1.2-k*R*.04,R*.1,R*.1)},{band:1})}
     if(hw==='idol'){const st=(cx,cy,r)=>x=>{x.beginPath();for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,rr=k%2?r*.45:r;k?x.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr):x.moveTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr)}x.closePath();x.fill()};
@@ -1157,10 +1318,11 @@ function renderGirl(L,p,o){
     if(L.helmet){part(98,p.gear,x=>{x.beginPath();x.arc(hx-(side?R*.1:0),hy-R*.25,R*1.24,Math.PI,0);x.lineTo(hx+R*1.3,hy-R*.12);x.lineTo(hx-R*1.3,hy-R*.12);x.closePath();x.fill()});
       if(front)part(99,p.acc,x=>{x.fillRect(hx-R*.72,hy-R*.95,R*.6,R*.28);x.fillRect(hx+R*.12,hy-R*.95,R*.6,R*.28)},{band:1})}}
   // ---------- assemble ----------
-  if(front){animalTail(5);twinTails(8);part(10,hair,backHair,{band:2.4,keep:'bh',group:'hair'})}
+  if(front){animalTail(5);twinTails(8);extraHair(8,'behind');part(10,hair,backHair,{band:2.4,keep:'bh',group:'hair'})}
   if(side){animalTail(24);part(64,hair,backHair,{band:2.4,keep:'bh',group:'hair'})}
   drawTorso();for(const i of order)drawLeg(J.legs[i]);
   outfit();
+  if(!back)extraHair(front?73:77,'over');
   for(const i of order)drawArm(J.arms[i]);
   drawGun();
   if(!back){faceId=part(80,'skin',faceShape,{band:2,rim:1});
@@ -1168,8 +1330,8 @@ function renderGirl(L,p,o){
     // the bangs cast a soft shadow on the forehead, the chin on the neck
     tint([faceId],x=>{x.save();x.translate(side?1.4:0,R*.16);(front?hairFront:hairSide)(x);x.restore()},-1);
     if(front)tint([neckId],x=>{x.beginPath();x.ellipse(hx,hy+R*1.08,R*.6,R*.2,0,0,7);x.fill()},-1);
-    eyes();mouthEtc();if(side)twinTails(62)}
-  else{hairId=part(84,hair,x=>{backHair(x);x.beginPath();x.arc(hx,hy-R*.1,R*1.18,0,Math.PI*2);x.fill();earsPath(x)},{band:2.4,rim:1.4,both:true,group:'hair'});twinTails(86);animalTail(90)}
+    eyes();mouthEtc();faceGear();if(side){twinTails(62);extraHair(62,'behind')}extraHair(88,'deco')}
+  else{hairId=part(84,hair,x=>{backHair(x);x.beginPath();x.arc(hx,hy-R*.1,R*1.18,0,Math.PI*2);x.fill();earsPath(x)},{band:2.4,rim:1.4,both:true,group:'hair'});twinTails(86);extraHair(86,'behind');extraHair(88,'deco');animalTail(90)}
   // hair shine: an angel ring with gaps and a few strand lines
   if(hairId>=0){const ry=hy-R*.58,rw=R*(side?.95:.98);
     tint([hairId],x=>{x.lineWidth=Math.max(1/S,R*.09);for(let k=0;k<6;k++){const a0=Math.PI*1.1+k*Math.PI*.14,a1=a0+Math.PI*.09;x.beginPath();x.ellipse(hx-(side?R*.2:0),ry+R*.08,rw*.9,R*.32,0,a0,a1);x.stroke()}},1);
@@ -1665,7 +1827,7 @@ function moveEntity(e,dx,dy){if(dx&&!blocked(e.x+dx,e.y,e.r))e.x+=dx;if(dy&&!blo
 function los(x1,y1,x2,y2){const m=G.map,d=Math.hypot(x2-x1,y2-y1),n=Math.ceil(d/6);for(let i=1;i<n;i++){const t=i/n,tx=((x1+(x2-x1)*t)/TILE)|0,ty=((y1+(y2-y1)*t)/TILE)|0;
   const tt=m.tiles[ty*m.W+tx];if(tt===T.BUILD||tt===T.WALL)return false}return true}
 
-const pm=()=>(1+.15*save.up.power)*save.god.dmg*lvMult();
+const pm=()=>(1+.15*save.up.power)*save.god.dmg*lvMult()*(G&&G.frenzyT>0?1.6:1);
 const psz=()=>save.god.size;
 
 function startMission(idx,sandbox){
@@ -1703,6 +1865,7 @@ function startMission(idx,sandbox){
   $('#sbx').hidden=!sandbox;$('#hint').hidden=false;$('#buildBar').hidden=true;updBuildBar();$('#btnSquad').textContent='Follow';
   state='play';paused=false;showScreen(null);$('#hud').hidden=false;
   banner(city.name,sandbox?'Sandbox: spawn anything, nothing to lose':G.def?`Build defenses: the infected arrive in ${G.def.prep} seconds`:questLine(city));
+  {const pe=PERSONA[h.id];if(pe)after(2.3,()=>toast(`${h.name}: "${pe.start}"`))}
   updateFlow();
 }
 function rollType(mix){let r=Math.random(),acc=0;for(const k in mix){acc+=mix[k];if(r<acc)return k}return'walker'}
@@ -1723,6 +1886,18 @@ function blood(x,y,c,n=8){sparks(x,y,c,n,50);addDecal(G.map,x,y,c,n)}
 function banner(t,s){const b=$('#banner');b.querySelector('b').textContent=t;b.querySelector('small').textContent=s||'';b.classList.remove('show');void b.offsetWidth;b.classList.add('show')}
 let toastT=null;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),1600)}
 function after(t,fn){G.timers.push({t,fn})}
+// push an infected away from (x,y) by d world units (negative pulls it in), in small steps so it never crosses a wall
+function shove(e,x,y,d){const l=Math.hypot(e.x-x,e.y-y)||1,n=Math.max(1,Math.ceil(Math.abs(d)/4));for(let k=0;k<n;k++)moveEntity(e,(e.x-x)/l*d/n,(e.y-y)/l*d/n)}
+// timers and zones from the newer heroines' powers: bodyguards, black holes, sleep mist, the book shield, marks and frost
+function updExtras(dt){G.frenzyT=Math.max(0,(G.frenzyT||0)-dt);G.shieldT=Math.max(0,(G.shieldT||0)-dt);
+  for(const z of G.zombies){if(z.mark>0)z.mark-=dt;if(z.frozen>0)z.frozen-=dt}
+  for(const q of G.squad)if(q.temp&&!q.dead){q.temp-=dt;if(q.temp<=0){q.dead=true;sparks(q.x,q.y-10,'#ffd84a',8,50)}}
+  if(G.holes){for(const h of G.holes){h.t-=dt;h.tick-=dt;for(const z of G.zombies){if(z.dead||z.type==='boss')continue;const d=Math.hypot(h.x-z.x,h.y-z.y);if(d<h.r&&d>4)shove(z,h.x,h.y,-Math.min(d-3,70*dt))}
+      if(h.tick<=0){h.tick=.25;for(const e of enemiesIn(h.x,h.y,h.r*.5))hurt(e,h.dmg*.04)}
+      if(h.t<=0){addRing(h.x,h.y,4,h.r*.7,h.c,.5);for(const e of enemiesIn(h.x,h.y,h.r*.7))hurt(e,h.dmg);sparks(h.x,h.y,h.c,24,110);G.shake=Math.max(G.shake,6);Sfx.play('boom')}}
+    G.holes=G.holes.filter(h=>h.t>0)}
+  if(G.mists){for(const m of G.mists){m.t-=dt;m.tick-=dt;if(m.tick<=0){m.tick=.3;for(const e of enemiesIn(m.x,m.y,m.r)){hurt(e,m.dps*.3);if(e.kind==='z')e.slowT=Math.max(e.slowT||0,.7)}}}G.mists=G.mists.filter(m=>m.t>0)}
+  if(G.shieldT>0){G.bookT=(G.bookT||0)-dt;if(G.bookT<=0){G.bookT=.4;const p=G.p;for(const e of enemiesIn(p.x,p.y,30)){hurt(e,16*pm());if(e.kind==='z'&&!e.dead)shove(e,p.x,p.y,8)}}}}
 
 /* ---------------- COMBAT ---------------- */
 function nearestEnemy(x,y,range,excl,needLos){let best=null,bd=range*range;
@@ -1730,9 +1905,9 @@ function nearestEnemy(x,y,range,excl,needLos){let best=null,bd=range*range;
   for(const n of G.nests){if(n.dead||(excl&&excl.has(n)))continue;const d=dist2(x,y,n.x,n.y)-100;if(d<bd&&(!needLos||los(x,y-4,n.x,n.y))){bd=d;best=n}}
   return best}
 function enemiesIn(x,y,r){const out=[],r2=r*r;for(const z of G.zombies)if(!z.dead&&!(z.charm>0)&&dist2(x,y,z.x,z.y)<r2)out.push(z);for(const n of G.nests)if(!n.dead&&dist2(x,y,n.x,n.y)<r2+100)out.push(n);return out}
-function hurt(e,dmg){if(e.dead)return;if(save.god.oneHit)dmg=1e9;e.hp-=dmg;e.flash=.08;
+function hurt(e,dmg){if(e.dead)return;if(save.god.oneHit)dmg=1e9;if(e.mark>0)dmg*=3;e.hp-=dmg;e.flash=.08;
   if(e.kind==='z'){e.alert=true;if(e.hp<=0)killZombie(e)}else if(e.hp<=0)killNest(e)}
-function killZombie(z){z.dead=true;G.kills++;G.kt=(G.kt||[]).filter(t=>G.time-t<2.5);G.kt.push(G.time);if(G.kt.length>=5)G.streakT=1.6;const rw=ZT[z.type].reward;gain(rw);G.xp+=Math.max(1,rw);
+function killZombie(z){z.dead=true;G.kills++;G.kt=(G.kt||[]).filter(t=>G.time-t<2.5);G.kt.push(G.time);if(G.kt.length>=5)G.streakT=1.6;const rw=ZT[z.type].reward;gain(rw);G.xp+=Math.max(1,rw);if(G.frenzyT>0)G.p.hp=Math.min(G.p.maxHp,G.p.hp+G.p.maxHp*.03);
   G.corpses.push({x:z.x,y:z.y,fr:z.fr[0],art:z.art,type:z.type,face:z.face,t:0,dir:Math.random()<.5?-1:1});if(G.corpses.length>70)G.corpses.shift();
   blood(z.x,z.y-3,z.type==='boss'?'#5e1030':'#3f6a2a',z.type==='boss'?30:8);if(Math.random()<.5)blood(z.x,z.y-2,'#6a0f1c',4);
   if(z.type==='bloater')explode(z.x,z.y,34,40,true);
@@ -1749,7 +1924,7 @@ function explode(x,y,r,dmg,hurtsAllies,col='#c6ff4a'){addRing(x,y,2,r,col,.4);sp
 function hurtAlly(a,d){if(save.god.infHP)return;
   if(a.kind==='b'){a.hp-=d;a.flash=.08;if(a.hp<=0&&!a.dead)wreckBuild(a);return}
   if(a.kind==='v'){a.hp-=d;a.flash=.08;a.scare=.6;if(a.hp<=0&&!a.dead){a.dead=true;blood(a.x,a.y-4,'#8a1020',10);toast(a.st==='shelter'?'A civilian was killed':'A survivor was killed')}return}
-  if(a.kind==='p'){if(a.inv>0)return;a.hp-=d;a.hurtT=.28;G.faceHitT=.7;G.hurtFlash=.25;G.shake=Math.max(G.shake,2);Sfx.play('hurt');
+  if(a.kind==='p'){if(a.inv>0)return;if(G.shieldT>0)d*=.25;a.hp-=d;a.hurtT=.28;G.faceHitT=.7;G.hurtFlash=.25;G.shake=Math.max(G.shake,2);Sfx.play('hurt');
     if(a.hp<=0&&!G.ended&&!G.sandbox){a.hp=0;endMission(false)}else if(a.hp<=0){a.hp=a.maxHp;toast('Sandbox: you got back up')}}
   else{a.hp-=d;a.flash=.08;if(a.hp<=0&&!a.dead){a.dead=true;blood(a.x,a.y-4,'#8a1020',10);toast(`${a.rec.name} is down`)}}}
 
@@ -1807,29 +1982,94 @@ const CAST={
   ward(){const p=G.p;G.ward={x:p.x,y:p.y,r:62*psz(),t:6};addRing(p.x,p.y,4,62*psz(),'#ffd84a',.5);Sfx.play('power');return true},
   talisman(){const p=G.p,s=psz(),list=enemiesIn(p.x,p.y,150*s).filter(e=>e.kind==='z'&&!(e.seal>0)).sort((a,b)=>dist2(a.x,a.y,p.x,p.y)-dist2(b.x,b.y,p.x,p.y)).slice(0,Math.round(8*s));
     if(!list.length)return false;list.forEach((z,i)=>{z.seal=1+i*.08;G.fx.push({k:'tracer',x1:p.x,y1:p.y-17,x2:z.x,y2:z.y-8,c:'#ffd84a',t:.2,max:.2})});Sfx.play('power');return true},
+  // ---- Erika: gold, bodyguards and a haughty laugh ----
+  goldrain(){const p=G.p,s=psz(),n=Math.round(14*s),list=enemiesIn(p.x,p.y,190*s).sort(()=>Math.random()-.5);
+    for(let i=0;i<n;i++)after(i*.07,()=>{const t=list[i],x=t&&!t.dead?t.x:p.x+rand(-110,110)*s,y=t&&!t.dead?t.y:p.y+rand(-80,80)*s;G.fx.push({k:'coin',x,y,t:.3,max:.3});
+      after(.28,()=>{sparks(x,y-2,'#ffd84a',8,60);let k=0;for(const e of enemiesIn(x,y,18*s)){hurt(e,62*pm());if(e.dead)k++}if(k&&!G.sandbox&&Math.random()<.5)gain(2);Sfx.play('hit')})});Sfx.play('power');return true},
+  butlers(){const p=G.p;for(let i=0;i<2;i++){const q=makeSoldier({cls:'smg',name:'Bodyguard',hair:'#1b1424'},G.squad.length);q.x=p.x+(i?14:-14);q.y=p.y+6;q.temp=14;G.squad.push(q);sparks(q.x,q.y-10,'#ffd84a',10,60)}
+    banner('FAMILY BODYGUARDS','At your service, milady');Sfx.play('power');return true},
+  ohoho(){const p=G.p,s=psz(),R=75*s;addRing(p.x,p.y-4,4,R,'#ffd84a',.45);G.fx.push({k:'spin',x:p.x,y:p.y-6,r:R,c:'#ffd84a',t:.35,max:.35});
+    for(const e of enemiesIn(p.x,p.y,R)){hurt(e,40*pm());if(e.kind==='z'&&!e.dead){shove(e,p.x,p.y,26);e.stun=Math.max(e.stun||0,1.4)}}banner('OHOHOHO!','');G.shake=Math.max(G.shake,3);Sfx.play('win');return true},
+  // ---- Rei: ice ----
+  frostnova(){const p=G.p,s=psz(),R=65*s;addRing(p.x,p.y-4,4,R,'#9fe8ff',.5);addRing(p.x,p.y-4,2,R*.7,'#ffffff',.4);
+    for(const e of enemiesIn(p.x,p.y,R)){hurt(e,45*pm());if(e.kind==='z'){e.stun=Math.max(e.stun||0,2);e.slowT=Math.max(e.slowT||0,4);e.frozen=2}sparks(e.x,e.y-6,'#e8fbff',4)}Sfx.play('power');return true},
+  icelance(){const p=G.p,s=psz(),[dx,dy]=aimDir(260),L=260*s,x2=p.x+dx*L,y2=p.y+dy*L,w=(7*s)**2;
+    for(const e of enemiesIn(p.x+dx*L/2,p.y+dy*L/2,L/2+20))if(segDist2(e.x,e.y-4,p.x,p.y-8,x2,y2)<w+(e.kind==='n'?100:0)){hurt(e,110*pm());if(e.kind==='z')e.slowT=Math.max(e.slowT||0,3);sparks(e.x,e.y-5,'#e8fbff',5)}
+    G.fx.push({k:'beam',x1:p.x,y1:p.y-8,x2,y2:y2-8,w:4*s,c:'#9fe8ff',t:.3,max:.3});Sfx.play('zap');return true},
+  zero(){const p=G.p,s=psz();G.fx.push({k:'flash',c:'#cfefff',t:.45,max:.45});let n=0;for(const e of enemiesIn(p.x,p.y,200*s)){hurt(e,35*pm());if(e.kind==='z'){e.slowT=Math.max(e.slowT||0,6);e.frozen=1;n++}}
+    banner('ABSOLUTE ZERO',n?`${n} infected frozen`:'');Sfx.play('power');return true},
+  // ---- Akane: fire and football ----
+  meteorkick(){const p=G.p,s=psz(),[dx,dy]=aimDir(150),sx=p.x,sy=p.y;for(let d=0;d<100*s;d+=3){if(blocked(p.x+dx*3,p.y+dy*3,p.r))break;p.x+=dx*3;p.y+=dy*3}
+    for(let i=0;i<6;i++){const t=i/5,x=sx+(p.x-sx)*t,y=sy+(p.y-sy)*t;G.trail.push({x,y,t:.3,f:p.face});sparks(x,y-4,'#ff8a2a',3,40)}
+    for(const e of enemiesIn((sx+p.x)/2,(sy+p.y)/2,Math.hypot(p.x-sx,p.y-sy)/2+16))if(segDist2(e.x,e.y,sx,sy,p.x,p.y)<(14*s)**2)hurt(e,45*pm());p.inv=.4;
+    after(.05,()=>{addRing(p.x,p.y,4,40*s,'#ff8a2a',.4);for(const e of enemiesIn(p.x,p.y,40*s)){hurt(e,80*pm());if(e.kind==='z')e.stun=Math.max(e.stun||0,.6)}sparks(p.x,p.y-4,'#ffd23f',16,90);G.shake=Math.max(G.shake,4);Sfx.play('boom')});Sfx.play('power');return true},
+  spikeball(){const p=G.p,s=psz(),[dx,dy]=aimDir(170);G.pshots.push({x:p.x+dx*6,y:p.y-12,vx:dx*240,vy:dy*240,t:3.4,dmg:58*pm(),kind:'ball',home:9,pierce:Math.round(6*s),hit:new Set(),c:'#ff8a2a'});Sfx.play('hit');return true},
+  spirit(){G.speedT=6;G.encore=6;addRing(G.p.x,G.p.y-4,4,60,'#ff8a2a',.5);sparks(G.p.x,G.p.y-10,'#ffd23f',16,70);banner('FIGHTING SPIRIT!','Faster feet, faster hands');Sfx.play('win');return true},
+  // ---- Sayo: devotion ----
+  redstring(){const p=G.p,s=psz(),list=enemiesIn(p.x,p.y,150*s).filter(e=>e.kind==='z').sort((a,b)=>dist2(a.x,a.y,p.x,p.y)-dist2(b.x,b.y,p.x,p.y)).slice(0,Math.round(6*s));if(!list.length)return false;
+    for(const z of list){z.stun=Math.max(z.stun||0,1.3);G.fx.push({k:'string',from:p,to:z,t:1.15,max:1.15})}
+    after(1.1,()=>{for(const z of list){if(z.dead)continue;shove(z,p.x,p.y,-Math.max(0,Math.hypot(z.x-p.x,z.y-p.y)-16)*.85);hurt(z,70*pm());G.fx.push({k:'claw',x:z.x,y:z.y-6,a:Math.atan2(z.y-p.y,z.x-p.x),c:'#ff3355',t:.2,max:.2,big:1.4});sparks(z.x,z.y-6,'#ff3355',5)}Sfx.play('hit')});
+    Sfx.play('power');return true},
+  devotion(){G.frenzyT=6;addRing(G.p.x,G.p.y-4,4,50,'#ff3355',.5);banner('CRIMSON DEVOTION','Damage +60%, every kill heals you');Sfx.play('power');return true},
+  heartlock(){const p=G.p,s=psz();let best=null,bh=-1;for(const e of enemiesIn(p.x,p.y,170*s))if(e.kind==='z'&&e.hp>bh){bh=e.hp;best=e}if(!best)return false;
+    best.mark=8;G.fx.push({k:'string',from:p,to:best,t:.5,max:.5});sparks(best.x,best.y-16,'#ff3355',10,50);Sfx.play('power');return true},
+  // ---- Shion: books ----
+  cranes(){const p=G.p,n=Math.round(9*psz());for(let k=0;k<n;k++){const a=-Math.PI/2+(k/(n-1)-.5)*2.4;G.pshots.push({x:p.x,y:p.y-14,vx:Math.cos(a)*90,vy:Math.sin(a)*90,t:3.2,dmg:46*pm(),kind:'crane',home:6,pierce:0,hit:new Set(),c:'#a8f0b8',acc:240})}Sfx.play('power');return true},
+  barrier(){G.shieldT=7;addRing(G.p.x,G.p.y-6,4,30,'#a8f0b8',.4);banner('BOOK BARRIER','Damage taken -75%');Sfx.play('power');return true},
+  forbidden(){const p=G.p,s=psz(),[dx,dy]=aimDir(140),d=Math.min(140*s,110),x=p.x+dx*d,y=p.y+dy*d,R=62*s;G.fx.push({k:'circle',x,y,r:R,c:'#a8f0b8',t:1,max:1});
+    after(1,()=>{addRing(x,y,4,R,'#e8fff0',.5);G.fx.push({k:'flash',c:'#d8ffe0',t:.2,max:.2});for(const e of enemiesIn(x,y,R)){hurt(e,160*pm());if(e.kind==='z')e.stun=Math.max(e.stun||0,1)}sparks(x,y,'#a8f0b8',24,110);G.shake=Math.max(G.shake,5);Sfx.play('boom')});Sfx.play('power');return true},
+  // ---- Marin: flash, glitter and vibes ----
+  selfie(){const p=G.p,s=psz(),[dx,dy]=aimDir(110),a0=Math.atan2(dy,dx),R=110*s;G.fx.push({k:'flash',c:'#ffffff',t:.22,max:.22});G.fx.push({k:'cone',x:p.x,y:p.y-8,a:a0,r:R,c:'#fff6c8',t:.3,max:.3});
+    for(const e of enemiesIn(p.x,p.y,R)){const da=Math.abs(((Math.atan2(e.y-p.y,e.x-p.x)-a0+Math.PI*3)%(Math.PI*2))-Math.PI);if(da<.75){hurt(e,38*pm());if(e.kind==='z')e.stun=Math.max(e.stun||0,1.6)}}Sfx.play('zap');return true},
+  glitter(){const p=G.p,s=psz(),[dx,dy]=aimDir(130),d=Math.min(130*s,110),x=p.x+dx*d,y=p.y+dy*d,R=52*s;G.fx.push({k:'tracer',x1:p.x,y1:p.y-14,x2:x,y2:y-6,c:'#ff8ad8',t:.25,max:.25});
+    after(.25,()=>{addRing(x,y,4,R,'#ff8ad8',.45);for(let i=0;i<4;i++)sparks(x+rand(-20,20),y+rand(-14,14),pick(['#ff8ad8','#ffe14d','#9fe8ff','#ffffff']),10,90);
+      for(const e of enemiesIn(x,y,R)){hurt(e,85*pm());if(e.kind==='z'&&!e.dead&&e.type!=='boss'){e.charm=5;e.alert=true}}G.shake=Math.max(G.shake,3);Sfx.play('boom')});Sfx.play('power');return true},
+  vibecheck(){const p=G.p,s=psz(),R=70*s;addRing(p.x,p.y-4,4,R,'#ff8ad8',.45);G.fx.push({k:'spin',x:p.x,y:p.y-6,r:R,c:'#ff8ad8',t:.3,max:.3});
+    for(const e of enemiesIn(p.x,p.y,R)){hurt(e,50*pm());if(e.kind==='z'&&!e.dead){shove(e,p.x,p.y,36);e.slowT=Math.max(e.slowT||0,3)}}p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.25);banner('VIBE CHECK','');Sfx.play('win');return true},
+  // ---- Kaguya: the dark flame ----
+  darkflame(){const p=G.p,s=psz(),[dx,dy]=aimDir(200),sx=p.x,sy=p.y;for(let i=1;i<=7;i++)after(i*.08,()=>{const x=sx+dx*i*26*s,y=sy+dy*i*26*s;if(blocked(x,y,1))return;G.fx.push({k:'pillar',x,y,c:'#b05aff',t:.5,max:.5});
+      for(const e of enemiesIn(x,y,22*s))hurt(e,70*pm());sparks(x,y-10,'#d8a0ff',6,70);Sfx.play('hit')});Sfx.play('power');return true},
+  sealedeye(){const p=G.p,s=psz(),[dx,dy]=aimDir(300),L=320*s,x2=p.x+dx*L,y2=p.y+dy*L,w=(14*s)**2;
+    for(const e of enemiesIn(p.x+dx*L/2,p.y+dy*L/2,L/2+30))if(segDist2(e.x,e.y-4,p.x,p.y-8,x2,y2)<w+(e.kind==='n'?160:0)){hurt(e,190*pm());sparks(e.x,e.y-5,'#d8a0ff',6)}
+    G.fx.push({k:'beam',x1:p.x,y1:p.y-14,x2,y2:y2-14,w:10*s,c:'#b05aff',t:.45,max:.45});G.shake=Math.max(G.shake,6);banner('SEALED EYE: RELEASE!','');Sfx.play('power');Sfx.play('boom');return true},
+  abyss(){const p=G.p,s=psz(),[dx,dy]=aimDir(150),d=Math.min(150*s,120),x=p.x+dx*d,y=p.y+dy*d;G.holes=G.holes||[];G.holes.push({x,y,r:95*s,t:3,max:3,dmg:150*pm(),c:'#b05aff',tick:0});Sfx.play('power');return true},
+  // ---- Misaki: the field nurse ----
+  firstaid(){const p=G.p;p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.5);let rev=0;for(const q of G.squad){if(q.dead&&!q.temp){q.dead=false;q.hp=q.max*.6;q.x=p.x+rand(-10,10);q.y=p.y+rand(-6,6);rev++}else if(!q.dead)q.hp=q.max}
+    addRing(p.x,p.y-4,4,70,'#ff9ac8',.6);for(const q of G.squad)if(!q.dead)sparks(q.x,q.y-10,'#7dff8a',6,40);banner('FIRST AID',rev?`${rev} soldier${rev>1?'s':''} back on their feet`:'Everyone patched up');Sfx.play('win');return true},
+  sedative(){const p=G.p,s=psz(),[dx,dy]=aimDir(120),d=Math.min(120*s,100),x=p.x+dx*d,y=p.y+dy*d;G.mists=G.mists||[];G.mists.push({x,y,r:58*s,t:5,max:5,dps:28*pm(),tick:0});Sfx.play('power');return true},
+  defib(){const p=G.p,s=psz();let cur=nearestEnemy(p.x,p.y,160*s);if(!cur)return false;let fx=p.x,fy=p.y-17;const hit=new Set();
+    for(let i=0;i<Math.round(7*s)&&cur;i++){hit.add(cur);addBolt(fx,fy,cur.x,cur.y-6,'#ff9ac8',2,.25,5);addBolt(fx,fy,cur.x,cur.y-6,'#ffffff',1,.2,4);hurt(cur,85*pm());if(cur.kind==='z')cur.stun=Math.max(cur.stun||0,1);
+      fx=cur.x;fy=cur.y-6;const nx=cur.x,ny=cur.y;cur=nearestEnemy(nx,ny,80*s,hit)}Sfx.play('zap');return true},
 };
 function strike(x,y){const h=G.hime,s=psz();addBolt(x,y-180,x,y-2,h.bolt,4,.3,10);addBolt(x,y-180,x,y-2,'#ffffff',1,.2,6);addRing(x,y,2,26*s,h.bolt,.3);sparks(x,y,h.bolt,10,80);
   for(const e of enemiesIn(x,y,26*s))hurt(e,80*pm());G.shake=Math.max(G.shake,2.5);Sfx.play('zap');Sfx.play('hit')}
+// basic attacks: melee swipes, and projectiles with their speed, homing, piercing and on-hit effects
+const MELEE={claw:1,kick:1,blade:1};
+const SHOTS={knife:{sp:320,home:0,pierce:1,rate:.26,snd:'shot'},note:{sp:215,home:3,rate:.3},fox:{sp:200,home:6,rate:.3},
+  coin:{sp:300,home:2,pierce:1,rate:.27,snd:'shot'},ice:{sp:270,home:1,rate:.3,slow:1.4},page:{sp:190,home:7,rate:.3},heart:{sp:215,home:4,rate:.28,charm:.07},
+  needle:{sp:380,home:0,pierce:2,rate:.22,heal:1,snd:'shot'},dark:{sp:210,home:2,rate:.36,burst:16}};
+function meleeHit(e,dmg,ak){hurt(e,dmg);const p=G.p;if(ak==='blade')p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.012);
+  if(ak==='kick'&&e.kind==='z'&&!e.dead){const d=Math.hypot(e.x-p.x,e.y-p.y)||1;moveEntity(e,(e.x-p.x)/d*5,(e.y-p.y)/d*5);sparks(e.x,e.y-6,'#ffb02e',3,50)}}
 // fire the basic attack along (dx,dy): a lightning hitscan, a claw arc, or a straight projectile
 function fireAimed(p,dx,dy){const wid=equipped();if(wid!=='innate'){weaponAttack(p,wid,dx,dy,null);return}
   const h=G.hime,ak=h.auto||'bolt',dmg=h.atk*pm()*1.1;p.ax=dx;p.ay=dy;p.castKind='attack';p.castT=Math.max(p.castT,.16);if(Math.abs(dx)>.1)p.face=dx<0?-1:1;
   if(ak==='bolt'){p.atkT=.32;const R=150;let best=null,bt=R;
     for(const e of enemiesIn(p.x,p.y,R+10)){const ex=e.x-p.x,ey=e.y-p.y,t=ex*dx+ey*dy;if(t<0||t>bt)continue;const off=Math.abs(ex*dy-ey*dx);if(off<(e.kind==='n'?12:8)&&los(p.x,p.y-4,e.x,e.y-4)){bt=t;best=e}}
     const ex=best?best.x:p.x+dx*R,ey=best?best.y-6:p.y-17+dy*R;addBolt(p.x+p.face*4,p.y-17,ex,ey,h.bolt,1.4,.12,3);if(best){hurt(best,dmg);sparks(best.x,best.y-5,h.bolt,4)}Sfx.play('zap')}
-  else if(ak==='claw'){p.atkT=.2;const a0=Math.atan2(dy,dx),cx=p.x+dx*30,cy=p.y+dy*30;G.fx.push({k:'claw',x:cx,y:cy-6,a:a0,c:h.bolt,t:.18,max:.18});
-    for(const e of enemiesIn(p.x,p.y,64)){const da=Math.abs(((Math.atan2(e.y-p.y,e.x-p.x)-a0+Math.PI*3)%(Math.PI*2))-Math.PI);if(da<.9)hurt(e,dmg)}Sfx.play('hit')}
-  else{const sp=ak==='knife'?320:ak==='note'?220:200;p.atkT=ak==='knife'?.26:.3;
-    G.pshots.push({x:p.x+dx*6,y:p.y-17+dy*6,vx:dx*sp,vy:dy*sp,t:.75,dmg,kind:ak,home:0,pierce:ak==='knife'?1:0,hit:new Set(),c:h.bolt});Sfx.play(ak==='knife'?'shot':'zap')}}
+  else if(MELEE[ak]){p.atkT=ak==='blade'?.24:.2;const a0=Math.atan2(dy,dx),cx=p.x+dx*30,cy=p.y+dy*30;G.fx.push({k:'claw',x:cx,y:cy-6,a:a0,c:h.bolt,t:.18,max:.18,big:ak==='claw'?1:1.3});
+    for(const e of enemiesIn(p.x,p.y,64)){const da=Math.abs(((Math.atan2(e.y-p.y,e.x-p.x)-a0+Math.PI*3)%(Math.PI*2))-Math.PI);if(da<.9)meleeHit(e,dmg,ak)}Sfx.play('hit')}
+  else{const A=SHOTS[ak]||SHOTS.fox;p.atkT=A.rate;
+    G.pshots.push({x:p.x+dx*6,y:p.y-17+dy*6,vx:dx*A.sp,vy:dy*A.sp,t:.75*(A.life||1),dmg,kind:ak,home:0,pierce:A.pierce||0,hit:new Set(),c:h.bolt,slow:A.slow,charm:A.charm,heal:A.heal,burst:A.burst});Sfx.play(A.snd||'zap')}}
 function autoAttack(p){const wid=equipped();
   if(wid!=='innate'){const W=WEAPONS[wid],t=nearestEnemy(p.x,p.y,W.kind==='slash'||W.kind==='quake'?W.range+18:Math.min(150,W.range),null,true);if(!t){p.atkT=.06;return}
     const dx=t.x-p.x,dy=t.y-p.y,l=Math.hypot(dx,dy)||1;weaponAttack(p,wid,dx/l,dy/l,t);return}
-  const h=G.hime,ak=h.auto||'bolt',t=nearestEnemy(p.x,p.y,ak==='claw'?62:135,null,true);if(!t){p.atkT=.06;return}
+  const h=G.hime,ak=h.auto||'bolt',t=nearestEnemy(p.x,p.y,MELEE[ak]?62:135,null,true);if(!t){p.atkT=.06;return}
   {const dx=t.x-p.x,dy=t.y-p.y,l=Math.hypot(dx,dy)||1;p.ax=dx/l;p.ay=dy/l;p.castKind='attack'}
   const dmg=h.atk*pm();p.castT=Math.max(p.castT,.16);if(Math.abs(t.x-p.x)>2&&!p.moving)p.face=t.x<p.x?-1:1;
   if(ak==='bolt'){p.atkT=.32;addBolt(p.x+p.face*4,p.y-17,t.x,t.y-(t.kind==='n'?2:6),h.bolt,1,.1,3);hurt(t,dmg);sparks(t.x,t.y-5,h.bolt,3);Sfx.play('zap')}
-  else if(ak==='claw'){p.atkT=.2;G.fx.push({k:'claw',x:t.x,y:t.y-6,a:Math.atan2(t.y-p.y,t.x-p.x),c:h.bolt,t:.18,max:.18});for(const e of enemiesIn(t.x,t.y,16))hurt(e,e===t?dmg:dmg*.6);sparks(t.x,t.y-5,'#ffffff',4);Sfx.play('hit')}
-  else{const a=Math.atan2(t.y-6-(p.y-17),t.x-p.x),sp=ak==='knife'?300:ak==='note'?190:170;p.atkT=ak==='knife'?.26:.3;
-    G.pshots.push({x:p.x+p.face*4,y:p.y-17,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:1.2,dmg,kind:ak,home:ak==='knife'?0:ak==='note'?3:6,pierce:0,hit:new Set(),c:h.bolt});Sfx.play(ak==='knife'?'shot':'zap')}}
+  else if(MELEE[ak]){p.atkT=ak==='blade'?.24:.2;G.fx.push({k:'claw',x:t.x,y:t.y-6,a:Math.atan2(t.y-p.y,t.x-p.x),c:h.bolt,t:.18,max:.18,big:ak==='claw'?1:1.3});for(const e of enemiesIn(t.x,t.y,ak==='kick'?20:16))meleeHit(e,e===t?dmg:dmg*.6,ak);sparks(t.x,t.y-5,'#ffffff',4);Sfx.play('hit')}
+  else{const A=SHOTS[ak]||SHOTS.fox,a=Math.atan2(t.y-6-(p.y-17),t.x-p.x),sp=A.sp*.9;p.atkT=A.rate;
+    G.pshots.push({x:p.x+p.face*4,y:p.y-17,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:1.2*(A.life||1),dmg,kind:ak,home:A.home,pierce:A.pierce||0,hit:new Set(),c:h.bolt,slow:A.slow,charm:A.charm,heal:A.heal,burst:A.burst});Sfx.play(A.snd||'zap')}}
 // equipped weapons replace the heroine's basic attack; t is the auto-fire target, or null when aimed by hand
 function weaponAttack(p,id,dx,dy,t){const W=WEAPONS[id],h=G.hime,dmg=h.atk*pm()*W.dmg*wMult(id),a0=Math.atan2(dy,dx);
   p.ax=dx;p.ay=dy;p.castKind='attack';p.castT=Math.max(p.castT,.16);if(Math.abs(dx)>.1)p.face=dx<0?-1:1;p.atkT=W.rate;
@@ -1997,6 +2237,7 @@ function buildGrid(){const m=G.map;gridW=Math.ceil(m.W*TILE/CELL);const gh=Math.
 function update(dt){
   const g=save.god,p=G.p;G.time+=dt;
   for(let i=G.timers.length-1;i>=0;i--){const t=G.timers[i];t.t-=dt;if(t.t<=0){G.timers.splice(i,1);t.fn()}}
+  updExtras(dt);
   // player
   let mx=stick.dx,my=stick.dy;
   if(keys.size){const kx=(keys.has('d')||keys.has('arrowright')?1:0)-(keys.has('a')||keys.has('arrowleft')?1:0),ky=(keys.has('s')||keys.has('arrowdown')?1:0)-(keys.has('w')||keys.has('arrowup')?1:0);if(kx||ky){mx=kx;my=ky}}
@@ -2042,11 +2283,13 @@ function update(dt){
     for(const e of enemiesIn(ox,oy+6,9*psz()))if(G.time>(e.orbT||0)){e.orbT=G.time+.25;hurt(e,22*pm());sparks(ox,oy,G.hime.bolt,3)}}}}
   // friendly projectiles (knives, notes, foxfire)
   for(let i=G.pshots.length-1;i>=0;i--){const s=G.pshots[i];s.t-=dt;
-    if(s.home){if(!s.tg||s.tg.dead||s.tg.charm>0)s.tg=nearestEnemy(s.x,s.y+7,150);
+    if(s.home){if(!s.tg||s.tg.dead||s.tg.charm>0||s.hit.has(s.tg))s.tg=nearestEnemy(s.x,s.y+7,150,s.hit);
       if(s.tg){const a=Math.atan2(s.tg.y-7-s.y,s.tg.x-s.x),cur=Math.atan2(s.vy,s.vx),dd=((a-cur+Math.PI*3)%(Math.PI*2))-Math.PI,na=cur+clamp(dd,-s.home*dt,s.home*dt);
         let sp=Math.hypot(s.vx,s.vy);if(s.acc)sp=Math.min(s.acc,sp+dt*260);s.vx=Math.cos(na)*sp;s.vy=Math.sin(na)*sp}}
     s.x+=s.vx*dt;s.y+=s.vy*dt;let done=s.t<=0||((s.kind==='knife'||s.kind==='bullet'||s.kind==='orb')&&blocked(s.x,s.y+7,1));
-    if(!done)for(const e of enemiesIn(s.x,s.y+7,9)){if(s.hit.has(e))continue;s.hit.add(e);hurt(e,s.dmg);sparks(s.x,s.y,s.c,4,40);if(--s.pierce<0){done=true;break}}
+    if(!done)for(const e of enemiesIn(s.x,s.y+7,9)){if(s.hit.has(e))continue;s.hit.add(e);hurt(e,s.dmg);sparks(s.x,s.y,s.c,4,40);
+      if(e.kind==='z'&&!e.dead){if(s.slow)e.slowT=Math.max(e.slowT||0,s.slow);if(s.charm&&e.type!=='boss'&&Math.random()<s.charm){e.charm=3;sparks(e.x,e.y-14,'#ff5c8a',6,40)}}
+      if(s.heal)G.p.hp=Math.min(G.p.maxHp,G.p.hp+s.heal);if(s.burst){for(const o of enemiesIn(s.x,s.y+7,s.burst))if(o!==e)hurt(o,s.dmg*.5);addRing(s.x,s.y+7,2,s.burst,s.c,.25)}if(--s.pierce<0){done=true;break}}
     if(done){if(s.aoe)explode(s.x,s.y+7,s.aoe,s.dmg/1.5,false,s.c);G.pshots.splice(i,1)}}
   for(const c of G.corpses)c.t+=dt;if(G.corpses.length&&G.corpses[0].t>1.3)G.corpses=G.corpses.filter(c=>c.t<1.3);
   // enemy shots
@@ -2218,6 +2461,10 @@ function render(){if(state==='play'&&G)updFaceCam();
     for(let k=0;k<8;k++){const a=k/8*6.283+G.time*.6,x=cx+Math.cos(a)*R,y=cy+Math.sin(a)*R*.8;ctx.fillStyle='#f8f2e0';ctx.fillRect(x-6,y-12,12,22);ctx.fillStyle='#d42a3a';ctx.fillRect(x-3,y-8,6,2);ctx.fillRect(x-1,y-6,2,12)}ctx.globalAlpha=1}
   for(const c of G.corpses){if(!onScreen(c))continue;if(drawInfected(c.art,c.type,c.x,c.y,Math.min(5,c.t/.07|0),512,false,c.t<.8?1:Math.max(0,1-(c.t-.8)/.5)))continue;const k=Math.min(1,c.t/.3),f=c.fr,img=c.face<0?f.l:f.r;ctx.globalAlpha=c.t<.7?1:Math.max(0,1-(c.t-.7)/.6);
     ctx.save();ctx.translate(SX(c.x),SY(c.y));ctx.rotate(c.dir*k*1.45);ctx.drawImage(img,-(f.w>>1),-f.h+4);ctx.restore();ctx.globalAlpha=1}
+  if(G.mists)for(const m of G.mists){const cx=SX(m.x),cy=SY(m.y),R=m.r*RZ,a=Math.min(1,m.t)*.32;ctx.globalAlpha=a;ctx.fillStyle='#ff9ac8';ctx.beginPath();ctx.ellipse(cx,cy,R,R*.75,0,0,7);ctx.fill();ctx.globalAlpha=a*1.4;ctx.fillStyle='#ffe0ef';
+    for(let k=0;k<10;k++){const an=k*2.4+G.time*.6,rr=R*(.2+.7*((k*37%10)/10));ctx.fillRect(cx+Math.cos(an)*rr-6,cy+Math.sin(an)*rr*.75-6-((G.time*20+k*9)%30),12,12)}ctx.globalAlpha=1}
+  if(G.holes)for(const h of G.holes){const cx=SX(h.x),cy=SY(h.y),R=h.r*RZ*.45*Math.min(1,(h.max-h.t)*3),rot=G.time*4;ctx.fillStyle='rgba(10,4,20,.9)';ctx.beginPath();ctx.ellipse(cx,cy,R*.55,R*.4,0,0,7);ctx.fill();
+    ctx.strokeStyle=h.c;ctx.lineWidth=6;for(let k=0;k<3;k++){ctx.globalAlpha=.7-k*.2;ctx.beginPath();ctx.ellipse(cx,cy,R*(.7+k*.3),R*(.5+k*.22),0,rot+k,rot+k+3.6);ctx.stroke()}ctx.globalAlpha=1}
   for(const e of list){
     if(e.kind==='z'){const big=e.type==='boss'||e.type==='brute',s3=LPC_SCALE[e.type]||3,lk=e.lunge>0?e.lunge/.15*3/(Math.hypot(e.lx-e.x,e.ly-e.y)||1):0,zx=e.x+(e.lx-e.x)*lk,zy=e.y+(e.ly-e.y)*lk;
       const atk=e.atkAnim>0,dr=e.dir*64;let fr,row;
@@ -2228,6 +2475,8 @@ function render(){if(state==='play'&&G)updFaceCam();
       else{fr=((G.time*1.7+e.seed)|0)%2;row=576+dr}
       shadow(e.x,e.y,22*s3);let H=48*s3;
       if(!drawInfected(e.art,e.type,zx,zy,fr,row,e.flash>0)){const f=e.fr[((G.time*3.5+e.seed)|0)%e.fr.length];H=f.h;drawSpr(f,zx,zy,e.face,e.flash>0)}
+      if(e.frozen>0){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.min(1,e.frozen)*.8;ctx.drawImage(glowOf('#9fe8ff'),SX(e.x)-60,SY(e.y)-H*.6-60,120,120);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
+      if(e.mark>0){const hx=SX(e.x),hy2=SY(e.y)-H-14+Math.sin(G.time*5)*3;ctx.fillStyle='#ff3355';ctx.fillRect(hx-12,hy2,9,9);ctx.fillRect(hx+3,hy2,9,9);ctx.fillRect(hx-12,hy2+4,24,9);ctx.fillRect(hx-8,hy2+13,16,4);ctx.fillRect(hx-4,hy2+17,8,4);ctx.fillStyle='#ffe14d';ctx.fillRect(hx-3,hy2+4,6,7);ctx.fillStyle='#1c1622';ctx.fillRect(hx-1,hy2+6,2,3)}
       if(e.charm>0){const hx=SX(e.x),hy2=SY(e.y)-H-6+Math.sin(G.time*6)*4;ctx.fillStyle='#ff5c8a';ctx.fillRect(hx-9,hy2,6,6);ctx.fillRect(hx+3,hy2,6,6);ctx.fillRect(hx-9,hy2+3,18,6);ctx.fillRect(hx-6,hy2+9,12,3);ctx.fillRect(hx-3,hy2+12,6,3);ctx.fillStyle='#ffd0e0';ctx.fillRect(hx-6,hy2+3,3,3)}
       if(e.seal>0&&(e.seal>.3||(G.time*20|0)%2)){const tx=SX(e.x)-7,tyy=SY(e.y)-H*.6;ctx.fillStyle='#f8f2e0';ctx.fillRect(tx,tyy,14,24);ctx.fillStyle='#d42a3a';ctx.fillRect(tx+3,tyy+3,8,2);ctx.fillRect(tx+6,tyy+5,2,14);ctx.fillRect(tx+3,tyy+12,8,2)}
       if(big)hpBar(e.x,e.y-H/RZ-3,e.type==='boss'?150:80,e.hp/e.max,e.type==='boss'?'#ff3b6b':'#8fd14f')}
@@ -2261,6 +2510,16 @@ function render(){if(state==='play'&&G)updFaceCam();
       ctx.strokeStyle='#e8ecf2';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x-ca*5,y-sa*5);ctx.lineTo(x+ca*15,y+sa*15);ctx.stroke();ctx.fillStyle='#ffffff';ctx.fillRect(x+ca*9-2,y+sa*9-2,3,3)}
     else if(s.kind==='note'){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x-40,y-40,80,80);ctx.globalCompositeOperation='source-over';ctx.fillStyle='#ffffff';ctx.beginPath();ctx.ellipse(x-4,y+6,7,5,-.4,0,7);ctx.fill();
       ctx.fillRect(x+1,y-14,4,20);ctx.fillRect(x+1,y-14,12,4);ctx.fillStyle=s.c;ctx.fillRect(x+5,y-10,8,3)}
+    else if(s.kind==='coin'){const w=Math.abs(Math.cos(G.time*18+s.x))*7+2;ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf('#ffd84a'),x-26,y-26,52,52);ctx.globalCompositeOperation='source-over';ctx.fillStyle='#b8862a';ctx.fillRect(x-w-1,y-9,w*2+2,18);ctx.fillStyle='#ffd84a';ctx.fillRect(x-w,y-8,w*2,16);ctx.fillStyle='#fff6c8';ctx.fillRect(x-w*.5,y-6,Math.max(2,w*.5),5)}
+    else if(s.kind==='ice'){ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf('#9fe8ff'),-30,-30,60,60);ctx.globalCompositeOperation='source-over';ctx.fillStyle='#5ab8e8';ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(0,-6);ctx.lineTo(-14,0);ctx.lineTo(0,6);ctx.closePath();ctx.fill();ctx.fillStyle='#e8fbff';ctx.fillRect(-4,-2,14,3);ctx.restore()}
+    else if(s.kind==='page'||s.kind==='crane'){ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),-30,-30,60,60);ctx.globalCompositeOperation='source-over';
+      if(s.kind==='crane'){ctx.fillStyle='#f4f6f0';ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-8,-10);ctx.lineTo(-4,0);ctx.lineTo(-8,10);ctx.closePath();ctx.fill();ctx.fillStyle='#c8d8c8';ctx.fillRect(-6,-1,14,2)}
+      else{ctx.fillStyle='#f4f6f0';ctx.fillRect(-8,-10,16,20);ctx.fillStyle='#4a8a5a';ctx.fillRect(-4,-6,8,2);ctx.fillRect(-4,-1,8,2);ctx.fillRect(-4,4,5,2)}ctx.restore()}
+    else if(s.kind==='heart'){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x-34,y-34,68,68);ctx.globalCompositeOperation='source-over';ctx.fillStyle='#ff4d9a';ctx.fillRect(x-9,y-6,7,7);ctx.fillRect(x+2,y-6,7,7);ctx.fillRect(x-9,y-3,18,7);ctx.fillRect(x-6,y+4,12,3);ctx.fillRect(x-3,y+7,6,3);ctx.fillStyle='#ffd0e6';ctx.fillRect(x-6,y-3,3,3)}
+    else if(s.kind==='needle'){ctx.lineCap='butt';ctx.strokeStyle='#dfe4ee';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x-ca*14,y-sa*14);ctx.lineTo(x+ca*6,y+sa*6);ctx.stroke();ctx.strokeStyle='#ff6a9a';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(x-ca*16,y-sa*16);ctx.lineTo(x-ca*10,y-sa*10);ctx.stroke();ctx.fillStyle='#ffffff';ctx.fillRect(x+ca*6-1,y+sa*6-1,3,3)}
+    else if(s.kind==='dark'||s.kind==='ball'){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x-44,y-44,88,88);ctx.globalCompositeOperation='source-over';
+      if(s.kind==='ball'){ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.fill();ctx.fillStyle='#2a2235';const r=G.time*12;for(let k=0;k<3;k++)ctx.fillRect(x+Math.cos(r+k*2.1)*4-2,y+Math.sin(r+k*2.1)*4-2,4,4);ctx.strokeStyle='#ff8a2a';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,11,0,7);ctx.stroke()}
+      else{ctx.fillStyle='#2a1238';ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.fill();ctx.fillStyle='#c870ff';ctx.beginPath();ctx.arc(x-2,y-2,5,0,7);ctx.fill()}}
     else if(s.kind==='bullet'){const L=s.small?10:16;ctx.lineCap='butt';ctx.globalCompositeOperation='lighter';ctx.strokeStyle=s.c;ctx.globalAlpha=.6;ctx.lineWidth=s.small?5:7;ctx.beginPath();ctx.moveTo(x-ca*L,y-sa*L);ctx.lineTo(x+ca*4,y+sa*4);ctx.stroke();
       ctx.globalAlpha=1;ctx.strokeStyle='#ffffff';ctx.lineWidth=s.small?2:3;ctx.stroke();ctx.globalCompositeOperation='source-over'}
     else if(s.kind==='orb'){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x-56,y-56,112,112);ctx.fillStyle=s.c;ctx.beginPath();ctx.arc(x,y,11,0,7);ctx.fill();ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(x-2,y-2,6,0,7);ctx.fill();ctx.globalCompositeOperation='source-over'}
@@ -2268,13 +2527,16 @@ function render(){if(state==='play'&&G)updFaceCam();
       ctx.fillStyle='#ffffff';ctx.beginPath();ctx.ellipse(x,y+2,4,5,0,0,7);ctx.fill();ctx.fillStyle='#7ad8ff';ctx.fillRect(x-2,y-18,4,10);ctx.fillRect(x-6,y-12,3,6);ctx.globalCompositeOperation='source-over'}}
   for(const q of G.parts){ctx.fillStyle=q.c;const s=(q.s||2)*3;ctx.fillRect(SX(q.x),SY(q.y),s,s)}
   const av=aim.id!==null?aimVec():null;
-  if(av&&!G.ended){const wid=equipped(),W=wid==='innate'?null:WEAPONS[wid],ak=h.auto||'bolt',melee=W?W.kind==='slash'||W.kind==='quake':ak==='claw',
-      R=(aim.pw>=0?120:W?W.range:ak==='claw'?60:ak==='bolt'?150:160)*RZ,x0=SX(p.x),y0=SY(p.y-17),a=Math.atan2(av[1],av[0]),arc=W&&W.kind==='slash'?W.arc:W&&W.kind==='quake'?Math.PI:.9;ctx.save();ctx.globalAlpha=.55;
+  if(av&&!G.ended){const wid=equipped(),W=wid==='innate'?null:WEAPONS[wid],ak=h.auto||'bolt',melee=W?W.kind==='slash'||W.kind==='quake':!!MELEE[ak],
+      R=(aim.pw>=0?120:W?W.range:MELEE[ak]?60:ak==='bolt'?150:160)*RZ,x0=SX(p.x),y0=SY(p.y-17),a=Math.atan2(av[1],av[0]),arc=W&&W.kind==='slash'?W.arc:W&&W.kind==='quake'?Math.PI:.9;ctx.save();ctx.globalAlpha=.55;
     if(melee&&aim.pw<0){ctx.fillStyle=W?W.c:h.bolt;ctx.globalAlpha=.22;ctx.beginPath();ctx.moveTo(x0,y0);ctx.arc(x0,y0,R,a-arc,a+arc);ctx.closePath();ctx.fill()}
     else{ctx.strokeStyle='#ffffff';ctx.globalAlpha=.16;ctx.lineWidth=34;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x0+av[0]*30,y0+av[1]*30);ctx.lineTo(x0+av[0]*R,y0+av[1]*R);ctx.stroke();ctx.lineCap='butt';ctx.globalAlpha=.6;
       ctx.strokeStyle=aim.pw>=0?'#ffffff':h.bolt;ctx.lineWidth=10;ctx.setLineDash([24,14]);ctx.lineDashOffset=-G.time*80;ctx.beginPath();ctx.moveTo(x0+av[0]*30,y0+av[1]*30);ctx.lineTo(x0+av[0]*R,y0+av[1]*R);ctx.stroke();ctx.setLineDash([]);
       ctx.globalAlpha=.8;ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(x0+av[0]*R,y0+av[1]*R,12,0,7);ctx.fill()}ctx.restore()}
   drawHeli();
+  // Shion's book barrier: spellbooks circling her
+  if(G.shieldT>0){const p=G.p;for(let k=0;k<4;k++){const an=G.time*3+k*Math.PI/2,bx=SX(p.x+Math.cos(an)*22),by=SY(p.y-10+Math.sin(an)*12);ctx.globalAlpha=Math.min(1,G.shieldT);
+    ctx.fillStyle='#1a1426';ctx.fillRect(bx-11,by-14,22,28);ctx.fillStyle=['#3a6ad8','#a8f0b8','#c84aff','#ff8a2a'][k];ctx.fillRect(bx-9,by-12,18,24);ctx.fillStyle='#f4f0e0';ctx.fillRect(bx+5,by-10,3,20);ctx.fillStyle='#ffe14d';ctx.fillRect(bx-5,by-4,8,3)}ctx.globalAlpha=1}
   drawFx();
   // night layer (lower resolution, soft) with light cut out around the heroine, lightning and fire
   const dk=(m.th.dark||.35)*(G.lightsOn?.55:1);
@@ -2316,6 +2578,12 @@ function drawFx(){ctx.lineJoin='bevel';ctx.lineCap='square';
     else if(f.k==='star'){const k=1-a,cx=SX(f.x)+(1-k)*120,cy=SY(f.y)-(1-k)*340-8,R=18,pts=[];for(let i=0;i<10;i++){const an=-Math.PI/2+i*Math.PI/5+G.time*6;pts.push([cx+Math.cos(an)*(i%2?R*.45:R),cy+Math.sin(an)*(i%2?R*.45:R)])}
       ctx.globalCompositeOperation='lighter';ctx.strokeStyle=f.c;ctx.lineWidth=8;ctx.globalAlpha=.4;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+90,cy-250);ctx.stroke();ctx.globalAlpha=1;
       ctx.fillStyle='#ffe14d';ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fill();ctx.fillStyle='#ffffff';ctx.fillRect(cx-4,cy-4,8,8);ctx.globalCompositeOperation='source-over'}
+    else if(f.k==='coin'){const k=1-a,cx=SX(f.x),cy=SY(f.y)-(1-k)*300;ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf('#ffd84a'),cx-30,cy-30,60,60);ctx.globalCompositeOperation='source-over';const w=Math.abs(Math.cos(k*20))*9+2;ctx.fillStyle='#b8862a';ctx.fillRect(cx-w-1,cy-11,w*2+2,22);ctx.fillStyle='#ffd84a';ctx.fillRect(cx-w,cy-10,w*2,20)}
+    else if(f.k==='pillar'){const cx=SX(f.x),cy=SY(f.y),h=(1-Math.abs(a-.5)*2)*260+40,w=46*Math.min(1,a*2);ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a;ctx.fillStyle=f.c;ctx.fillRect(cx-w/2,cy-h,w,h);ctx.fillStyle='#f0d8ff';ctx.fillRect(cx-w/6,cy-h,w/3,h);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';ctx.fillStyle='#16101e';ctx.beginPath();ctx.ellipse(cx,cy,w*.7,w*.3,0,0,7);ctx.fill()}
+    else if(f.k==='circle'){const cx=SX(f.x),cy=SY(f.y),R=f.r*RZ,rot=G.time*1.6;ctx.globalAlpha=.4+.5*(1-a);ctx.strokeStyle=f.c;ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(cx,cy,R,R*.8,0,0,7);ctx.stroke();ctx.beginPath();ctx.ellipse(cx,cy,R*.7,R*.56,0,0,7);ctx.stroke();
+      ctx.beginPath();for(let k=0;k<6;k++){const an=rot+k*Math.PI/3;ctx.moveTo(cx+Math.cos(an)*R*.7,cy+Math.sin(an)*R*.56);ctx.lineTo(cx+Math.cos(an+Math.PI*2/3)*R*.7,cy+Math.sin(an+Math.PI*2/3)*R*.56)}ctx.stroke();ctx.globalAlpha=1}
+    else if(f.k==='cone'){const cx=SX(f.x),cy=SY(f.y),R=f.r*RZ;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*.7;ctx.fillStyle=f.c;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,f.a-.75,f.a+.75);ctx.closePath();ctx.fill();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
+    else if(f.k==='string'){if(f.to.dead)continue;const x1=SX(f.from.x),y1=SY(f.from.y-12),x2=SX(f.to.x),y2=SY(f.to.y-10);ctx.globalAlpha=Math.min(1,a*2);ctx.strokeStyle='#ff3355';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x1,y1);ctx.quadraticCurveTo((x1+x2)/2,(y1+y2)/2+40*a,x2,y2);ctx.stroke();ctx.globalAlpha=1}
     else if(f.k==='tracer'){ctx.globalAlpha=a;ctx.strokeStyle=f.c;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(SX(f.x1),SY(f.y1));ctx.lineTo(SX(f.x2),SY(f.y2));ctx.stroke();ctx.globalAlpha=1}}}
 const mm=$('#minimap'),mctx=mm.getContext('2d');
 function drawMini(){if((G.time*10|0)%2)return;const m=G.map;mctx.imageSmoothingEnabled=false;mctx.drawImage(m.mini,0,0,84,84);const k=84/m.W/TILE;
@@ -2350,7 +2618,8 @@ function renderMenu(){
 const FCAM={key:'',cache:{},work:null};
 function faceFrame(k){if(FCAM.cache[k])return FCAM.cache[k];const[e,g,b]=k.split('|'),h=G.hime,c=renderGirl(heroLook(h),heroGirlPal(h),{view:'front',pose:'idle',S:POR_S,expr:e,glance:+g,blink:b==='1'});
   const f=document.createElement('canvas');f.width=f.height=42;f.getContext('2d').drawImage(c,Math.round(c.hx-21),Math.round(c.hy-(h.look.ears?25:20)),42,42,0,0,42,42);return FCAM.cache[k]=f}
-function faceExpr(){const p=G.p,hp=p.hp/p.maxHp;
+function faceExpr(){const e=faceMood(),m=(PERSONA[G.hime.id]||{}).moods;return m&&m[e]||e}
+function faceMood(){const p=G.p,hp=p.hp/p.maxHp;
   if(G.ended)return G.won?'victory':'dead';
   if(G.faceHitT>0)return'hurt';
   if(p.castT>0&&p.castKind==='cast')return'fierce';
@@ -2382,6 +2651,7 @@ function endMission(win,why){if(G.ended)return;G.ended=true;G.won=win;G.endT=G.t
     if(!G.sandbox){G.xp+=100+25*G.idx;if(Math.random()<.3)findLoot(.5)}}
   else banner(why?'MISSION FAILED':'YOU FELL',why||'The infected overran your position');
   G.xpGot=Math.round(G.xp*(G.sandbox?.5:1));G.lvUp=giveXP(G.xpGot);
+  {const pe=PERSONA[G.hime.id];if(pe)setTimeout(()=>toast(`${G.hime.name}: "${win?pe.win:pe.lose}"`),900)}
   persist();setTimeout(()=>showResult(win),1800)}
 
 /* ---------------- UI SCREENS ---------------- */
@@ -2421,7 +2691,8 @@ const R={
     <div class="grid">${cityCard(FIELD,-1,'sandbox').replace('District 00','Arena')}${CITIES.map((c,i)=>cityCard(c,i,'sandbox')).join('')}</div></div>`},
   heroines(){$('#scr-heroines').innerHTML=`<div class="wrap">${head('Heroines')}<div class="grid wide">${HEROINES.map(h=>`
     <button class="panel hcard ${save.heroine===h.id?'sel':''}" data-hero="${h.id}"><span class="pf" data-spr="p:${h.id}:1"></span>
-      <div style="display:grid;gap:6px;min-width:0"><span class="label" style="color:${h.bolt}">${h.title}</span><h3>${h.name} <span class="label" style="color:var(--muted);white-space:nowrap">Age ${h.age}</span></h3><p class="muted">${h.blurb}</p>
+      <div style="display:grid;gap:6px;min-width:0"><span class="label" style="color:${h.bolt}">${h.title}</span><h3>${h.name} <span class="label" style="color:var(--muted);white-space:nowrap">Age ${h.age}</span></h3>
+      <span class="chip" style="color:${h.bolt};justify-self:start">${PERSONA[h.id].type}</span><p class="muted">${h.blurb}</p><p class="quote">"${PERSONA[h.id].start}"</p>
       <div class="stat" style="color:var(--toxic)">Lv ${heroLevel(h.id)}<div class="meter"><i style="width:${xpPct(h.id)}%;background:var(--toxic)"></i></div></div>
       <div class="wline">${wIconHTML(equipped(h.id),.75)}<span>${WEAPONS[equipped(h.id)].name}</span></div>
       <div class="stat">Health<div class="meter"><i style="width:${h.hp/1.4}%"></i></div></div>
@@ -2636,9 +2907,9 @@ const CCARDS={
   storm:{name:'Storm Field',cost:4,type:'spell',dps:75,r:58,dur:4,d:'Lightning rains on an area for 4 s'},
   judge:{name:"Heaven's Judgment",cost:6,type:'spell',dmg:560,r:48,delay:.8,d:'A pillar of light that hits towers too'},
 };
-const HERO_RANGE={claw:30,bolt:110,knife:100,note:100,fox:115};
-for(const h of HEROINES)CCARDS['h_'+h.id]={name:h.name,cost:5,type:'troop',n:1,hero:h.id,hp:h.hp*10,dmg:h.atk*7,rate:h.auto==='claw'?.42:.8,range:HERO_RANGE[h.auto]||100,
-  spd:h.spd*.36,splash:h.auto==='claw'?18:0,ability:9,d:h.title+': fights in the lane and casts a power every 9 s'};
+const HERO_RANGE={claw:30,kick:30,blade:30,bolt:110,knife:100,note:100,fox:115,coin:105,ice:105,page:110,heart:100,needle:110,dark:105};
+for(const h of HEROINES)CCARDS['h_'+h.id]={name:h.name,cost:5,type:'troop',n:1,hero:h.id,hp:h.hp*10,dmg:h.atk*7,rate:MELEE[h.auto]?.42:.8,range:HERO_RANGE[h.auto]||100,
+  spd:h.spd*.36,splash:MELEE[h.auto]?18:0,ability:9,d:h.title+': fights in the lane and casts a power every 9 s'};
 const ZCARDS={
   walkers:{name:'Walker Horde',cost:3,type:'troop',n:5,z:'walker',hp:170,dmg:24,rate:1.1,range:14,spd:15},
   runners:{name:'Runners',cost:2,type:'troop',n:3,z:'runner',hp:115,dmg:17,rate:.7,range:14,spd:38},
@@ -2966,6 +3237,8 @@ addEventListener('pointerup',e=>{if(!cdrag||e.pointerId!==cdrag.id)return;const 
 cv.addEventListener('pointerdown',e=>{if(state!=='clash'||!B||B.over||B.sel<0)return;const[u,v]=clashPoint(e.clientX,e.clientY);B.ghost={u,v};useCard(B.sel,u,v)});
 $('#chPause').addEventListener('click',()=>{if(!B||B.over)return;B.paused=true;$('#clashMenu').hidden=false});
 
+let lineTouch=0,lineX=0;
+$('#lineup').addEventListener('pointerdown',()=>{lineTouch=performance.now()});$('#lineup').addEventListener('scroll',()=>{if(performance.now()-lineTouch<3500)lineX=$('#lineup').scrollLeft},{passive:true});
 /* ---------------- BOOT ---------------- */
 buildZombieSprites();loadInfectedArt();
 let last=performance.now(),pfN=0,pfT=0,pumped=0;
@@ -2974,11 +3247,14 @@ function frame(t){const raw=(t-last)/1000,dt=Math.min(.05,raw);last=t;
   if(state==='play'&&!paused&&raw<.5&&!pumped){pfN++;pfT+=raw;if(pfN>=120){if(pfT/pfN>.026&&PXCAP>1.1e6){PXCAP*=.72;resize()}pfN=pfT=0}}
   if(state==='clash'){try{updClash(dt);renderClash()}catch(err){console.error(err)}}else try{if(state==='play'&&!paused&&G&&!G.ended)update(dt);else if(G&&G.ended){G.time+=dt;for(let i=G.fx.length-1;i>=0;i--){G.fx[i].t-=dt;if(G.fx[i].t<=0)G.fx.splice(i,1)}}render()}catch(err){console.error(err)}
   // squad frames not drawn yet; those frames don't count toward the resolution check
+  // the title lineup drifts slowly so every heroine gets her moment, and pauses while you swipe it
+  if(!$('#scr-title').hidden){const l=$('#lineup');if(l&&performance.now()-lineTouch>3500&&l.scrollWidth>l.clientWidth+4){lineX=(lineX+dt*18)%(l.scrollWidth-l.clientWidth+60);l.scrollLeft=Math.min(lineX,l.scrollWidth-l.clientWidth)}}
   if(!$('#scr-patrol').hidden)try{drawPatrol()}catch(err){console.error(err)}
   if(!$('#scr-gallery').hidden)try{drawGallery()}catch(err){console.error(err)}
   pumped=pumpSprites(t);requestAnimationFrame(frame)}
 showScreen('title');requestAnimationFrame(frame);
-window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite,spawnZombie,placeBuild,step:dt=>update(dt),show:id=>{state="menu";G=null;$("#hud").hidden=true;$("#clashHud").hidden=true;showScreen(id)},get B(){return B},startClash,playCard,updClash};
+window.__rg=(h,v,p,f,S,o={})=>renderGirl(heroLook(h),heroGirlPal(h),{view:v,pose:p,f,S,...o});
+window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite,spawnZombie,placeBuild,step:dt=>update(dt),show:id=>{state="menu";G=null;$("#hud").hidden=true;$("#clashHud").hidden=true;showScreen(id)},get B(){return B},startClash,playCard,updClash,cast:i=>tryCast(i)};
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/claude|anthropic/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
