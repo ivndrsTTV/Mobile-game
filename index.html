@@ -234,6 +234,8 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 .ch-top .btn{width:30px;height:26px;padding:0}
 .ch-c b{font-size:17px;font-weight:400}.ch-c.p b{color:#5ab8ff}.ch-c.e b{color:var(--sakura)}
 #chTime{color:var(--volt);min-width:64px;text-align:center}
+.crw{display:inline-block;width:14px;height:11px;margin-left:2px;background:#3a3048;clip-path:polygon(0 100%,0 0,30% 45%,50% 0,70% 45%,100% 0,100% 100%);vertical-align:-1px}.crw.on{background:var(--cc)}
+.ch-c b{display:inline-flex}
 #chLast{position:absolute;top:calc(env(safe-area-inset-top,0px) + 40px);left:50%;transform:translateX(-50%);font-family:var(--display);font-size:12px;color:#c6ff4a;background:rgba(14,11,22,.72);padding:2px 8px;border:1px solid #4a6a2a;white-space:nowrap;pointer-events:none}
 .ch-bar{position:absolute;left:0;right:0;bottom:0;padding:6px 8px calc(env(safe-area-inset-bottom,0px) + 4px);display:flex;gap:8px;align-items:flex-end;justify-content:center;background:linear-gradient(rgba(8,6,14,0),rgba(8,6,14,.9) 35%)}
 .ch-hand{display:flex;gap:6px}
@@ -246,6 +248,8 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 .ch-next{display:grid;justify-items:center;gap:2px;opacity:.85}.ch-next canvas{width:30px;height:30px;display:block}
 .ch-en{display:grid;gap:2px;justify-items:center;min-width:92px}.ch-meter{width:96px;height:12px;background:#0b0912;border:2px solid var(--line)}.ch-meter i{display:block;height:100%;background:#d93fb8;transition:width .1s}
 .ch-en b{font-family:var(--display);color:#ff9ae6;font-size:18px;font-weight:400;line-height:1}
+#clashEnd{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);display:grid;gap:10px;justify-items:center;text-align:center;width:min(440px,calc(100% - 24px));z-index:30;max-height:calc(100% - 24px);overflow:auto}
+#clashEnd h2{font-family:var(--display);font-size:40px;margin:0}.endcrowns{display:flex;gap:28px}.endcrowns>div{display:grid;gap:4px;justify-items:center}.crw.big{width:34px;height:26px;margin:0 3px}
 #clashMenu{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);display:grid;gap:10px;min-width:220px;text-align:center}
 .dcard{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;text-align:left;cursor:pointer}.dcard.on{border-color:var(--volt)}.dcard b{font-family:var(--display);font-weight:400}
 .bestiary summary{cursor:pointer;padding:2px 0}.zrow b{font-family:var(--display);font-weight:400;color:#c6ff4a}
@@ -285,10 +289,11 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
     <div id="banner"><b></b><small></small></div>
   </div>
   <div id="clashHud" hidden>
-    <div class="ch-top"><span class="ch-c e">Horde <b id="chE">0</b></span><span id="chTime">3:00</span><span class="ch-c p">You <b id="chP">0</b></span><button class="btn small" id="chPause" aria-label="Pause">II</button></div>
+    <div class="ch-top"><span class="ch-c e">Horde <b id="chE"></b></span><span id="chTime">3:00</span><span class="ch-c p">You <b id="chP"></b></span><button class="btn small" id="chPause" aria-label="Pause">II</button></div>
     <div id="chLast" hidden></div>
     <div class="ch-bar"><div class="ch-next" id="chNext"></div><div class="ch-hand" id="chHand"></div>
       <div class="ch-en"><div class="ch-meter"><i id="chEn"></i></div><b id="chEnN">5</b><span id="chDbl" class="label" hidden>Double energy</span></div></div>
+    <div id="clashEnd" class="panel" hidden></div>
     <div id="clashMenu" class="panel" hidden><h3 style="font-family:var(--display);margin:0">Paused</h3><p class="muted" id="chScout" style="font-size:16px;max-width:320px"></p><button class="btn primary" data-act="cresume">Resume</button><button class="btn ghost" data-act="cquit">Surrender</button></div>
   </div>
   <div id="toast"></div>
@@ -2916,15 +2921,27 @@ const CCARDS={
   sniper:{name:'Marksman',cost:4,type:'troop',n:1,cls:'sniper',hp:260,dmg:175,rate:2.2,range:175,spd:20,d:'Shoots across the canal'},
   rocket:{name:'Grenadier',cost:4,type:'troop',n:1,cls:'rocket',hp:330,dmg:125,rate:2.4,range:130,spd:20,splash:30,d:'Rockets with splash'},
   medic:{name:'Medic',cost:3,type:'troop',n:1,cls:'medic',hp:300,dmg:8,rate:1,range:80,spd:24,heal:45,d:'Heals the troops around her'},
-  turret:{name:'Turret',cost:4,type:'building',hp:1000,dmg:30,rate:.45,range:125,life:30,r:12,d:'Shoots anything in range for 30 s'},
-  sand:{name:'Sandbags',cost:1,type:'building',hp:900,life:25,r:13,d:'A wall that draws the horde'},
+  // installations can't move, so they are tough and hit hard for their cost; they wear down over about a minute
+  turret:{name:'Turret',cost:3,type:'building',hp:1700,dmg:52,rate:.5,range:122,life:60,r:12,d:'Cheap, tough and hard-hitting. Stands for 60 s'},
+  tesla:{name:'Tesla Coil',cost:4,type:'building',hp:1300,dmg:95,rate:1.1,range:96,life:55,r:12,chain:2,d:'Zaps a target and arcs to two more'},
+  mortar:{name:'Mortar',cost:4,type:'building',hp:1150,dmg:125,rate:3.6,range:215,minr:55,splash:28,life:55,r:12,d:'Lobs shells far across the canal. Blind up close'},
+  barracks:{name:'Barracks',cost:5,type:'building',hp:1200,life:50,r:14,spawn:'rifle',every:6,d:'Sends out a rifler every 6 s'},
+  pump:{name:'Energy Pump',cost:6,type:'building',hp:1000,life:70,r:13,pump:8.5,d:'Makes 1 energy every 8.5 s for 70 s'},
+  sand:{name:'Sandbags',cost:2,type:'building',hp:1500,life:45,r:13,d:'A sturdy wall the horde has to break through'},
   zap:{name:'Chain Lightning',cost:3,type:'spell',dmg:190,r:44,d:'A bolt that jumps through a group'},
   storm:{name:'Storm Field',cost:4,type:'spell',dps:75,r:58,dur:4,d:'Lightning rains on an area for 4 s'},
   judge:{name:"Heaven's Judgment",cost:6,type:'spell',dmg:560,r:48,delay:.8,d:'A pillar of light that hits towers too'},
 };
 const HERO_RANGE={claw:30,kick:30,blade:30,bolt:110,knife:100,note:100,fox:115,coin:105,ice:105,page:110,heart:100,needle:110,dark:105};
+// every heroine card casts her own signature ability in battle
+const HABIL={raiko:{cd:8,d:'Chain Lightning leaps through five infected'},hayate:{cd:7,d:'Thunder Dash cuts a line through the horde'},shiden:{cd:9,d:'Railgun pierces everything in a long line, towers too'},
+  kurenai:{cd:12,d:'Afterimages: two clones fight beside her for 8 s'},mikan:{cd:7,d:'Pounces on the toughest infected nearby and stuns it'},shizuku:{cd:9,d:'Knife Storm all around her, then tea that heals nearby troops'},
+  hoshimi:{cd:10,d:'Encore! Nearby troops attack twice as fast and heal'},kohaku:{cd:10,d:'Sacred Ward: nearby troops take half damage, plus homing foxfire'},
+  erika:{cd:13,d:'Family Bodyguards: two gunners join the fight'},rei:{cd:9,d:'Frost Nova freezes the infected around her'},akane:{cd:8,d:'Meteor Kick: leaps in and explodes on landing'},
+  sayo:{cd:9,d:'Red String pulls four infected to her; she heals as they fall'},shion:{cd:11,d:'Book Barrier shields nearby troops'},marin:{cd:9,d:'Selfie Flash stuns a whole group'},
+  kaguya:{cd:11,d:'Abyss Gate drags a crowd together, then explodes'},misaki:{cd:10,d:'First Aid heals every troop around her'}};
 for(const h of HEROINES)CCARDS['h_'+h.id]={name:h.name,cost:5,type:'troop',n:1,hero:h.id,hp:h.hp*10,dmg:h.atk*7,rate:MELEE[h.auto]?.42:.8,range:HERO_RANGE[h.auto]||100,
-  spd:h.spd*.36,splash:MELEE[h.auto]?18:0,ability:9,d:h.title+': fights in the lane and casts a power every 9 s'};
+  spd:h.spd*.36,splash:MELEE[h.auto]?18:0,ability:HABIL[h.id].cd,d:`${h.title}. ${HABIL[h.id].d} (every ${HABIL[h.id].cd} s)`};
 const ZCARDS={
   walkers:{name:'Walker Horde',cost:3,type:'troop',n:5,z:'walker',hp:170,dmg:24,rate:1.1,range:14,spd:15},
   runners:{name:'Runners',cost:2,type:'troop',n:3,z:'runner',hp:115,dmg:17,rate:.7,range:14,spd:38},
@@ -2942,14 +2959,16 @@ const ZCARDS={
   priest:{name:'Plague Priest',cost:5,type:'troop',n:1,z:'spitter',tint:'crimson',sc:3.4,hp:640,dmg:55,rate:1.5,range:100,spd:13,raise:6},
   abom:{name:'Abomination',cost:7,type:'troop',n:1,z:'brute',tint:'toxic',sc:5.4,hp:5200,dmg:210,rate:2,range:22,spd:9,targ:'b',splash:26,r:16},
   plague:{name:'Plague Cloud',cost:4,type:'spell',dps:65,r:52,dur:5},
+  spine:{name:'Spine Tower',cost:4,type:'building',hp:1500,dmg:48,rate:.8,range:112,life:58,r:12},
+  sac:{name:'Brood Sac',cost:6,type:'building',hp:950,life:70,r:13,pump:8.5},
   graveyard:{name:'Rising Dead',cost:5,type:'spell',r:46,dur:6},
 };
 // what each horde card is for, so the computer builds a deck that can both attack and defend
-const ZROLE={walkers:'swarm',runners:'swarm',crawlers:'swarm',hunter:'fast',spitter:'ranged',screamer:'support',priest:'support',bloater:'win',brute:'win',riot:'win',boss:'win',abom:'win',nest:'build',acid:'spell',plague:'spell',graveyard:'spell'};
-const ZDESC={walkers:'Five slow walkers',runners:'Three fast runners',crawlers:'Four tiny, quick crawlers',hunter:'Leaps onto its first target',spitter:'Spits acid from range',screamer:'Speeds up and strengthens the infected around it',
+const ZROLE={spine:'build',sac:'pump',walkers:'swarm',runners:'swarm',crawlers:'swarm',hunter:'fast',spitter:'ranged',screamer:'support',priest:'support',bloater:'win',brute:'win',riot:'win',boss:'win',abom:'win',nest:'build',acid:'spell',plague:'spell',graveyard:'spell'};
+const ZDESC={spine:'A bone tower that spits acid for about a minute',sac:'Makes 1 energy every 8.5 s, like your Energy Pump',walkers:'Five slow walkers',runners:'Three fast runners',crawlers:'Four tiny, quick crawlers',hunter:'Leaps onto its first target',spitter:'Spits acid from range',screamer:'Speeds up and strengthens the infected around it',
   priest:'Raises two walkers every few seconds',bloater:'Goes for buildings and bursts in acid',brute:'A tank that smashes buildings',riot:'Armored: takes 40% less damage',boss:'Huge, slams everything near it',abom:'The biggest tank of all, goes for buildings',
   nest:'A building that spawns walkers',acid:'Damages a small area',plague:'A poison cloud that hurts and slows for 5 s',graveyard:'Walkers rise from the ground for 6 s, anywhere'};
-const ZTIER={screamer:1,riot:1,brute:2,plague:2,priest:3,graveyard:4,boss:5,abom:6};
+const ZTIER={spine:1,sac:2,screamer:1,riot:1,brute:2,plague:2,priest:3,graveyard:4,boss:5,abom:6};
 const CTIERS=['Stragglers','Street Pack','Metro Swarm','Harbor Horde','Ironworks Mass','Shrine Blight','Neon Plague','Sewer Kings','Fort Breakers','The Hive Mind'];
 // the horde draws a fresh eight-card deck every battle from the cards its tier has unlocked: at least one win condition,
 // one spell and one swarm, the rest at random, so no single counter works every time
@@ -2965,11 +2984,11 @@ let B=null;
 function cardMult(k){const c=CCARDS[k],g=save.god.dmg;if(!c)return 1;if(c.hero)return lvMult(c.hero)*g;if(c.cls)return(1+.12*save.up.train)*g;
   if(c.type==='spell')return(1+.12*save.up.power)*g;return(1+.15*save.up.turret)*g}
 function startClash(tier){Sfx.init();const deck=clashDeck(),q=[...deck].sort(()=>Math.random()-.5);
-  B={tier,t:0,over:false,en:[5,5],hand:q.slice(0,4),queue:q.slice(4),sel:-1,ents:[],shots:[],fx:[],parts:[],crowns:[0,0],aiT:1.5,aiPush:rand(6,9),zmul:1+.07*tier,zdeck:zDeckOf(tier),lastZ:'',lastZT:0,
+  B={tier,t:0,over:false,en:[5,5],hand:q.slice(0,4),queue:q.slice(4),sel:-1,ents:[],shots:[],fx:[],parts:[],crowns:[0,0],aiT:1.5,aiPush:rand(6,9),zmul:1+.12*tier,zdeck:zDeckOf(tier),lastZ:'',lastZT:0,
     ghost:null,shake:0,paused:false,result:null};
   const tower=(side,u,v,king)=>{const m=side?B.zmul:1,e={side,kind:king?'king':'tower',u:side?CL.LEN-u:u,v,r:king?22:16,hp:(king?2600:1500)*m,dmg:(king?48:34)*(side?m:save.god.dmg),rate:king?1:.8,range:king?100:95,t:0,active:!king};e.max=e.hp;B.ents.push(e);return e};
   for(const s of[0,1]){tower(s,84,CL.BR[0]);tower(s,84,CL.BR[1]);tower(s,34,CL.WID/2,true)}
-  state='clash';G=null;document.body.classList.add('clashing');showScreen(null);$('#hud').hidden=true;$('#clashHud').hidden=false;$('#clashMenu').hidden=true;clashLayout();clashHandUI();banner('VOLT CLASH',CTIERS[tier]);$('#chScout').textContent='Horde deck: '+B.zdeck.map(k=>ZCARDS[k].name).join(' · ');
+  state='clash';G=null;document.body.classList.add('clashing');showScreen(null);$('#hud').hidden=true;$('#clashHud').hidden=false;$('#clashMenu').hidden=true;$('#clashEnd').hidden=true;clashLayout();clashHandUI();banner('VOLT CLASH',CTIERS[tier]);$('#chScout').textContent='Horde deck: '+B.zdeck.map(k=>ZCARDS[k].name).join(' · ');
   setTimeout(()=>{if(B&&!B.over)toast('Scouting report: '+B.zdeck.map(k=>ZCARDS[k].name).join(', '))},2300)}
 // spawn a card's units; side 0 is the player, side 1 the horde
 function playCard(side,k,u,v){const c=side?zDef(k):CCARDS[k];if(!c)return false;if(B.en[side]<c.cost)return false;B.en[side]-=c.cost;
@@ -2984,18 +3003,44 @@ function playCard(side,k,u,v){const c=side?zDef(k):CCARDS[k];if(!c)return false;
       if(k==='zap'){let prev=null;for(const e of B.ents.filter(e=>!e.dead&&e.side!==side&&dist2(e.u,e.v,u,v)<(c.r+40)**2).slice(0,6)){B.fx.push({k:'bolt',u1:prev?prev.u:u,v1:prev?prev.v:v-40,u2:e.u,v2:e.v,c:'#ffe14d',t:.2,max:.2});prev=e}}});
     Sfx.play('power');return true}
   const n=c.n||1;for(let i=0;i<n;i++){const a=i/n*Math.PI*2,rr=n>1?9:0,e={side,k,c,kind:c.type,u:clamp(u+Math.cos(a)*rr,8,CL.LEN-8),v:clamp(v+Math.sin(a)*rr,8,CL.WID-8),
-      hp:c.hp*m,dmg:(c.dmg||0)*m,rate:c.rate||1,range:c.range||0,spd:c.spd||0,r:c.r||(c.z==='boss'?16:c.z==='brute'?12:8),t:rand(.2,.6),deploy:1,life:c.life||0,spawnT:c.every||0,abil:c.ability||0,
+      hp:c.hp*m,dmg:(c.dmg||0)*m,rate:c.rate||1,range:c.range||0,spd:c.spd||0,r:c.r||(c.z==='boss'?16:c.z==='brute'?12:8),t:rand(.2,.6),deploy:1,life:c.life||0,spawnT:c.every||0,abil:c.ability?2.5:0,
       hair:pick(HAIRS),art:c.z?pick(LPC_INFECTED[c.z])+(c.tint?'~'+c.tint:''):null,seed:Math.random()*10,du:side?-1:1,dv:0,mv:false,anim:0,atk:0,raiseT:c.raise||0};e.max=e.hp;B.ents.push(e)}
-  if(side){B.lastZ=c.name;B.lastZT=2.5}Sfx.play('ui');return true}
+  if(side){B.lastZ=c.name;B.lastZT=2.5}else{B.fx.push({k:'pillar',u,v,r:16,c:c.hero?HMAP[c.hero].bolt:'#9fe8ff',t:.35,max:.35})}Sfx.play(side?'ui':'zap');return true}
 // a single walker for nests, the Plague Priest and Rising Dead
-function spawnWalker(side,u,v){const z=ZCARDS.walkers,m=side?B.zmul:1;B.ents.push({side,k:'walkers',c:z,kind:'troop',u:clamp(u,8,CL.LEN-8),v:clamp(v,8,CL.WID-8),hp:z.hp*m,max:z.hp*m,dmg:z.dmg*m,rate:z.rate,range:z.range,spd:z.spd,r:8,t:.5,deploy:.4,hair:'',
-  art:pick(LPC_INFECTED.walker),seed:Math.random()*10,du:side?-1:1,dv:0,anim:0,atk:0});sparkle(u,v,'#8fd14f',6)}
+function spawnWalker(side,u,v,k='walkers'){const z=side?ZCARDS[k]:CCARDS[k],m=side?B.zmul:cardMult(k);B.ents.push({side,k,c:z,kind:'troop',u:clamp(u,8,CL.LEN-8),v:clamp(v,8,CL.WID-8),hp:z.hp*m,max:z.hp*m,dmg:z.dmg*m,rate:z.rate,range:z.range,spd:z.spd,r:8,t:.5,deploy:.4,hair:pick(HAIRS),
+  art:z.z?pick(LPC_INFECTED[z.z]):null,seed:Math.random()*10,du:side?-1:1,dv:0,anim:0,atk:0});sparkle(u,v,side?'#8fd14f':'#9fe8ff',6)}
 function after2(t,fn){B.fx.push({k:'timer',t,max:t,fn})}
-function hitE(e,d,from){if(e.dead||d<=0)return;if(e.c&&e.c.armor)d*=1-e.c.armor;if(from===1&&e.side===0&&(e.kind==='tower'||e.kind==='king')&&save.god.infHP)return;e.hp-=d;e.flash=.08;if(e.kind==='king')e.active=true;
+// a heroine card's signature ability in Volt Clash
+function heroAbility(e,o){const b=B,h=HMAP[e.c.hero],id=e.c.hero,c=h.bolt,D=e.dmg,foes=r=>b.ents.filter(x=>!x.dead&&x.side!==e.side&&dist2(x.u,x.v,e.u,e.v)<(r+x.r)**2),
+  near=(u,v,r)=>b.ents.filter(x=>!x.dead&&x.side!==e.side&&dist2(x.u,x.v,u,v)<(r+x.r)**2),mates=r=>b.ents.filter(x=>!x.dead&&x.side===e.side&&x.kind==='troop'&&dist2(x.u,x.v,e.u,e.v)<r*r),
+  bolt=(a,z,col=c)=>b.fx.push({k:'bolt',u1:a.u,v1:a.v,u2:z.u,v2:z.v,c:col,t:.25,max:.25}),ring=(u,v,r,col=c)=>b.fx.push({k:'burst',u,v,r,c:col,t:.45,max:.45}),bld=x=>isBld(x)?.4:1;
+  b.fx.push({k:'cast',u:e.u,v:e.v,r:26,c,t:.4,max:.4});e.atk=.3;
+  if(id==='raiko'){let cur=o,prev=e;const hit=new Set();for(let k=0;k<5&&cur;k++){hit.add(cur);bolt(prev,cur);hitE(cur,D*2*bld(cur),e.side);prev=cur;cur=near(cur.u,cur.v,60).filter(x=>!hit.has(x)&&x.kind==='troop')[0]}Sfx.play('zap')}
+  else if(id==='hayate'||id==='akane'){const l=Math.hypot(o.u-e.u,o.v-e.v)||1,k=Math.max(0,(l-o.r-e.r-2)/l);if(Math.abs(o.u-CL.RIV)>CL.RW&&(o.u<CL.RIV)===(e.u<CL.RIV)){b.fx.push({k:'tracer',u1:e.u,v1:e.v,u2:e.u+(o.u-e.u)*k,v2:e.v+(o.v-e.v)*k,c,t:.25,max:.25});
+      for(const x of b.ents)if(!x.dead&&x.side!==e.side&&x.kind==='troop'&&segDist2(x.u,x.v,e.u,e.v,e.u+(o.u-e.u)*k,e.v+(o.v-e.v)*k)<16*16)hitE(x,D*2,e.side);e.u+=(o.u-e.u)*k;e.v+=(o.v-e.v)*k}
+    if(id==='akane'){for(const x of near(e.u,e.v,40))hitE(x,D*2.5*bld(x),e.side);ring(e.u,e.v,40,'#ff8a2a');b.shake=Math.max(b.shake,3);Sfx.play('boom')}else{hitE(o,D*2,e.side);Sfx.play('zap')}}
+  else if(id==='shiden'){const l=Math.hypot(o.u-e.u,o.v-e.v)||1,du=(o.u-e.u)/l,dv=(o.v-e.v)/l,u2=e.u+du*190,v2=e.v+dv*190;b.fx.push({k:'beam',u1:e.u,v1:e.v,u2,v2,c,t:.35,max:.35});
+    for(const x of b.ents)if(!x.dead&&x.side!==e.side&&segDist2(x.u,x.v,e.u,e.v,u2,v2)<(12+x.r)**2)hitE(x,D*3*(isBld(x)?.5:1),e.side);b.shake=Math.max(b.shake,3);Sfx.play('boom')}
+  else if(id==='kurenai'||id==='erika'){for(const s2 of[-1,1]){const k=id==='erika'?'smg':e.k,cc=CCARDS[k],m=cardMult(k),q={side:e.side,k,c:cc,kind:'troop',u:clamp(e.u-8,8,CL.LEN-8),v:clamp(e.v+s2*14,8,CL.WID-8),hp:cc.hp*m*(id==='erika'?1:.4),
+      dmg:cc.dmg*m*(id==='erika'?1:.6),rate:cc.rate,range:cc.range,spd:cc.spd,r:8,t:.3,deploy:.2,ttl:id==='erika'?14:8,hair:'#1b1424',seed:Math.random()*10,du:e.side?-1:1,dv:0,anim:0,atk:0,clone:id==='kurenai',abil:0};q.max=q.hp;b.ents.push(q);sparkle(q.u,q.v,c,8)}Sfx.play('power')}
+  else if(id==='mikan'){let best=o;for(const x of foes(90))if(x.kind==='troop'&&x.hp>best.hp)best=x;if(Math.abs(best.u-CL.RIV)>CL.RW&&(best.u<CL.RIV)===(e.u<CL.RIV)){e.u=best.u-(best.u>e.u?1:-1)*(best.r+e.r);e.v=best.v}
+    hitE(best,D*3*bld(best),e.side);best.stunT=1;b.fx.push({k:'slash',u:best.u,v:best.v,c,t:.25,max:.25});Sfx.play('hit')}
+  else if(id==='shizuku'){for(const x of foes(52))hitE(x,D*1.5*bld(x),e.side);ring(e.u,e.v,52,'#e8ecf2');for(const m of mates(60)){m.hp=Math.min(m.max,m.hp+m.max*.2);b.fx.push({k:'heal',u:m.u,v:m.v,t:.4,max:.4})}Sfx.play('hit')}
+  else if(id==='hoshimi'){for(const m of[e,...mates(70)]){m.hasteT=5;m.hp=Math.min(m.max,m.hp+m.max*.15);b.fx.push({k:'heal',u:m.u,v:m.v,t:.4,max:.4})}ring(e.u,e.v,70,'#ff9ad5');Sfx.play('win')}
+  else if(id==='kohaku'){for(const m of[e,...mates(55)])m.shieldT=5;ring(e.u,e.v,55,'#ffd84a');for(const x of foes(140).slice(0,4)){b.shots.push({u:e.u,v:e.v,o:x,side:e.side,dmg:D*1.2,splash:0,spd:200,c:'#7ad8ff',kind:'shot',src:e})}Sfx.play('power')}
+  else if(id==='rei'){for(const x of foes(58)){hitE(x,D*1.2*bld(x),e.side);if(x.kind==='troop'){x.stunT=2;x.frost=2}}ring(e.u,e.v,58,'#9fe8ff');Sfx.play('power')}
+  else if(id==='sayo'){for(const x of foes(95).filter(x=>x.kind==='troop').slice(0,4)){b.fx.push({k:'tracer',u1:e.u,v1:e.v,u2:x.u,v2:x.v,c:'#ff3355',t:.4,max:.4});const l=Math.hypot(x.u-e.u,x.v-e.v)||1,k=Math.max(0,(l-e.r-x.r-4)/l);
+      if((x.u<CL.RIV)===(e.u<CL.RIV)||Math.abs(x.u-CL.RIV)>CL.RW){x.u=e.u+(x.u-e.u)*(1-k);x.v=e.v+(x.v-e.v)*(1-k)}hitE(x,D*1.5,e.side);e.hp=Math.min(e.max,e.hp+e.max*.05)}Sfx.play('hit')}
+  else if(id==='shion'){for(const m of[e,...mates(60)])m.shieldT=6;ring(e.u,e.v,60,'#a8f0b8');Sfx.play('power')}
+  else if(id==='marin'){for(const x of near(o.u,o.v,48)){hitE(x,D*1.2*bld(x),e.side);if(x.kind==='troop')x.stunT=2.2}b.fx.push({k:'burst',u:o.u,v:o.v,r:48,c:'#ffffff',t:.35,max:.35});Sfx.play('zap')}
+  else if(id==='kaguya'){const u=o.u,v=o.v;ring(u,v,70,'#b05aff');for(const x of near(u,v,70))if(x.kind==='troop'&&x.c&&x.c.z!=='boss'&&x.c.z!=='brute'&&!x.c.sc){x.u+=(u-x.u)*.6;x.v+=(v-x.v)*.6;x.stunT=1}
+    after2(.6,()=>{for(const x of near(u,v,44))hitE(x,D*3*bld(x),e.side);b.fx.push({k:'burst',u,v,r:44,c:'#b05aff',t:.45,max:.45});b.shake=Math.max(b.shake,4);Sfx.play('boom')})}
+  else if(id==='misaki'){for(const m of[e,...mates(80)]){m.hp=Math.min(m.max,m.hp+m.max*.4);b.fx.push({k:'heal',u:m.u,v:m.v,t:.5,max:.5})}ring(e.u,e.v,80,'#ff9ac8');Sfx.play('win')}}
+function hitE(e,d,from){if(e.dead||d<=0)return;if(e.c&&e.c.armor)d*=1-e.c.armor;if(e.shieldT>0)d*=.45;if(from===1&&e.side===0&&(e.kind==='tower'||e.kind==='king')&&save.god.infHP)return;e.hp-=d;e.flash=.08;if(e.kind==='king')e.active=true;
   if(e.hp<=0)killE(e)}
 function killE(e){e.dead=true;e.deadT=0;sparkle(e.u,e.v,e.side?'#8fd14f':'#ff5c8a',e.kind==='troop'?6:24);
   if(e.c&&e.c.boom){for(const o of B.ents)if(!o.dead&&o.side!==e.side&&dist2(o.u,o.v,e.u,e.v)<(40+o.r)**2)hitE(o,e.c.boom*B.zmul,e.side);B.fx.push({k:'burst',u:e.u,v:e.v,r:40,c:'#c6ff4a',t:.4,max:.4});Sfx.play('boom')}
-  if(e.kind==='tower'||e.kind==='king'){const o=1-e.side;B.crowns[o]+=e.kind==='king'?3-B.crowns[o]:1;B.crowns[o]=Math.min(3,B.crowns[o]);B.shake=8;Sfx.play('boom');
+  if(e.kind==='tower'||e.kind==='king'){const o=1-e.side;B.fx.push({k:'crown',u:e.u,v:e.v,side:o,n:e.kind==='king'?3-B.crowns[o]:1,t:1.6,max:1.6});B.crowns[o]+=e.kind==='king'?3-B.crowns[o]:1;B.crowns[o]=Math.min(3,B.crowns[o]);B.shake=8;Sfx.play('boom');
     for(const k of B.ents)if(k.kind==='king'&&k.side===e.side)k.active=true;banner(e.side?'TOWER DOWN':'TOWER LOST',e.kind==='king'?'':`${B.crowns[0]} - ${B.crowns[1]}`);
     if(e.kind==='king')endClash()}}
 function sparkle(u,v,c,n){for(let i=0;i<n&&B.parts.length<500;i++){const a=rand(0,6.28),s=rand(10,60);B.parts.push({u,v,du:Math.cos(a)*s,dv:Math.sin(a)*s,c,t:rand(.3,.7)})}}
@@ -3008,18 +3053,22 @@ function waypoint(e,tu,tv){const R=CL.RIV,W=CL.RW,us=e.u<R?-1:1,ts=tu<R?-1:1,inB
 function laneTarget(e){const foe=B.ents.filter(o=>!o.dead&&o.side!==e.side&&(o.kind==='tower'||o.kind==='king'));const lane=e.v<CL.WID/2?0:1;
   return foe.find(o=>o.kind==='tower'&&(o.v<CL.WID/2?0:1)===lane)||foe.find(o=>o.kind==='king')||foe[0]}
 function findTarget(e){const sight=e.range+75;let best=null,bd=1e9;
-  for(const o of B.ents){if(o.dead||o.side===e.side||o.deploy>0)continue;if(e.c&&e.c.targ==='b'&&!isBld(o))continue;    const d=Math.hypot(o.u-e.u,o.v-e.v)-o.r;if(d<sight&&d<bd){bd=d;best=o}}return best}
+  const guard=e.kind!=='troop',minr=e.c&&e.c.minr||0;
+  for(const o of B.ents){if(o.dead||o.side===e.side)continue;if(e.c&&e.c.targ==='b'&&!isBld(o))continue;if(guard&&o.kind!=='troop')continue;if(minr&&Math.hypot(o.u-e.u,o.v-e.v)<minr)continue;    const d=Math.hypot(o.u-e.u,o.v-e.v)-o.r;if(d<sight&&d<bd){bd=d;best=o}}return best}
 function healTarget(e){let best=null,bd=e.range;for(const o of B.ents)if(!o.dead&&o.side===e.side&&o.kind==='troop'&&o!==e&&o.hp<o.max){const d=Math.hypot(o.u-e.u,o.v-e.v);if(d<bd){bd=d;best=o}}return best}
 function shoot(e,o){const c=e.c||{},side=e.side,dm=e.dmg*(e.buffT>0?1.35:1),col=side?'#c6ff4a':c.hero?HMAP[c.hero].bolt:CLASSES[c.cls]?CLASSES[c.cls].a:'#ffe14d',melee=e.range<=40&&e.kind==='troop';e.atk=.3;
   if(e.kind==='troop'&&!c.hero&&!c.z){B.fx.push({k:c.cls==='sniper'?'beam':'tracer',u1:e.u,v1:e.v,u2:o.u,v2:o.v,c:col,t:.12,max:.12});Sfx.play('shot')}
   if(c.hero){const h=HMAP[c.hero];if(h.auto==='bolt'){B.fx.push({k:'bolt',u1:e.u,v1:e.v,u2:o.u,v2:o.v,c:h.bolt,t:.15,max:.15});Sfx.play('zap')}else if(melee)B.fx.push({k:'slash',u:o.u,v:o.v,c:h.bolt,t:.18,max:.18})}
   if(melee||(c.hero&&HMAP[c.hero].auto==='bolt')||(!c.z&&!c.hero&&e.kind==='troop'&&c.cls!=='rocket')){applyHit(e,o,dm);return}
+  if(c.chain){applyHit(e,o,dm);B.fx.push({k:'bolt',u1:e.u,v1:e.v-8,u2:o.u,v2:o.v,c:'#9fe8ff',t:.18,max:.18});let prev=o;const hit=new Set([o]);
+    for(let k=0;k<c.chain;k++){const nx=B.ents.find(x=>!x.dead&&x.side!==side&&x.kind==='troop'&&!hit.has(x)&&dist2(x.u,x.v,prev.u,prev.v)<55*55);if(!nx)break;hit.add(nx);hitE(nx,dm*.7,side);B.fx.push({k:'bolt',u1:prev.u,v1:prev.v,u2:nx.u,v2:nx.v,c:'#9fe8ff',t:.18,max:.18});prev=nx}Sfx.play('zap');return}
+  if(c.minr){B.shots.push({u:e.u,v:e.v,o,side,dmg:dm,splash:c.splash,spd:120,c:'#ffb35a',kind:'shell',src:e,u0:e.u,v0:e.v});Sfx.play('boom');return}
   // everything else flies: rockets, knives, notes, foxfire, acid, tower shots
   B.shots.push({u:e.u,v:e.v,o,side,dmg:dm,splash:(c.splash||0),spd:c.cls==='rocket'?150:c.z==='spitter'||side?170:260,c:col,kind:c.cls==='rocket'?'rocket':side?'acid':'shot',src:e})}
 function applyHit(e,o,dm=e.dmg){const c=e.c||{};if(c.splash){for(const x of B.ents)if(!x.dead&&x.side!==e.side&&dist2(x.u,x.v,o.u,o.v)<(c.splash+x.r)**2)hitE(x,dm,e.side)}else hitE(o,dm,e.side);
   sparkle(o.u,o.v,e.side?'#c6ff4a':'#ffffff',3);if(c.z)Sfx.play('hit')}
 function updClash(dt){const b=B;if(!b||b.over||b.paused)return;b.t+=dt;b.shake=Math.max(0,b.shake-dt*10);
-  const dbl=b.t>CL.TIME-60?2:1,god=save.god.noCD?3:1;b.en[0]=Math.min(10,b.en[0]+dt/2.8*dbl*god);b.en[1]=Math.min(10,b.en[1]+dt/2.8*dbl*(1+.02*b.tier));
+  const dbl=b.t>CL.TIME-60?2:1,god=save.god.noCD?3:1;b.en[0]=Math.min(10,b.en[0]+dt/2.8*dbl*god);b.en[1]=Math.min(10,b.en[1]+dt/2.8*dbl);
   if(b.t>=CL.TIME&&b.crowns[0]!==b.crowns[1])return endClash();if(b.t>=CL.TIME+CL.OT)return endClash();
   b.aiT-=dt;if(b.aiT<=0){b.aiT=rand(.35,.7)-b.tier*.02;aiThink()}
   for(const f of b.fx){f.t-=dt;if(f.k==='timer'&&f.t<=0&&f.fn){const fn=f.fn;f.fn=null;fn()}
@@ -3031,8 +3080,11 @@ function updClash(dt){const b=B;if(!b||b.over||b.paused)return;b.t+=dt;b.shake=M
   b.fx=b.fx.filter(f=>f.t>0);
   for(const e of b.ents){if(e.dead){e.deadT+=dt;continue}e.flash=(e.flash||0)-dt;e.atk=Math.max(0,e.atk-dt);
     if(e.deploy>0){e.deploy-=dt;continue}
+    if(e.ttl){e.ttl-=dt;if(e.ttl<=0){killE(e);continue}}
+    e.shieldT=Math.max(0,(e.shieldT||0)-dt);e.frost=Math.max(0,(e.frost||0)-dt);e.hasteT=Math.max(0,(e.hasteT||0)-dt);if(e.stunT>0){e.stunT-=dt;e.mv=false;continue}
     if(e.kind==='building'&&e.life){e.hp-=e.max/e.life*dt;if(e.hp<=0){killE(e);continue}
-      if(e.c.spawn){e.spawnT-=dt;if(e.spawnT<=0){e.spawnT=e.c.every;spawnWalker(e.side,e.u+(e.side?-14:14),e.v+rand(-6,6))}}}
+      if(e.c.spawn){e.spawnT-=dt;if(e.spawnT<=0){e.spawnT=e.c.every;spawnWalker(e.side,e.u+(e.side?-14:14),e.v+rand(-6,6),e.side?'walkers':e.c.spawn)}}
+      if(e.c.pump){e.pumpT=(e.pumpT??e.c.pump)-dt;if(e.pumpT<=0){e.pumpT=e.c.pump;b.en[e.side]=Math.min(10,b.en[e.side]+1);b.fx.push({k:'cast',u:e.u,v:e.v,r:22,c:e.side?'#c6ff4a':'#ff5cd6',t:.5,max:.5});if(!e.side)b.pumpFlash=.6}}}
     // the Plague Priest raises two walkers every few seconds; the Screamer drives everything around it on
     if(e.c&&e.c.raise){e.raiseT-=dt;if(e.raiseT<=0){e.raiseT=e.c.raise;for(const s2 of[-1,1])spawnWalker(e.side,e.u+(e.side?-10:10),e.v+s2*12);b.fx.push({k:'burst',u:e.u,v:e.v,r:24,c:'#ff3b5e',t:.4,max:.4})}}
     if(e.c&&e.c.aura){e.auraT=(e.auraT||0)-dt;for(const o of b.ents)if(!o.dead&&o.side===e.side&&o.kind==='troop'&&o!==e&&dist2(o.u,o.v,e.u,e.v)<60*60)o.buffT=.5;if(e.auraT<=0){e.auraT=1.4;b.fx.push({k:'cast',u:e.u,v:e.v,r:60,c:'#c48cff',t:.5,max:.5})}}
@@ -3042,13 +3094,13 @@ function updClash(dt){const b=B;if(!b||b.over||b.paused)return;b.t+=dt;b.shake=M
     if(e.c&&e.c.heal){const ht=healTarget(e);if(ht&&e.t<=0){e.t=e.rate;ht.hp=Math.min(ht.max,ht.hp+e.c.heal*cardMult('medic'));B.fx.push({k:'heal',u:ht.u,v:ht.v,t:.4,max:.4})}}
     if(e.retT<=0||!e.tgt||e.tgt.dead){e.retT=.25;e.tgt=findTarget(e)}
     const o=e.tgt;
-    if(e.abil>0){e.abil-=dt;if(e.abil<=0&&o){e.abil=e.c.ability;const h=HMAP[e.c.hero];for(const x of b.ents)if(!x.dead&&x.side!==e.side&&dist2(x.u,x.v,o.u,o.v)<(46+x.r)**2)hitE(x,e.dmg*2.2*(isBld(x)?.4:1),0);
-      b.fx.push({k:'burst',u:o.u,v:o.v,r:46,c:h.bolt,t:.45,max:.45});b.fx.push({k:'bolt',u1:o.u,v1:o.v-70,u2:o.u,v2:o.v,c:h.bolt,t:.25,max:.25});b.shake=Math.max(b.shake,3);Sfx.play('boom')}}
+    // the ability waits, charged, until something is in reach
+    if(e.c&&e.c.ability&&!e.clone){e.abil=Math.max(0,e.abil-dt);if(e.abil<=0&&o&&Math.hypot(o.u-e.u,o.v-e.v)<e.range+90){e.abil=e.c.ability;e.casts=(e.casts||0)+1;heroAbility(e,o)}}
     if(o){const d=Math.hypot(o.u-e.u,o.v-e.v)-o.r-e.r;
       // the Hunter leaps the last stretch onto its first target and lands a heavy blow
       if(e.c&&e.c.leap&&!e.leapt&&d<70&&d>e.range&&Math.abs(o.u-CL.RIV)>CL.RW&&Math.abs(e.u-CL.RIV)>CL.RW&&(o.u<CL.RIV)===(e.u<CL.RIV)){e.leapt=true;const l=Math.hypot(o.u-e.u,o.v-e.v)||1,k=(l-o.r-e.r-2)/l;
         b.fx.push({k:'tracer',u1:e.u,v1:e.v,u2:e.u+(o.u-e.u)*k,v2:e.v+(o.v-e.v)*k,c:'#ff3b5e',t:.2,max:.2});e.u+=(o.u-e.u)*k;e.v+=(o.v-e.v)*k;hitE(o,e.dmg*1.6,e.side);e.atk=.3;e.t=e.rate;sparkle(o.u,o.v,'#ff3b5e',8);Sfx.play('hit');continue}
-      if(d<=e.range){e.mv=false;if(e.t<=0&&e.dmg){e.t=e.rate;shoot(e,o)}if(e.kind==='troop'){e.du=o.u-e.u;e.dv=o.v-e.v}continue}}
+      if(d<=e.range){e.mv=false;if(e.t<=0&&e.dmg){e.t=e.rate*(e.hasteT>0?.5:1);shoot(e,o)}if(e.kind==='troop'){e.du=o.u-e.u;e.dv=o.v-e.v}continue}}
     if(e.kind!=='troop')continue;
     const tg=o||laneTarget(e);if(!tg)continue;const[wu,wv]=waypoint(e,tg.u,tg.v),du=wu-e.u,dv=wv-e.v,l=Math.hypot(du,dv)||1,sp=e.spd*dt*(e.buffT>0?1.3:1)*(e.slowT>0?.55:1);e.slowT=Math.max(0,(e.slowT||0)-dt);
     e.u+=du/l*Math.min(sp,l);e.v+=dv/l*Math.min(sp,l);e.du=du;e.dv=dv;e.mv=true;e.anim+=dt*(5+e.spd/8)}
@@ -3067,6 +3119,11 @@ function aiThink(){const b=B,en=b.en[1],can=b.zdeck.filter(k=>ZCARDS[k].cost<=en
   const role=k=>ZROLE[k],foes=b.ents.filter(e=>!e.dead&&e.side===0&&e.kind==='troop'&&e.deploy<=0),threat=foes.filter(e=>e.u>R-30).sort((a,c)=>c.u-a.u)[0],place=(k,u,v)=>playCard(1,k,clamp(u,R+side+8,CL.LEN-14),clamp(v,10,CL.WID-10));
   // area spells on a clump of three or more
   for(const sp of['acid','plague'])if(can.includes(sp))for(const f of foes){if(foes.filter(g=>dist2(g.u,g.v,f.u,f.v)<46*46).length>=3&&Math.random()<.6){playCard(1,sp,f.u,f.v);return}}
+  // a spine tower in the way of a push, an energy sac when things are quiet
+  if(threat&&can.includes('spine')&&Math.random()<.35){place('spine',threat.u+60,threat.v);return}
+  if(!threat&&can.includes('sac')&&en>=7&&!b.ents.some(o=>o.k==='sac'&&o.side===1&&!o.dead)&&Math.random()<.3){place('sac',CL.LEN-50,CL.WID/2+rand(-30,30));return}
+  // a lane whose tower has fallen: send fast troops straight in
+  for(const lane of[0,1])if(pocket(1,lane)&&!threat&&Math.random()<.4){const opts=can.filter(k=>['fast','swarm'].includes(role(k)));if(opts.length){const v=lane?CL.WID*.75:CL.WID*.25;playCard(1,pick(opts),70,v);return}}
   // defend when the squad crosses the canal
   if(threat&&Math.random()<.85){const opts=can.filter(k=>ZCARDS[k].type==='troop'&&!ZCARDS[k].targ);if(opts.length){place(pick(opts),threat.u+50,threat.v+rand(-14,14));return}
     if(can.includes('nest')){place('nest',threat.u+70,threat.v);return}}
@@ -3078,11 +3135,20 @@ function aiThink(){const b=B,en=b.en[1],can=b.zdeck.filter(k=>ZCARDS[k].cost<=en
     const wins=can.filter(k=>role(k)==='win').sort((a,c)=>ZCARDS[c].cost-ZCARDS[a].cost),k=wins.length&&Math.random()<.75?wins[0]:pick(can.filter(k=>ZCARDS[k].type!=='spell')||can);if(!k)return;
     const c=ZCARDS[k],u=c.type==='building'?CL.LEN-120:role(k)==='fast'||role(k)==='swarm'?R+side+30:CL.LEN-70;
     if(c.type==='spell')return;place(k,u,lane+rand(-12,12));b.pushLane=lane;b.supT=b.t+6;b.aiPush=rand(5,9.5)-b.tier*.2}}
+// the end of a battle: crowns for both sides, the rewards, and play again, the next opponent or the menu
+function clashEndPanel(r){const b=B,big=(n,c)=>[0,1,2].map(i=>`<i class="crw big${i<n?' on':''}" style="--cc:${c}"></i>`).join(''),next=b.tier<save.clash.tier;
+  const el=$('#clashEnd');el.innerHTML=`<h2 style="color:${r.win?'var(--volt)':r.draw?'var(--ink)':'var(--danger)'}">${r.win?'Victory!':r.draw?'Draw':'Defeat'}</h2>
+    <div class="endcrowns"><div><span class="label">You</span><div>${big(r.crowns[0],'#ffd84a')}</div></div><div><span class="label">${CTIERS[b.tier]}</span><div>${big(r.crowns[1],'#ff5c8a')}</div></div></div>
+    <p class="xpline">${r.sup?`<b>+${r.sup} supplies</b> · `:''}<b>+${r.xp} XP</b>${r.up?` · <b class="lvup">Level ${r.up}!</b>`:''}${r.unlocked?` · <b class="lvup">${CTIERS[save.clash.tier]} unlocked</b>`:''}</p>
+    ${r.loot?`<div class="loot" style="justify-content:center">${wIconHTML(r.loot.id,1)}<span>${weaponMsg(r.loot)}</span></div>`:''}
+    <div class="bar" style="justify-content:center;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="cagain">Play again</button>${next?`<button class="btn pink" data-act="cnext">Next: ${CTIERS[b.tier+1]}</button>`:''}<button class="btn ghost" data-act="cmenu">Menu</button></div>`;
+  hydrate(el);el.hidden=false}
+function leaveClash(){$('#clashHud').hidden=true;$('#clashEnd').hidden=true;document.body.classList.remove('clashing');state='menu';showScreen('clash')}
 function endClash(){const b=B;if(b.over)return;b.over=true;const win=b.crowns[0]>b.crowns[1],draw=b.crowns[0]===b.crowns[1],t=b.tier;
   const r={win,draw,crowns:[...b.crowns],sup:win?60+30*t:draw?20:0,xp:win?80+20*t:draw?40:30,loot:null,up:0,unlocked:false};
   if(!save.god.infSup)save.supplies+=r.sup;r.up=giveXP(r.xp);if(win){save.clash.wins++;if(t===save.clash.tier&&t<CTIERS.length-1){save.clash.tier++;r.unlocked=true}if(Math.random()<.25+(r.unlocked?.25:0))r.loot=grantWeapon(rollWeapon(t/9))}
   else if(!draw)save.clash.losses++;persist();b.result=r;Sfx.play(win?'win':'hurt');
-  setTimeout(()=>{if(B!==b)return;$('#clashHud').hidden=true;document.body.classList.remove('clashing');state='menu';showScreen('clash')},2200);banner(win?'VICTORY':draw?'DRAW':'DEFEAT',`${b.crowns[0]} - ${b.crowns[1]}`)}
+  setTimeout(()=>{if(B!==b)return;clashEndPanel(r)},1700);banner(win?'VICTORY':draw?'DRAW':'DEFEAT',`${b.crowns[0]} - ${b.crowns[1]}`)}
 /* ----- Volt Clash view: the arena fits the screen, lanes run left to right in landscape and bottom to top in portrait ----- */
 let CLV={z:1,ox:0,oy:0,port:false,bg:null,bgKey:''};
 function clashLayout(){const f=LW/innerWidth,port=LH>LW,barH=(port?118:88)*f,topH=(port?36:6)*f,aw=(port?CL.WID:CL.LEN)*CS,ah=(port?CL.LEN:CL.WID)*CS,availH=LH-barH-topH;
@@ -3106,7 +3172,16 @@ function clashBg(){const key=CLV.port?'p':'l';if(CLV.bg&&CLV.bgKey===key)return 
   R(0,0,CL.LEN,2,'#15121b');R(0,CL.WID-2,CL.LEN,2,'#15121b');R(0,0,2,CL.WID,'#15121b');R(CL.LEN-2,0,2,CL.WID,'#15121b');
   let out=c;if(CLV.port){out=document.createElement('canvas');out.width=c.height;out.height=c.width;const y=out.getContext('2d');y.translate(0,out.height);y.rotate(-Math.PI/2);y.drawImage(c,0,0)}
   CLV.bg=out;CLV.bgKey=key;return out}
-let PTOWER=null,KTOWER=null;
+let PTOWER=null,KTOWER=null;const IART={};
+// pixel props for Volt Clash installations
+function instArt(k){if(IART[k])return IART[k];const P=(x,a,b,c,d,col)=>{x.fillStyle=col;x.fillRect(a,b,c,d)};
+  const draw={tesla:x=>{P(x,6,26,20,8,'#4a4654');P(x,8,28,16,4,'#6a6676');P(x,13,6,6,22,'#5a5f70');for(let y=8;y<26;y+=4)P(x,10,y,12,2,'#c8742a');P(x,11,0,10,8,'#9fe8ff');P(x,13,2,6,4,'#ffffff')},
+    mortar:x=>{P(x,4,22,24,10,'#5a4a2a');for(let i=5;i<28;i+=6)P(x,i,22,5,4,'#c4aa72');P(x,10,14,12,10,'#4a5240');x.save();x.translate(16,16);x.rotate(-.6);P(x,-4,-16,8,16,'#3a4030');P(x,-5,-18,10,3,'#6a7260');x.restore()},
+    barracks:x=>{x.fillStyle='#4a5a3a';x.beginPath();x.moveTo(2,30);x.lineTo(16,6);x.lineTo(30,30);x.closePath();x.fill();x.fillStyle='#5d6e47';x.beginPath();x.moveTo(16,6);x.lineTo(30,30);x.lineTo(20,30);x.closePath();x.fill();P(x,13,20,6,10,'#1a1622');P(x,15,2,2,6,'#3a3040');P(x,17,2,7,4,'#ffe14d')},
+    pump:x=>{P(x,6,14,20,18,'#3a3a48');P(x,8,16,16,14,'#5a5a6a');P(x,12,4,8,12,'#2a2235');P(x,13,6,6,8,'#ff5cd6');P(x,14,8,4,3,'#ffd0f4');P(x,4,28,24,4,'#2a2235');P(x,9,20,4,6,'#ffe14d');P(x,19,20,4,6,'#ffe14d')},
+    spine:x=>{P(x,8,24,16,8,'#5a3a40');for(const[a,h]of[[9,18],[14,26],[19,20]]){x.fillStyle='#e6dcc0';x.beginPath();x.moveTo(a,26);x.lineTo(a+2.5,26-h);x.lineTo(a+5,26);x.closePath();x.fill()}P(x,12,22,8,4,'#8fd14f')},
+    sac:x=>{x.fillStyle='#7a2238';x.beginPath();x.ellipse(16,20,12,11,0,0,7);x.fill();x.fillStyle='#c84a6a';x.beginPath();x.ellipse(13,16,6,5,0,0,7);x.fill();x.fillStyle='#c6ff4a';for(const[a,b]of[[19,22],[10,24],[17,13]])x.fillRect(a,b,3,3)}}[k];
+  return IART[k]=propSprite(32,34,draw)}
 function towerArt(king){if(king&&KTOWER)return KTOWER;if(!king&&PTOWER)return PTOWER;const w=king?44:32,h=king?40:30;
   const f=propSprite(w,h,x=>{const P=(a,b,c,d,col)=>{x.fillStyle=col;x.fillRect(a,b,c,d)};P(2,h*.35,w-4,h*.65,'#5f5a68');P(4,h*.35+2,w-8,h*.65-4,'#7a7586');for(let i=4;i<w-4;i+=6)P(i,h*.35,3,3,'#4a4654');
     P(0,h-8,w,8,'#9a8350');for(let i=1;i<w;i+=7)P(i,h-8,6,4,'#c4aa72');P(w/2-4,h*.55,8,h*.45-8,'#2a2235');if(king){P(w/2-1,0,2,h*.38,'#3a3040');P(w/2+1,1,12,7,'#ffe14d');P(w/2+4,2,4,2,'#2e2860')}})
@@ -3115,19 +3190,24 @@ function renderClash(){const b=B;if(!b)return;clashLayout();ctx.setTransform(K,0
   const sh=b.shake?rand(-b.shake,b.shake):0;ctx.setTransform(K*CLV.z,0,0,K*CLV.z,K*(CLV.ox+sh),K*CLV.oy);ctx.imageSmoothingEnabled=false;OX=0;OY=0;
   const bg=clashBg();ctx.drawImage(bg,0,0,bg.width*RZ/2*CS,bg.height*RZ/2*CS);
   // deploy zone while a card is chosen
-  if(b.sel>=0&&!b.over){const c=CCARDS[b.hand[b.sel]];if(c&&c.type!=='spell'){const[a0,c0]=toW(0,0),[a1,c1]=toW(CL.RIV-CL.RW-2,CL.WID);ctx.fillStyle='rgba(255,225,77,.08)';ctx.fillRect(Math.min(a0,a1)*RZ,Math.min(c0,c1)*RZ,Math.abs(a1-a0)*RZ,Math.abs(c1-c0)*RZ)}}
+  if(b.sel>=0&&!b.over){const c=CCARDS[b.hand[b.sel]];if(c&&c.type!=='spell'){const zone=(u0,v0,u1,v1)=>{const[a0,c0]=toW(u0,v0),[a1,c1]=toW(u1,v1);ctx.fillRect(Math.min(a0,a1)*RZ,Math.min(c0,c1)*RZ,Math.abs(a1-a0)*RZ,Math.abs(c1-c0)*RZ)};
+    ctx.fillStyle='rgba(255,225,77,.08)';zone(0,0,CL.RIV-CL.RW-2,CL.WID);ctx.fillStyle='rgba(255,92,138,.12)';for(const lane of[0,1])if(pocket(0,lane))zone(CL.RIV+CL.RW+4,lane?CL.WID/2:0,CL.LEN-58,lane?CL.WID:CL.WID/2)}}
   const list=b.ents.filter(e=>!e.dead||e.kind==='troop').map(e=>({e,w:toW(e.u,e.v)}));list.sort((a,c)=>a.w[1]-c.w[1]);
   for(const f of b.fx)if(f.k==='plague'||f.k==='grave'){const[x,y]=toW(f.u,f.v),R=f.r*RZ*CS;ctx.globalAlpha=f.k==='plague'?.26:.2;ctx.fillStyle=f.k==='plague'?'#6a9a2a':'#3a2a1a';ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,R,R*.8,0,0,7);ctx.fill();
     ctx.globalAlpha=.6;ctx.strokeStyle=f.k==='plague'?'#c6ff4a':'#8a6a4a';ctx.lineWidth=5;ctx.setLineDash([14,10]);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1}
   for(const f of b.fx)if(f.k==='storm'){const[x,y]=toW(f.u,f.v);ctx.globalAlpha=.18;ctx.fillStyle='#9fe8ff';ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,f.r*RZ*CS,f.r*RZ*CS*.8,0,0,7);ctx.fill();ctx.globalAlpha=1}
   for(const{e,w}of list)drawClashEnt(e,w[0],w[1]);
-  for(const s of b.shots){const[x,y]=toW(s.u,s.v);ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x*RZ-28,y*RZ-12-28,56,56);ctx.fillStyle=s.kind==='acid'?'#c6ff4a':'#ffffff';ctx.fillRect(x*RZ-5,y*RZ-17,10,10);ctx.globalCompositeOperation='source-over'}
+  for(const s of b.shots){const[x,y]=toW(s.u,s.v);if(s.kind==='shell'){const tot=Math.hypot(s.o.u-s.u0,s.o.v-s.v0)||1,done=1-Math.hypot(s.o.u-s.u,s.o.v-s.v)/tot,hgt=Math.sin(Math.max(0,Math.min(1,done))*Math.PI)*260;
+      ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,10,5,0,0,7);ctx.fill();ctx.fillStyle='#2a2235';ctx.beginPath();ctx.arc(x*RZ,y*RZ-hgt-20,10,0,7);ctx.fill();ctx.fillStyle='#ffb35a';ctx.fillRect(x*RZ-3,y*RZ-hgt-24,6,4);continue}
+    ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x*RZ-28,y*RZ-12-28,56,56);ctx.fillStyle=s.kind==='acid'?'#c6ff4a':'#ffffff';ctx.fillRect(x*RZ-5,y*RZ-17,10,10);ctx.globalCompositeOperation='source-over'}
   for(const f of b.fx){const a=f.t/f.max;if(f.k==='tracer'||f.k==='beam'||f.k==='bolt'){const[x1,y1]=toW(f.u1,f.v1),[x2,y2]=toW(f.u2,f.v2);ctx.globalCompositeOperation='lighter';ctx.strokeStyle=f.c;ctx.globalAlpha=a;ctx.lineWidth=f.k==='beam'?10:f.k==='bolt'?8:4;
       ctx.beginPath();ctx.moveTo(x1*RZ,y1*RZ-90);if(f.k==='bolt')for(let k=1;k<6;k++)ctx.lineTo((x1+(x2-x1)*k/6)*RZ+rand(-14,14),(y1+(y2-y1)*k/6)*RZ-90+rand(-14,14));ctx.lineTo(x2*RZ,y2*RZ-90);ctx.stroke();
       ctx.strokeStyle='#ffffff';ctx.lineWidth=f.k==='tracer'?2:3;ctx.stroke();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
     else if(f.k==='burst'||f.k==='cast'||f.k==='pillar'){const[x,y]=toW(f.u,f.v),r=f.r*RZ*CS*(f.k==='cast'?a:1-a*.5);ctx.globalAlpha=a;ctx.strokeStyle=f.c;ctx.lineWidth=8;ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,r,r*.8,0,0,7);ctx.stroke();
       if(f.k==='pillar'){ctx.globalCompositeOperation='lighter';ctx.fillStyle=f.c;ctx.globalAlpha=a*.6;ctx.fillRect(x*RZ-f.r*RZ*CS*.35,0,f.r*RZ*CS*.7,y*RZ);ctx.globalCompositeOperation='source-over'}ctx.globalAlpha=1}
     else if(f.k==='slash'){const[x,y]=toW(f.u,f.v);ctx.globalAlpha=a;ctx.strokeStyle=f.c;ctx.lineWidth=8;ctx.beginPath();ctx.arc(x*RZ,y*RZ-60,60,-.8,1.4);ctx.stroke();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();ctx.globalAlpha=1}
+    else if(f.k==='crown'){const[x,y]=toW(f.u,f.v),k=1-a,cx=x*RZ,cy=y*RZ-120-k*160,s2=1.4+Math.sin(k*Math.PI)*.8;ctx.globalAlpha=Math.min(1,a*2);
+      for(let n=0;n<f.n;n++)drawCrown(cx+(n-(f.n-1)/2)*70,cy,s2,f.side?'#ff5c8a':'#ffd84a');ctx.globalAlpha=1}
     else if(f.k==='heal'){const[x,y]=toW(f.u,f.v);ctx.globalAlpha=a;ctx.fillStyle='#7dff8a';ctx.fillRect(x*RZ-6,y*RZ-150+a*30,12,30);ctx.fillRect(x*RZ-15,y*RZ-141+a*30,30,12);ctx.globalAlpha=1}}
   for(const q of b.parts){const[x,y]=toW(q.u,q.v);ctx.fillStyle=q.c;ctx.fillRect(x*RZ-4,y*RZ-40,8,8)}
   // ghost of the card being placed
@@ -3136,24 +3216,47 @@ function renderClash(){const b=B;if(!b)return;clashLayout();ctx.setTransform(K,0
   ctx.setTransform(K,0,0,K,0,0);ctx.imageSmoothingEnabled=K!==1}
 function drawClashEnt(e,x,y){const b=B,a=e.dead?Math.max(0,1-e.deadT/.9):e.deploy>0?.55:1;ctx.globalAlpha=a;
   if(e.kind==='tower'||e.kind==='king'){if(e.dead){ctx.globalAlpha=1;ctx.fillStyle='rgba(20,14,26,.85)';ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,e.r*RZ*CS*1.4,e.r*RZ*CS*.8,0,0,7);ctx.fill();return}
-    if(e.side===0){const f=towerArt(e.kind==='king');shadow(x,y+2,f.w*2);drawScaled(f,x,y+4,2.4,e.flash>0);const sp=soldierSprite({cls:e.kind==='king'?'sniper':'rifle',hair:'#1b1424'}),tg=e.tgt&&!e.tgt.dead?toW(e.tgt.u,e.tgt.v):null;
-        const dx=tg?tg[0]-x:1,dy=tg?tg[1]-y:0,v=viewOf(dx,dy);drawSpr(sp.get(v,tg&&e.atk>0?'aim':'idle',0),x,y+4-f.h*2.4*.64/RZ,v==='side'&&dx<0?-1:1)}
+    if(e.side===0){const king=e.kind==='king',f=towerArt(king);shadow(x,y+2,f.w*2);drawScaled(f,x,y+4,2.4,e.flash>0);const top=y+4-f.h*2.4*.64/RZ,tg=e.tgt&&!e.tgt.dead?toW(e.tgt.u,e.tgt.v):null,[ex,ey]=toW(e.u+20,e.v);
+        // the guards face the horde's side of the field until something comes into range, and keep breathing and shifting
+        const dx=tg?tg[0]-x:ex-x,dy=tg?tg[1]-y:ey-y,v=viewOf(dx,dy),face=v==='side'&&dx<0?-1:1,shooting=tg&&e.atk>0,idle=((b.t*3.2+x*.3)|0)%4;
+        if(king){const hs=himeSprite(HMAP[save.heroine]),pose=shooting?'cast':e.active?'idle':'idle',fr=shooting?Math.min(3,(1-e.atk/.3)*4|0):idle;drawSpr(hs.get(v,pose,fr,!shooting&&(b.t%3.4)<.15),x,top,face)}
+        else{const sp=soldierSprite({cls:'rifle',hair:e.v<CL.WID/2?'#c2182b':'#d9b45a'});drawSpr(sp.get(v,shooting?'aim':'idle',shooting?0:idle),x,top,face);
+          if(shooting&&e.atk>.2){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf('#ffe14d'),x*RZ-30,top*RZ-150,60,60);ctx.globalCompositeOperation='source-over'}}}
     else{const f=NEST[((b.t*4+x)|0)%4],s=e.kind==='king'?1.5:1.1;shadow(x,y+3,f.w*s*.8);ctx.save();ctx.translate(x*RZ,y*RZ+40);ctx.scale(s,s);ctx.drawImage(f.r,-(f.w>>1),-f.h);if(e.flash>0){ctx.globalAlpha=.55;ctx.drawImage(f.wr,-(f.w>>1),-f.h)}ctx.restore()}
     ctx.globalAlpha=1;clashBar(x,y-(e.kind==='king'?44:34),e.kind==='king'?150:110,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff');return}
-  if(e.kind==='building'){const k=e.k;if(k==='turret'){const tg=e.tgt&&!e.tgt.dead?toW(e.tgt.u,e.tgt.v):null,dir=tg?Math.round(((Math.atan2(tg[1]-y,tg[0]-x)/(Math.PI*2))*16+16))%16:4;drawSpr(turretSprite(dir),x,y,1,e.flash>0)}
-    else if(k==='sand'){shadow(x,y,90);drawSpr(sandSprites().h,x-1,y+3,1,e.flash>0)}else if(k==='nest'){const f=NEST[((b.t*4+x)|0)%4];ctx.drawImage(f.r,x*RZ-(f.w>>1),y*RZ-f.h+40);if(e.flash>0){ctx.globalAlpha=.55;ctx.drawImage(f.wr,x*RZ-(f.w>>1),y*RZ-f.h+40)}}
-    ctx.globalAlpha=1;clashBar(x,y-18,70,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff');return}
+  if(e.kind==='building'){const k=e.k;if(k==='turret'){const tg=e.tgt&&!e.tgt.dead?toW(e.tgt.u,e.tgt.v):null,dir=tg?Math.round(((Math.atan2(tg[1]-y,tg[0]-x)/(Math.PI*2))*16+16))%16:4;shadow(x,y+2,60);drawScaled(turretSprite(dir),x,y+4,1.9,e.flash>0)}
+    else if(k==='sand'){shadow(x,y,90);drawSpr(sandSprites().h,x-1,y+3,1,e.flash>0)}
+    else if(IART[k]||['tesla','mortar','barracks','pump','spine','sac'].includes(k)){const f=instArt(k),pulse=k==='sac'||k==='pump'?1+Math.sin(b.t*5)*.05:1;shadow(x,y+2,f.w*1.6);drawScaled(f,x,y+3,1.7*pulse,e.flash>0);
+      if(k==='tesla'&&e.atk>0){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf('#9fe8ff'),x*RZ-50,y*RZ-160,100,100);ctx.globalCompositeOperation='source-over'}}
+    else if(k==='nest'){const f=NEST[((b.t*4+x)|0)%4];ctx.drawImage(f.r,x*RZ-(f.w>>1),y*RZ-f.h+40);if(e.flash>0){ctx.globalAlpha=.55;ctx.drawImage(f.wr,x*RZ-(f.w>>1),y*RZ-f.h+40)}}
+    ctx.globalAlpha=1;clashBar(x,y-(k==='sand'?14:k==='turret'?17:22),70,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff');return}
   const c=e.c,[sx,sy]=CLV.port?[e.dv,-e.du]:[e.du,e.dv],face=sx<0?-1:1;shadow(x,y,c.sc?c.sc*16:c.z==='boss'?120:c.z==='brute'?80:48);
   if(e.buffT>0&&!e.dead){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.5;ctx.drawImage(glowOf('#c48cff'),x*RZ-50,y*RZ-110,100,100);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
   if(c.z){const dir=dirOf(sx,sy),dr=dir*64;let fr,row;if(e.dead){fr=Math.min(5,e.deadT/.1|0);row=512}else if(e.atk>0){fr=Math.min(5,(1-e.atk/.3)*6|0);row=256+dr}else if(e.mv){fr=1+((b.t*(c.z==='runner'?13:6)+e.seed)|0)%8;row=c.z==='runner'?832+dr:dr}else{fr=((b.t*1.7+e.seed)|0)%2;row=576+dr}
-    if(!drawInfected(e.art,c.z,x,y,fr,row,e.flash>0&&!e.dead,undefined,c.sc)){const zf=ZSPR[c.z][0];drawSpr(zf[((b.t*3)|0)%zf.length],x,y,face,e.flash>0)}}
+    let ox=0,oy=0;const rise=e.deploy>0&&e.side===1;
+    if(e.atk>0&&e.tgt&&!e.dead){const[tx,ty]=toW(e.tgt.u,e.tgt.v),l=Math.hypot(tx-x,ty-y)||1,k=Math.sin((1-e.atk/.3)*Math.PI)*3.2;ox=(tx-x)/l*k;oy=(ty-y)/l*k}
+    else if(e.flash>0&&!e.dead){ox=-Math.sign(sx||1)*1.2;oy=-.6}
+    if(rise){ctx.save();ctx.beginPath();ctx.rect(-1e5,-1e5,2e5,y*RZ+1e5+2);ctx.clip();oy=e.deploy*22*(c.sc||3)/3;if(Math.random()<.3)sparkle(e.u,e.v,'#6a4a3a',1)}
+    if(!drawInfected(e.art,c.z,x+ox,y+oy,rise?1:fr,row,e.flash>0&&!e.dead,undefined,c.sc)){const zf=ZSPR[c.z][0];drawSpr(zf[((b.t*3)|0)%zf.length],x+ox,y+oy,face,e.flash>0)}
+    if(rise)ctx.restore()}
   else if(c.hero){const hs=himeSprite(HMAP[c.hero]),v=viewOf(sx,sy),pose=e.dead?'hurt':e.atk>0?'attack':e.mv?'walk':'idle',f=pose==='walk'?(e.anim|0)%8:pose==='attack'?Math.min(3,(1-e.atk/.3)*4|0):pose==='hurt'?1:((b.t*3.2)|0)%4;
-    drawSpr(hs.get(v,pose,f),x,y,v==='side'?face:1,e.flash>0&&!e.dead)}
+    if(e.clone){ctx.globalAlpha=a*.55;drawSpr(hs.get(v,pose,f),x,y,v==='side'?face:1,true,a*.35)}drawSpr(hs.get(v,pose,f),x,y,v==='side'?face:1,e.flash>0&&!e.dead,e.clone?a*.6:undefined)}
   else{const sp=soldierSprite({cls:c.cls,hair:e.hair}),v=viewOf(sx,sy),pose=e.atk>0?'aim':e.mv?'walk':'idle',f=pose==='walk'?((e.anim|0)%4)*2:0;drawSpr(sp.get(v,pose,f),x,y,v==='side'?face:1,e.flash>0&&!e.dead)}
-  ctx.globalAlpha=1;if(!e.dead&&e.hp<e.max)clashBar(x,y-(c.sc>4?50:c.z==='boss'?44:c.hero?33:28),c.hero||c.z==='boss'||c.z==='brute'?60:36,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff')}
+  ctx.globalAlpha=1;if(!e.dead){const hh=(c.sc>4?46:c.z==='boss'?40:c.hero?30:26);
+    if(e.stunT>0)for(let k=0;k<3;k++){const an=b.t*6+k*2.1;ctx.fillStyle=e.frost>0?'#cfefff':'#ffe14d';ctx.fillRect(x*RZ+Math.cos(an)*26-4,(y-hh)*RZ+Math.sin(an)*8-4,8,8)}
+    if(e.shieldT>0){ctx.globalAlpha=.35;ctx.strokeStyle='#ffd84a';ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(x*RZ,(y-hh*.45)*RZ,70,hh*RZ*.6,0,0,7);ctx.stroke();ctx.globalAlpha=1}
+    if(e.hasteT>0||e.frost>0){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.45;ctx.drawImage(glowOf(e.frost>0?'#9fe8ff':'#ff9ad5'),x*RZ-50,(y-hh*.5)*RZ-50,100,100);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}}
+  if(!e.dead&&c.ability&&!e.clone){const w=60,bx=Math.round(x*RZ-w/2),by=Math.round((y-33)*RZ)+12,r=1-e.abil/(e.abil>c.ability?e.abil:c.ability),rdy=e.abil<=0;ctx.fillStyle='#000';ctx.fillRect(bx-2,by-2,w+4,8);ctx.fillStyle=rdy&&((B.t*6|0)%2)?'#fff6c0':'#ffd23f';ctx.fillRect(bx,by,Math.round(w*r),4)}
+  if(!e.dead&&e.hp<e.max)clashBar(x,y-(c.sc>4?50:c.z==='boss'?44:c.hero?33:28),c.hero||c.z==='boss'||c.z==='brute'?60:36,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff')}
+function drawCrown(cx,cy,s,col){ctx.save();ctx.translate(cx,cy);ctx.scale(s,s);ctx.fillStyle='#1a1222';ctx.fillRect(-14,-2,28,14);ctx.beginPath();ctx.moveTo(-14,0);ctx.lineTo(-14,-16);ctx.lineTo(-7,-6);ctx.lineTo(0,-18);ctx.lineTo(7,-6);ctx.lineTo(14,-16);ctx.lineTo(14,0);ctx.fill();
+  ctx.fillStyle=col;ctx.fillRect(-12,0,24,10);ctx.beginPath();ctx.moveTo(-12,0);ctx.lineTo(-12,-12);ctx.lineTo(-6,-3);ctx.lineTo(0,-14);ctx.lineTo(6,-3);ctx.lineTo(12,-12);ctx.lineTo(12,0);ctx.fill();ctx.fillStyle='#ffffff';ctx.fillRect(-2,2,4,4);ctx.restore()}
 function drawScaled(f,wx,wy,s,white){ctx.save();ctx.translate(Math.round(wx*RZ),Math.round(wy*RZ));ctx.scale(s,s);ctx.drawImage(white?f.wr:f.r,-(f.w>>1),-f.h);ctx.restore()}
 function clashBar(wx,wy,w,r,c){const x=Math.round(wx*RZ-w/2),y=Math.round(wy*RZ);ctx.fillStyle='#000';ctx.fillRect(x-3,y-3,w+6,13);ctx.fillStyle='#2a1020';ctx.fillRect(x,y,w,7);ctx.fillStyle=c;ctx.fillRect(x,y,Math.max(0,Math.round(w*r)),7)}
-const canDeploy=(k,u,v)=>{const c=CCARDS[k];if(!c)return false;if(u<4||v<4||u>CL.LEN-4||v>CL.WID-4)return false;return c.type==='spell'||u<CL.RIV-CL.RW-4};
+// a fallen princess tower opens the enemy's half of that lane for deployment, up to just past where the tower stood
+const pocket=(side,lane)=>!B.ents.some(o=>o.kind==='tower'&&o.side!==side&&!o.dead&&(o.v<CL.WID/2?0:1)===lane);
+const inZone=(side,u,v)=>{if(u<4||v<4||u>CL.LEN-4||v>CL.WID-4)return false;if(side?u>CL.RIV+CL.RW+4:u<CL.RIV-CL.RW-4)return true;const lane=v<CL.WID/2?0:1;
+  return pocket(side,lane)&&(side?u>58:u<CL.LEN-58)&&Math.abs(u-CL.RIV)>CL.RW+4};
+const canDeploy=(k,u,v)=>{const c=CCARDS[k];if(!c)return false;if(u<4||v<4||u>CL.LEN-4||v>CL.WID-4)return false;return c.type==='spell'||inZone(0,u,v)};
 /* ----- Volt Clash HUD: crowns, timer, energy and the hand ----- */
 const CART={};
 function cardArt(k){if(CART[k])return CART[k];const c=CCARDS[k],cv2=document.createElement('canvas');cv2.width=48;cv2.height=48;const x=cv2.getContext('2d');x.imageSmoothingEnabled=false;
@@ -3161,16 +3264,16 @@ function cardArt(k){if(CART[k])return CART[k];const c=CCARDS[k],cv2=document.cre
   const fit=(img,sx,sy,sw,sh)=>{const k2=Math.min(46/sw,46/sh);x.drawImage(img,sx,sy,sw,sh,(48-sw*k2)/2,(48-sh*k2)/2,sw*k2,sh*k2)};
   if(c.hero){const p=heroPortrait(HMAP[c.hero]);fit(p,0,0,p.width,p.height)}
   else if(c.cls){const f=soldierSprite({cls:c.cls,hair:'#3a2418'}).get('front','idle',0,true).r;fit(f,0,0,f.width,f.height*.62)}
-  else if(k==='turret'){const f=turretSprite(6).r;fit(f,0,0,f.width,f.height)}else if(k==='sand'){const f=sandSprites().h.r;fit(f,0,0,f.width,f.height)}
+  else if(k==='turret'){const f=turretSprite(6).r;fit(f,0,0,f.width,f.height)}else if(['tesla','mortar','barracks','pump'].includes(k)){const f=instArt(k).r;fit(f,0,0,f.width,f.height)}else if(k==='sand'){const f=sandSprites().h.r;fit(f,0,0,f.width,f.height)}
   else{const f=weaponIcon(k==='storm'?'tesla':k==='judge'?'hammer':'innate',k==='zap'?'#ffe14d':null).r;fit(f,0,0,f.width,f.height)}
   return CART[k]=cv2}
 function clashHandUI(){const h=$('#chHand');h.innerHTML=B.hand.map((k,i)=>`<button class="ccard${B.sel===i?' sel':''}" data-ci="${i}"><span class="cimg"></span><b>${CCARDS[k].cost}</b><small>${CCARDS[k].name}</small></button>`).join('');
   h.querySelectorAll('.ccard').forEach((el,i)=>{const c=cardArt(B.hand[i]),cp=document.createElement('canvas');cp.width=48;cp.height=48;cp.getContext('2d').drawImage(c,0,0);cp.className='px';el.querySelector('.cimg').appendChild(cp)});
   const nx=$('#chNext');nx.innerHTML='<span class="label">Next</span>';const c=cardArt(B.queue[0]),cp=document.createElement('canvas');cp.width=48;cp.height=48;cp.getContext('2d').drawImage(c,0,0);cp.className='px';nx.appendChild(cp)}
 function clashHud(){const b=B,left=Math.max(0,(b.t<CL.TIME?CL.TIME:CL.TIME+CL.OT)-b.t);$('#chTime').textContent=`${b.t>=CL.TIME?'Overtime ':''}${Math.floor(left/60)}:${String(Math.floor(left%60)).padStart(2,'0')}`;
-  $('#chP').textContent=b.crowns[0];b.lastZT-=1/60;const cl=$('#chLast');if(b.lastZT>0){cl.hidden=false;cl.textContent='Horde plays '+b.lastZ}else cl.hidden=true;$('#chE').textContent=b.crowns[1];$('#chEn').style.width=(b.en[0]*10)+'%';$('#chEnN').textContent=Math.floor(b.en[0]);$('#chDbl').hidden=!(b.t>CL.TIME-60);
+  const crowns=(n,c)=>[0,1,2].map(i=>`<i class="crw${i<n?' on':''}" style="--cc:${c}"></i>`).join('');if(b.crHUD!==b.crowns.join()){b.crHUD=b.crowns.join();$('#chP').innerHTML=crowns(b.crowns[0],'#ffd84a');$('#chE').innerHTML=crowns(b.crowns[1],'#ff5c8a')}b.lastZT-=1/60;const cl=$('#chLast');if(b.lastZT>0){cl.hidden=false;cl.textContent='Horde plays '+b.lastZ}else cl.hidden=true;$('#chEn').style.width=(b.en[0]*10)+'%';$('#chEnN').textContent=Math.floor(b.en[0]);$('#chDbl').hidden=!(b.t>CL.TIME-60);
   document.querySelectorAll('#chHand .ccard').forEach((el,i)=>el.classList.toggle('poor',CCARDS[b.hand[i]].cost>b.en[0]))}
-function useCard(i,u,v){const b=B,k=b.hand[i];if(!canDeploy(k,u,v)){toast('Place troops and buildings on your side of the canal');return false}if(CCARDS[k].cost>b.en[0]){toast('Not enough energy');return false}
+function useCard(i,u,v){const b=B,k=b.hand[i];if(!canDeploy(k,u,v)){toast('Place troops on your side, or in an enemy lane whose tower has fallen');return false}if(CCARDS[k].cost>b.en[0]){toast('Not enough energy');return false}
   if(!playCard(0,k,u,v))return false;b.hand[i]=b.queue.shift();b.queue.push(k);b.sel=-1;b.ghost=null;clashHandUI();return true}
 function clashPoint(cx,cy){const f=LW/innerWidth,lx=cx*f,ly=cy*f,wx=(lx-CLV.ox)/CLV.z/RZ,wy=(ly-CLV.oy)/CLV.z/RZ;return toUV(wx,wy)}
 R.clash=()=>{const s=save.clash,deck=clashDeck(),r=B&&B.result,tier=Math.min(s.tier,CTIERS.length-1),pick2=CLASH_PICK.t??tier,editing=CLASH_PICK.edit;
@@ -3220,6 +3323,9 @@ gameEl.addEventListener('click',e=>{Sfx.init();const b=e.target.closest('button'
   else if(a==='sound'){save.sound=!save.sound;persist();showScreen('pause')}
   else if(a==='pstart'){const lib=CITIES.map((c,i)=>i).filter(i=>save.cleared[CITIES[i].id]);startPatrol(patrolPick.hero||save.heroine,lib.includes(patrolPick.city)?patrolPick.city:(lib[0]||0));lastClaim=null;Sfx.play('ui');toast('Patrol started');refresh('patrol')}
   else if(a==='pclaim'||a==='precall'){const r=claimPatrol(a==='precall');if(r){lastClaim=r;Sfx.play(r.loot.length||r.up?'win':'ui');toast(`+${r.sup} supplies · +${r.xp} XP`)}refresh('patrol')}
+  else if(a==='cagain'){startClash(B.tier)}
+  else if(a==='cnext'){startClash(Math.min(B.tier+1,save.clash.tier))}
+  else if(a==='cmenu'){leaveClash()}
   else if(a==='cfight'){if(B)B.result=null;startClash(Math.min(CLASH_PICK.t??save.clash.tier,save.clash.tier))}
   else if(a==='cedit'){CLASH_PICK.edit=!CLASH_PICK.edit;refresh('clash')}
   else if(a==='cresume'){if(B){B.paused=false;$('#clashMenu').hidden=true}}
@@ -3315,7 +3421,7 @@ function frame(t){const raw=(t-last)/1000,dt=Math.min(.05,raw);last=t;
   pumped=pumpSprites(t);requestAnimationFrame(frame)}
 showScreen('title');requestAnimationFrame(frame);
 window.__rg=(h,v,p,f,S,o={})=>renderGirl(heroLook(h),heroGirlPal(h),{view:v,pose:p,f,S,...o});
-window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite,spawnZombie,placeBuild,step:dt=>update(dt),show:id=>{state="menu";G=null;$("#hud").hidden=true;$("#clashHud").hidden=true;showScreen(id)},get B(){return B},startClash,playCard,updClash,cast:i=>tryCast(i)};
+window.__vf={startMission,get G(){return G},save:()=>save,HEROINES,himeSprite,spawnZombie,placeBuild,step:dt=>update(dt),show:id=>{state="menu";G=null;$("#hud").hidden=true;$("#clashHud").hidden=true;showScreen(id)},get B(){return B},startClash,playCard,updClash,cast:i=>tryCast(i),canDeploy:(k,u,v)=>canDeploy(k,u,v)};
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!/claude|anthropic/.test(location.hostname))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
