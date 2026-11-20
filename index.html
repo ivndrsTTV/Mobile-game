@@ -219,6 +219,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 #toast{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translateX(-50%);background:var(--panel);border:2px solid var(--line);padding:6px 12px;
   font-size:18px;opacity:0;transition:opacity .2s;pointer-events:none;width:max-content;max-width:min(560px,calc(100% - 24px));text-align:center}
 #toast.show{opacity:1}
+#toast{z-index:40}body.clashing #toast{bottom:calc(env(safe-area-inset-bottom,0px) + 118px)}
 @media (max-width:640px){
   #objective{left:calc(env(safe-area-inset-left,0px) + 8px);transform:none;top:calc(env(safe-area-inset-top,0px) + 112px);font-size:11px}
   #sbx{top:calc(env(safe-area-inset-top,0px) + 142px)}
@@ -233,6 +234,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 .ch-top .btn{width:30px;height:26px;padding:0}
 .ch-c b{font-size:17px;font-weight:400}.ch-c.p b{color:#5ab8ff}.ch-c.e b{color:var(--sakura)}
 #chTime{color:var(--volt);min-width:64px;text-align:center}
+#chLast{position:absolute;top:calc(env(safe-area-inset-top,0px) + 40px);left:50%;transform:translateX(-50%);font-family:var(--display);font-size:12px;color:#c6ff4a;background:rgba(14,11,22,.72);padding:2px 8px;border:1px solid #4a6a2a;white-space:nowrap;pointer-events:none}
 .ch-bar{position:absolute;left:0;right:0;bottom:0;padding:6px 8px calc(env(safe-area-inset-bottom,0px) + 4px);display:flex;gap:8px;align-items:flex-end;justify-content:center;background:linear-gradient(rgba(8,6,14,0),rgba(8,6,14,.9) 35%)}
 .ch-hand{display:flex;gap:6px}
 .ccard{position:relative;width:62px;height:76px;padding:0;background:var(--panel2);border:2px solid var(--line);display:grid;grid-template-columns:100%;grid-auto-flow:row;justify-items:center;align-content:start;cursor:pointer;color:var(--ink);font-family:var(--display);touch-action:none}
@@ -246,6 +248,7 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
 .ch-en b{font-family:var(--display);color:#ff9ae6;font-size:18px;font-weight:400;line-height:1}
 #clashMenu{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);display:grid;gap:10px;min-width:220px;text-align:center}
 .dcard{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;text-align:left;cursor:pointer}.dcard.on{border-color:var(--volt)}.dcard b{font-family:var(--display);font-weight:400}
+.bestiary summary{cursor:pointer;padding:2px 0}.zrow b{font-family:var(--display);font-weight:400;color:#c6ff4a}
 .dcard .cimg{line-height:0;border:2px solid var(--line)}
 @media (orientation:portrait){.ccard{width:70px;height:88px}.ccard .cimg canvas{width:54px;height:54px}.ch-bar{flex-wrap:wrap;row-gap:4px}}
 @media (prefers-reduced-motion:reduce){.lineup .h{animation:none}#banner.show{animation-duration:2.2s;animation-timing-function:steps(1)}}
@@ -283,9 +286,10 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
   </div>
   <div id="clashHud" hidden>
     <div class="ch-top"><span class="ch-c e">Horde <b id="chE">0</b></span><span id="chTime">3:00</span><span class="ch-c p">You <b id="chP">0</b></span><button class="btn small" id="chPause" aria-label="Pause">II</button></div>
+    <div id="chLast" hidden></div>
     <div class="ch-bar"><div class="ch-next" id="chNext"></div><div class="ch-hand" id="chHand"></div>
       <div class="ch-en"><div class="ch-meter"><i id="chEn"></i></div><b id="chEnN">5</b><span id="chDbl" class="label" hidden>Double energy</span></div></div>
-    <div id="clashMenu" class="panel" hidden><h3 style="font-family:var(--display);margin:0">Paused</h3><button class="btn primary" data-act="cresume">Resume</button><button class="btn ghost" data-act="cquit">Surrender</button></div>
+    <div id="clashMenu" class="panel" hidden><h3 style="font-family:var(--display);margin:0">Paused</h3><p class="muted" id="chScout" style="font-size:16px;max-width:320px"></p><button class="btn primary" data-act="cresume">Resume</button><button class="btn ghost" data-act="cquit">Surrender</button></div>
   </div>
   <div id="toast"></div>
 
@@ -1516,7 +1520,13 @@ const ZART={};
 function loadInfectedArt(){for(const n of new Set(Object.values(LPC_INFECTED).flat())){const img=new Image(),a=ZART[n]={img,white:null,ready:false};
   img.onload=()=>{a.white=whiteOf(img);a.ready=true};img.src='assets/infected/'+n+'.png'}}
 const dirOf=(x,y)=>Math.abs(x)>Math.abs(y)?(x<0?1:3):(y<0?0:2);
-function drawInfected(art,type,wx,wy,frame,row,white,alpha){const a=ZART[art];if(!a||!a.ready)return false;const s=LPC_SCALE[type]||3;
+// recoloured copies of the infected sheets for the horde-only Volt Clash cards ('walker2~steel' and so on)
+const TINTS={pale:['color','#d6cfb4',.75],blood:['multiply','#ff5a5a',1],steel:['color','#7f8fae',.85],violet:['color','#9c5ae0',.75],crimson:['multiply','#d23a48',1],toxic:['color','#8fd440',.8]};
+// blend modes only, so it never reads pixels back (that is blocked for local files on some devices)
+function tintArt(key){const[base,t]=key.split('~'),a=ZART[base],T=TINTS[t];if(!a||!a.ready||!T)return null;try{const c=document.createElement('canvas');c.width=a.img.width;c.height=a.img.height;const x=c.getContext('2d');
+  x.drawImage(a.img,0,0);x.globalCompositeOperation=T[0];x.globalAlpha=T[2];x.fillStyle=T[1];x.fillRect(0,0,c.width,c.height);x.globalAlpha=1;x.globalCompositeOperation='destination-in';x.drawImage(a.img,0,0);
+  return ZART[key]={img:c,white:a.white,ready:true}}catch(e){return ZART[key]=a}}
+function drawInfected(art,type,wx,wy,frame,row,white,alpha,sc){const a=ZART[art]||(art&&art.includes('~')?tintArt(art):null);if(!a||!a.ready)return false;const s=sc||LPC_SCALE[type]||3;
   if(alpha!==undefined)ctx.globalAlpha=alpha;ctx.drawImage(white?a.white:a.img,frame*64,row,64,64,SX(wx)-32*s,SY(wy)-61*s,64*s,64*s);ctx.globalAlpha=1;return true}
 const ZSPR={};let NEST=null;
 function buildZombieSprites(){
@@ -1852,7 +1862,10 @@ function startMission(idx,sandbox){
   const zc=Math.min(1400,Math.round(cand.length*city.density*save.god.zDensity*(sandbox?.6:1)));
   const open=[];for(let i=0;i<W*map.H;i++)if(map.reach[i]>10)open.push(i);
   for(let i=0;i<zc;i++){const c=pick(open);spawnZombie(rollType(city.mix),(c%W)*16+rand(4,12),((c/W)|0)*16+rand(4,12),false)}
-  if(city.boss&&nestPos.length){const n=nestPos[nestPos.length-1];spawnZombie('boss',n.x*16+8,n.y*16+30,false)}
+  // the boss guards the last nest, on the nearest tile the heroine can actually walk to
+  if(city.boss&&nestPos.length){const n=nestPos[nestPos.length-1];let best=null,bd=1e9;for(let dy=-6;dy<=6;dy++)for(let dx=-6;dx<=6;dx++){const tx=n.x+dx,ty=n.y+dy+2;if(tx<1||ty<1||tx>=W-1||ty>=map.H-1)continue;
+      if(map.reach[ty*W+tx]<0||SOLID[map.tiles[ty*W+tx]])continue;const d=dx*dx+dy*dy;if(d<bd){bd=d;best=[tx,ty]}}
+    if(best)spawnZombie('boss',best[0]*16+8,best[1]*16+8,false)}
   // squad
   save.squad.slice(0,squadCap()).forEach((rec,i)=>G.squad.push(makeSoldier(rec,i)));
   setupQuests();
@@ -2156,6 +2169,8 @@ function updQuests(dt){if(G.sandbox||G.ended)return;const p=G.p;
     if(g.prog>=g.need){g.done=true;quest('power').got=1;banner('POWER RESTORED',G.map.under?'The lights are back on':'The grid is live again');G.lightsOn=true;Sfx.play('win')}}
   if(G.boss&&G.boss.dead){const q=quest('boss');if(q)q.got=1}
   const qn=quest('nests');if(qn)qn.got=qn.need-G.nests.filter(n=>!n.dead).length;
+  // a rescue that can no longer be finished ends the mission instead of leaving it unwinnable
+  {const qr=quest('rescue');if(qr&&qr.got<qr.need&&G.surv.filter(v=>!v.dead&&v.st!=='shelter').length<qr.need-qr.got){endMission(false,'Too many survivors were lost');return}}
   const d=G.def;if(d){const q=quest('defend');
     if(d.prep>0){d.prep-=dt;if(d.prep<=0)banner('HERE THEY COME','Hold out until the helicopter lands')}
     else{d.t+=dt;q.got=Math.min(q.need,d.t);d.waveT-=dt;if(d.waveT<=0){const k=Math.min(1,d.t/q.need);d.waveT=2.8-1.6*k;spawnRing(G.pad.x,G.pad.y,2+Math.round(k*4),210,340)}
@@ -2919,9 +2934,27 @@ const ZCARDS={
   boss:{name:'Horned Troll',cost:8,type:'troop',n:1,z:'boss',hp:3900,dmg:270,rate:1.8,range:24,spd:11,splash:30},
   nest:{name:'Nest',cost:4,type:'building',hp:760,life:32,spawn:'walker',every:4.5,r:14},
   acid:{name:'Acid Burst',cost:3,type:'spell',dmg:215,r:44},
+  // horde-only cards: they never appear in missions, only in Volt Clash
+  crawlers:{name:'Crawlers',cost:1,type:'troop',n:4,z:'walker',tint:'pale',sc:2.1,hp:72,dmg:12,rate:.8,range:12,spd:30,r:6},
+  hunter:{name:'Hunter',cost:3,type:'troop',n:1,z:'runner',tint:'blood',sc:3.2,hp:380,dmg:62,rate:.9,range:14,spd:34,leap:1},
+  riot:{name:'Riot Zombie',cost:4,type:'troop',n:1,z:'walker',tint:'steel',sc:3.6,hp:1150,dmg:72,rate:1.2,range:16,spd:14,armor:.4,r:10},
+  screamer:{name:'Screamer',cost:4,type:'troop',n:1,z:'spitter',tint:'violet',sc:3.1,hp:430,dmg:30,rate:1.2,range:80,spd:15,aura:1},
+  priest:{name:'Plague Priest',cost:5,type:'troop',n:1,z:'spitter',tint:'crimson',sc:3.4,hp:640,dmg:55,rate:1.5,range:100,spd:13,raise:6},
+  abom:{name:'Abomination',cost:7,type:'troop',n:1,z:'brute',tint:'toxic',sc:5.4,hp:5200,dmg:210,rate:2,range:22,spd:9,targ:'b',splash:26,r:16},
+  plague:{name:'Plague Cloud',cost:4,type:'spell',dps:65,r:52,dur:5},
+  graveyard:{name:'Rising Dead',cost:5,type:'spell',r:46,dur:6},
 };
+// what each horde card is for, so the computer builds a deck that can both attack and defend
+const ZROLE={walkers:'swarm',runners:'swarm',crawlers:'swarm',hunter:'fast',spitter:'ranged',screamer:'support',priest:'support',bloater:'win',brute:'win',riot:'win',boss:'win',abom:'win',nest:'build',acid:'spell',plague:'spell',graveyard:'spell'};
+const ZDESC={walkers:'Five slow walkers',runners:'Three fast runners',crawlers:'Four tiny, quick crawlers',hunter:'Leaps onto its first target',spitter:'Spits acid from range',screamer:'Speeds up and strengthens the infected around it',
+  priest:'Raises two walkers every few seconds',bloater:'Goes for buildings and bursts in acid',brute:'A tank that smashes buildings',riot:'Armored: takes 40% less damage',boss:'Huge, slams everything near it',abom:'The biggest tank of all, goes for buildings',
+  nest:'A building that spawns walkers',acid:'Damages a small area',plague:'A poison cloud that hurts and slows for 5 s',graveyard:'Walkers rise from the ground for 6 s, anywhere'};
+const ZTIER={screamer:1,riot:1,brute:2,plague:2,priest:3,graveyard:4,boss:5,abom:6};
 const CTIERS=['Stragglers','Street Pack','Metro Swarm','Harbor Horde','Ironworks Mass','Shrine Blight','Neon Plague','Sewer Kings','Fort Breakers','The Hive Mind'];
-const zDeckOf=t=>['walkers','runners','spitter','bloater','acid','nest',...(t>=2?['brute']:[]),...(t>=5?['boss']:[])];
+// the horde draws a fresh eight-card deck every battle from the cards its tier has unlocked: at least one win condition,
+// one spell and one swarm, the rest at random, so no single counter works every time
+function zDeckOf(t){const pool=Object.keys(ZCARDS).filter(k=>(ZTIER[k]||0)<=t),take=(role,n)=>{const c=pool.filter(k=>ZROLE[k]===role&&!d.includes(k)).sort(()=>Math.random()-.5);d.push(...c.slice(0,n))},d=[];
+  take('win',t>=3?2:1);take('spell',1);take('swarm',1);take('ranged',1);const rest=pool.filter(k=>!d.includes(k)).sort(()=>Math.random()-.5);while(d.length<8&&rest.length)d.push(rest.pop());return d}
 const DEFAULT_DECK=()=>['h_'+save.heroine,'rifle','smg','shotgun','sniper','turret','zap','storm'];
 const deckRaw=()=>{const d=(save.clash.deck||DEFAULT_DECK()).filter((k,i,a)=>CCARDS[k]&&a.indexOf(k)===i);return d};
 // a battle always uses 8 cards: a short deck is topped up from the starter deck
@@ -2932,26 +2965,33 @@ let B=null;
 function cardMult(k){const c=CCARDS[k],g=save.god.dmg;if(!c)return 1;if(c.hero)return lvMult(c.hero)*g;if(c.cls)return(1+.12*save.up.train)*g;
   if(c.type==='spell')return(1+.12*save.up.power)*g;return(1+.15*save.up.turret)*g}
 function startClash(tier){Sfx.init();const deck=clashDeck(),q=[...deck].sort(()=>Math.random()-.5);
-  B={tier,t:0,over:false,en:[5,5],hand:q.slice(0,4),queue:q.slice(4),sel:-1,ents:[],shots:[],fx:[],parts:[],crowns:[0,0],aiT:1.5,aiPush:rand(6,9),zmul:1+.09*tier,
+  B={tier,t:0,over:false,en:[5,5],hand:q.slice(0,4),queue:q.slice(4),sel:-1,ents:[],shots:[],fx:[],parts:[],crowns:[0,0],aiT:1.5,aiPush:rand(6,9),zmul:1+.07*tier,zdeck:zDeckOf(tier),lastZ:'',lastZT:0,
     ghost:null,shake:0,paused:false,result:null};
   const tower=(side,u,v,king)=>{const m=side?B.zmul:1,e={side,kind:king?'king':'tower',u:side?CL.LEN-u:u,v,r:king?22:16,hp:(king?2600:1500)*m,dmg:(king?48:34)*(side?m:save.god.dmg),rate:king?1:.8,range:king?100:95,t:0,active:!king};e.max=e.hp;B.ents.push(e);return e};
   for(const s of[0,1]){tower(s,84,CL.BR[0]);tower(s,84,CL.BR[1]);tower(s,34,CL.WID/2,true)}
-  state='clash';G=null;showScreen(null);$('#hud').hidden=true;$('#clashHud').hidden=false;$('#clashMenu').hidden=true;clashLayout();clashHandUI();banner('VOLT CLASH',CTIERS[tier])}
+  state='clash';G=null;document.body.classList.add('clashing');showScreen(null);$('#hud').hidden=true;$('#clashHud').hidden=false;$('#clashMenu').hidden=true;clashLayout();clashHandUI();banner('VOLT CLASH',CTIERS[tier]);$('#chScout').textContent='Horde deck: '+B.zdeck.map(k=>ZCARDS[k].name).join(' · ');
+  setTimeout(()=>{if(B&&!B.over)toast('Scouting report: '+B.zdeck.map(k=>ZCARDS[k].name).join(', '))},2300)}
 // spawn a card's units; side 0 is the player, side 1 the horde
 function playCard(side,k,u,v){const c=side?zDef(k):CCARDS[k];if(!c)return false;if(B.en[side]<c.cost)return false;B.en[side]-=c.cost;
   const m=side?B.zmul:cardMult(k);
   if(c.type==='spell'){B.fx.push({k:'cast',u,v,r:c.r,c:side?'#c6ff4a':k==='storm'?'#9fe8ff':'#ffe14d',t:.5,max:.5});
+    if(side){B.lastZ=c.name;B.lastZT=2.5}
     if(k==='storm')B.fx.push({k:'storm',u,v,r:c.r,side,dps:c.dps*m,t:c.dur,max:c.dur,tick:0});
+    else if(k==='plague')B.fx.push({k:'plague',u,v,r:c.r,side,dps:c.dps*m,t:c.dur,max:c.dur,tick:0});
+    else if(k==='graveyard')B.fx.push({k:'grave',u,v,r:c.r,side,t:c.dur,max:c.dur,tick:.3});
     else after2(c.delay||.25,()=>{for(const e of B.ents)if(!e.dead&&e.side!==side&&dist2(e.u,e.v,u,v)<(c.r+e.r)**2)hitE(e,c.dmg*m*(e.kind!=='troop'&&k!=='judge'?.35:1),side);
       B.fx.push({k:k==='judge'?'pillar':'burst',u,v,r:c.r,c:side?'#c6ff4a':'#ffe14d',t:.45,max:.45});B.shake=Math.max(B.shake,k==='judge'?6:3);Sfx.play(k==='acid'?'hit':'boom');
       if(k==='zap'){let prev=null;for(const e of B.ents.filter(e=>!e.dead&&e.side!==side&&dist2(e.u,e.v,u,v)<(c.r+40)**2).slice(0,6)){B.fx.push({k:'bolt',u1:prev?prev.u:u,v1:prev?prev.v:v-40,u2:e.u,v2:e.v,c:'#ffe14d',t:.2,max:.2});prev=e}}});
     Sfx.play('power');return true}
   const n=c.n||1;for(let i=0;i<n;i++){const a=i/n*Math.PI*2,rr=n>1?9:0,e={side,k,c,kind:c.type,u:clamp(u+Math.cos(a)*rr,8,CL.LEN-8),v:clamp(v+Math.sin(a)*rr,8,CL.WID-8),
       hp:c.hp*m,dmg:(c.dmg||0)*m,rate:c.rate||1,range:c.range||0,spd:c.spd||0,r:c.r||(c.z==='boss'?16:c.z==='brute'?12:8),t:rand(.2,.6),deploy:1,life:c.life||0,spawnT:c.every||0,abil:c.ability||0,
-      hair:pick(HAIRS),art:c.z?pick(LPC_INFECTED[c.z]):null,seed:Math.random()*10,du:side?-1:1,dv:0,mv:false,anim:0,atk:0};e.max=e.hp;B.ents.push(e)}
-  Sfx.play('ui');return true}
+      hair:pick(HAIRS),art:c.z?pick(LPC_INFECTED[c.z])+(c.tint?'~'+c.tint:''):null,seed:Math.random()*10,du:side?-1:1,dv:0,mv:false,anim:0,atk:0,raiseT:c.raise||0};e.max=e.hp;B.ents.push(e)}
+  if(side){B.lastZ=c.name;B.lastZT=2.5}Sfx.play('ui');return true}
+// a single walker for nests, the Plague Priest and Rising Dead
+function spawnWalker(side,u,v){const z=ZCARDS.walkers,m=side?B.zmul:1;B.ents.push({side,k:'walkers',c:z,kind:'troop',u:clamp(u,8,CL.LEN-8),v:clamp(v,8,CL.WID-8),hp:z.hp*m,max:z.hp*m,dmg:z.dmg*m,rate:z.rate,range:z.range,spd:z.spd,r:8,t:.5,deploy:.4,hair:'',
+  art:pick(LPC_INFECTED.walker),seed:Math.random()*10,du:side?-1:1,dv:0,anim:0,atk:0});sparkle(u,v,'#8fd14f',6)}
 function after2(t,fn){B.fx.push({k:'timer',t,max:t,fn})}
-function hitE(e,d,from){if(e.dead||d<=0)return;if(from===1&&e.side===0&&(e.kind==='tower'||e.kind==='king')&&save.god.infHP)return;e.hp-=d;e.flash=.08;if(e.kind==='king')e.active=true;
+function hitE(e,d,from){if(e.dead||d<=0)return;if(e.c&&e.c.armor)d*=1-e.c.armor;if(from===1&&e.side===0&&(e.kind==='tower'||e.kind==='king')&&save.god.infHP)return;e.hp-=d;e.flash=.08;if(e.kind==='king')e.active=true;
   if(e.hp<=0)killE(e)}
 function killE(e){e.dead=true;e.deadT=0;sparkle(e.u,e.v,e.side?'#8fd14f':'#ff5c8a',e.kind==='troop'?6:24);
   if(e.c&&e.c.boom){for(const o of B.ents)if(!o.dead&&o.side!==e.side&&dist2(o.u,o.v,e.u,e.v)<(40+o.r)**2)hitE(o,e.c.boom*B.zmul,e.side);B.fx.push({k:'burst',u:e.u,v:e.v,r:40,c:'#c6ff4a',t:.4,max:.4});Sfx.play('boom')}
@@ -2970,13 +3010,13 @@ function laneTarget(e){const foe=B.ents.filter(o=>!o.dead&&o.side!==e.side&&(o.k
 function findTarget(e){const sight=e.range+75;let best=null,bd=1e9;
   for(const o of B.ents){if(o.dead||o.side===e.side||o.deploy>0)continue;if(e.c&&e.c.targ==='b'&&!isBld(o))continue;    const d=Math.hypot(o.u-e.u,o.v-e.v)-o.r;if(d<sight&&d<bd){bd=d;best=o}}return best}
 function healTarget(e){let best=null,bd=e.range;for(const o of B.ents)if(!o.dead&&o.side===e.side&&o.kind==='troop'&&o!==e&&o.hp<o.max){const d=Math.hypot(o.u-e.u,o.v-e.v);if(d<bd){bd=d;best=o}}return best}
-function shoot(e,o){const c=e.c||{},side=e.side,col=side?'#c6ff4a':c.hero?HMAP[c.hero].bolt:CLASSES[c.cls]?CLASSES[c.cls].a:'#ffe14d',melee=e.range<=40&&e.kind==='troop';e.atk=.3;
+function shoot(e,o){const c=e.c||{},side=e.side,dm=e.dmg*(e.buffT>0?1.35:1),col=side?'#c6ff4a':c.hero?HMAP[c.hero].bolt:CLASSES[c.cls]?CLASSES[c.cls].a:'#ffe14d',melee=e.range<=40&&e.kind==='troop';e.atk=.3;
   if(e.kind==='troop'&&!c.hero&&!c.z){B.fx.push({k:c.cls==='sniper'?'beam':'tracer',u1:e.u,v1:e.v,u2:o.u,v2:o.v,c:col,t:.12,max:.12});Sfx.play('shot')}
   if(c.hero){const h=HMAP[c.hero];if(h.auto==='bolt'){B.fx.push({k:'bolt',u1:e.u,v1:e.v,u2:o.u,v2:o.v,c:h.bolt,t:.15,max:.15});Sfx.play('zap')}else if(melee)B.fx.push({k:'slash',u:o.u,v:o.v,c:h.bolt,t:.18,max:.18})}
-  if(melee||(c.hero&&HMAP[c.hero].auto==='bolt')||(!c.z&&!c.hero&&e.kind==='troop'&&c.cls!=='rocket')){applyHit(e,o);return}
+  if(melee||(c.hero&&HMAP[c.hero].auto==='bolt')||(!c.z&&!c.hero&&e.kind==='troop'&&c.cls!=='rocket')){applyHit(e,o,dm);return}
   // everything else flies: rockets, knives, notes, foxfire, acid, tower shots
-  B.shots.push({u:e.u,v:e.v,o,side,dmg:e.dmg,splash:(c.splash||0),spd:c.cls==='rocket'?150:c.z==='spitter'||side?170:260,c:col,kind:c.cls==='rocket'?'rocket':side?'acid':'shot',src:e})}
-function applyHit(e,o){const c=e.c||{};if(c.splash){for(const x of B.ents)if(!x.dead&&x.side!==e.side&&dist2(x.u,x.v,o.u,o.v)<(c.splash+x.r)**2)hitE(x,e.dmg,e.side)}else hitE(o,e.dmg,e.side);
+  B.shots.push({u:e.u,v:e.v,o,side,dmg:dm,splash:(c.splash||0),spd:c.cls==='rocket'?150:c.z==='spitter'||side?170:260,c:col,kind:c.cls==='rocket'?'rocket':side?'acid':'shot',src:e})}
+function applyHit(e,o,dm=e.dmg){const c=e.c||{};if(c.splash){for(const x of B.ents)if(!x.dead&&x.side!==e.side&&dist2(x.u,x.v,o.u,o.v)<(c.splash+x.r)**2)hitE(x,dm,e.side)}else hitE(o,dm,e.side);
   sparkle(o.u,o.v,e.side?'#c6ff4a':'#ffffff',3);if(c.z)Sfx.play('hit')}
 function updClash(dt){const b=B;if(!b||b.over||b.paused)return;b.t+=dt;b.shake=Math.max(0,b.shake-dt*10);
   const dbl=b.t>CL.TIME-60?2:1,god=save.god.noCD?3:1;b.en[0]=Math.min(10,b.en[0]+dt/2.8*dbl*god);b.en[1]=Math.min(10,b.en[1]+dt/2.8*dbl*(1+.02*b.tier));
@@ -2984,12 +3024,19 @@ function updClash(dt){const b=B;if(!b||b.over||b.paused)return;b.t+=dt;b.shake=M
   b.aiT-=dt;if(b.aiT<=0){b.aiT=rand(.35,.7)-b.tier*.02;aiThink()}
   for(const f of b.fx){f.t-=dt;if(f.k==='timer'&&f.t<=0&&f.fn){const fn=f.fn;f.fn=null;fn()}
     if(f.k==='storm'){f.tick-=dt;if(f.tick<=0){f.tick=.25;for(const e of b.ents)if(!e.dead&&e.side!==f.side&&dist2(e.u,e.v,f.u,f.v)<(f.r+e.r)**2)hitE(e,f.dps*.25*(isBld(e)?.35:1),f.side);
-      const a=rand(0,6.28),rr=rand(0,f.r);b.fx.push({k:'bolt',u1:f.u+Math.cos(a)*rr,v1:f.v+Math.sin(a)*rr-60,u2:f.u+Math.cos(a)*rr,v2:f.v+Math.sin(a)*rr,c:'#9fe8ff',t:.12,max:.12})}}}
+      const a=rand(0,6.28),rr=rand(0,f.r);b.fx.push({k:'bolt',u1:f.u+Math.cos(a)*rr,v1:f.v+Math.sin(a)*rr-60,u2:f.u+Math.cos(a)*rr,v2:f.v+Math.sin(a)*rr,c:'#9fe8ff',t:.12,max:.12})}}
+    if(f.k==='plague'){f.tick-=dt;if(f.tick<=0){f.tick=.25;for(const e of b.ents)if(!e.dead&&e.side!==f.side&&dist2(e.u,e.v,f.u,f.v)<(f.r+e.r)**2){hitE(e,f.dps*.25*(isBld(e)?.35:1),f.side);if(e.kind==='troop')e.slowT=.4}
+      const a=rand(0,6.28),rr=rand(0,f.r);b.parts.push({u:f.u+Math.cos(a)*rr,v:f.v+Math.sin(a)*rr,du:0,dv:-12,c:pick(['#8fd14f','#c6ff4a','#5a8a2a']),t:.8})}}
+    if(f.k==='grave'){f.tick-=dt;if(f.tick<=0){f.tick=.55;const a=rand(0,6.28),rr=rand(0,f.r);let u=f.u+Math.cos(a)*rr;if(Math.abs(u-CL.RIV)<CL.RW+4)u=CL.RIV+(u<CL.RIV?-1:1)*(CL.RW+6);spawnWalker(f.side,u,f.v+Math.sin(a)*rr)}}}
   b.fx=b.fx.filter(f=>f.t>0);
   for(const e of b.ents){if(e.dead){e.deadT+=dt;continue}e.flash=(e.flash||0)-dt;e.atk=Math.max(0,e.atk-dt);
     if(e.deploy>0){e.deploy-=dt;continue}
     if(e.kind==='building'&&e.life){e.hp-=e.max/e.life*dt;if(e.hp<=0){killE(e);continue}
-      if(e.c.spawn){e.spawnT-=dt;if(e.spawnT<=0){e.spawnT=e.c.every;const z=ZCARDS.walkers,m=b.zmul;b.ents.push({side:e.side,k:'walkers',c:z,kind:'troop',u:e.u+(e.side?-14:14),v:e.v+rand(-6,6),hp:z.hp*m,max:z.hp*m,dmg:z.dmg*m,rate:z.rate,range:z.range,spd:z.spd,r:8,t:.5,deploy:.3,hair:'',art:pick(LPC_INFECTED.walker),seed:Math.random()*10,du:e.side?-1:1,dv:0,anim:0,atk:0})}}}
+      if(e.c.spawn){e.spawnT-=dt;if(e.spawnT<=0){e.spawnT=e.c.every;spawnWalker(e.side,e.u+(e.side?-14:14),e.v+rand(-6,6))}}}
+    // the Plague Priest raises two walkers every few seconds; the Screamer drives everything around it on
+    if(e.c&&e.c.raise){e.raiseT-=dt;if(e.raiseT<=0){e.raiseT=e.c.raise;for(const s2 of[-1,1])spawnWalker(e.side,e.u+(e.side?-10:10),e.v+s2*12);b.fx.push({k:'burst',u:e.u,v:e.v,r:24,c:'#ff3b5e',t:.4,max:.4})}}
+    if(e.c&&e.c.aura){e.auraT=(e.auraT||0)-dt;for(const o of b.ents)if(!o.dead&&o.side===e.side&&o.kind==='troop'&&o!==e&&dist2(o.u,o.v,e.u,e.v)<60*60)o.buffT=.5;if(e.auraT<=0){e.auraT=1.4;b.fx.push({k:'cast',u:e.u,v:e.v,r:60,c:'#c48cff',t:.5,max:.5})}}
+    e.buffT=Math.max(0,(e.buffT||0)-dt);
     if((e.kind==='king'&&!e.active)||(!e.dmg&&!(e.c&&e.c.heal))){continue}
     e.t-=dt;e.retT=(e.retT||0)-dt;
     if(e.c&&e.c.heal){const ht=healTarget(e);if(ht&&e.t<=0){e.t=e.rate;ht.hp=Math.min(ht.max,ht.hp+e.c.heal*cardMult('medic'));B.fx.push({k:'heal',u:ht.u,v:ht.v,t:.4,max:.4})}}
@@ -2998,9 +3045,12 @@ function updClash(dt){const b=B;if(!b||b.over||b.paused)return;b.t+=dt;b.shake=M
     if(e.abil>0){e.abil-=dt;if(e.abil<=0&&o){e.abil=e.c.ability;const h=HMAP[e.c.hero];for(const x of b.ents)if(!x.dead&&x.side!==e.side&&dist2(x.u,x.v,o.u,o.v)<(46+x.r)**2)hitE(x,e.dmg*2.2*(isBld(x)?.4:1),0);
       b.fx.push({k:'burst',u:o.u,v:o.v,r:46,c:h.bolt,t:.45,max:.45});b.fx.push({k:'bolt',u1:o.u,v1:o.v-70,u2:o.u,v2:o.v,c:h.bolt,t:.25,max:.25});b.shake=Math.max(b.shake,3);Sfx.play('boom')}}
     if(o){const d=Math.hypot(o.u-e.u,o.v-e.v)-o.r-e.r;
+      // the Hunter leaps the last stretch onto its first target and lands a heavy blow
+      if(e.c&&e.c.leap&&!e.leapt&&d<70&&d>e.range&&Math.abs(o.u-CL.RIV)>CL.RW&&Math.abs(e.u-CL.RIV)>CL.RW&&(o.u<CL.RIV)===(e.u<CL.RIV)){e.leapt=true;const l=Math.hypot(o.u-e.u,o.v-e.v)||1,k=(l-o.r-e.r-2)/l;
+        b.fx.push({k:'tracer',u1:e.u,v1:e.v,u2:e.u+(o.u-e.u)*k,v2:e.v+(o.v-e.v)*k,c:'#ff3b5e',t:.2,max:.2});e.u+=(o.u-e.u)*k;e.v+=(o.v-e.v)*k;hitE(o,e.dmg*1.6,e.side);e.atk=.3;e.t=e.rate;sparkle(o.u,o.v,'#ff3b5e',8);Sfx.play('hit');continue}
       if(d<=e.range){e.mv=false;if(e.t<=0&&e.dmg){e.t=e.rate;shoot(e,o)}if(e.kind==='troop'){e.du=o.u-e.u;e.dv=o.v-e.v}continue}}
     if(e.kind!=='troop')continue;
-    const tg=o||laneTarget(e);if(!tg)continue;const[wu,wv]=waypoint(e,tg.u,tg.v),du=wu-e.u,dv=wv-e.v,l=Math.hypot(du,dv)||1,sp=e.spd*dt;
+    const tg=o||laneTarget(e);if(!tg)continue;const[wu,wv]=waypoint(e,tg.u,tg.v),du=wu-e.u,dv=wv-e.v,l=Math.hypot(du,dv)||1,sp=e.spd*dt*(e.buffT>0?1.3:1)*(e.slowT>0?.55:1);e.slowT=Math.max(0,(e.slowT||0)-dt);
     e.u+=du/l*Math.min(sp,l);e.v+=dv/l*Math.min(sp,l);e.du=du;e.dv=dv;e.mv=true;e.anim+=dt*(5+e.spd/8)}
   // troops push each other apart and stay out of the canal except on the bridges
   const tr=b.ents.filter(e=>!e.dead&&e.kind==='troop');
@@ -3013,19 +3063,26 @@ function updClash(dt){const b=B;if(!b||b.over||b.paused)return;b.t+=dt;b.shake=M
   b.ents=b.ents.filter(e=>!e.dead||(e.kind!=='troop'&&e.kind!=='building')||e.deadT<.9);
   clashHud()}
 // the horde's brain: defend when the squad crosses, otherwise save up and push the weaker lane
-function aiThink(){const b=B,en=b.en[1],deck=zDeckOf(b.tier),can=deck.filter(k=>ZCARDS[k].cost<=en);if(!can.length)return;
-  const foes=b.ents.filter(e=>!e.dead&&e.side===0&&e.kind==='troop'&&e.deploy<=0),threat=foes.filter(e=>e.u>CL.RIV-30).sort((a,c)=>c.u-a.u)[0];
-  // acid on a clump of three or more
-  if(can.includes('acid')){for(const f of foes){const n=foes.filter(g=>dist2(g.u,g.v,f.u,f.v)<44*44).length;if(n>=3&&Math.random()<.7){playCard(1,'acid',f.u,f.v);return}}}
-  if(threat&&Math.random()<.85){const opts=can.filter(k=>ZCARDS[k].type==='troop'&&!ZCARDS[k].targ);if(opts.length){const k=pick(opts);playCard(1,k,clamp(threat.u+50,CL.RIV+CL.RW+8,CL.LEN-20),clamp(threat.v+rand(-14,14),10,CL.WID-10));return}}
+function aiThink(){const b=B,en=b.en[1],can=b.zdeck.filter(k=>ZCARDS[k].cost<=en),R=CL.RIV,side=CL.RW;if(!can.length)return;
+  const role=k=>ZROLE[k],foes=b.ents.filter(e=>!e.dead&&e.side===0&&e.kind==='troop'&&e.deploy<=0),threat=foes.filter(e=>e.u>R-30).sort((a,c)=>c.u-a.u)[0],place=(k,u,v)=>playCard(1,k,clamp(u,R+side+8,CL.LEN-14),clamp(v,10,CL.WID-10));
+  // area spells on a clump of three or more
+  for(const sp of['acid','plague'])if(can.includes(sp))for(const f of foes){if(foes.filter(g=>dist2(g.u,g.v,f.u,f.v)<46*46).length>=3&&Math.random()<.6){playCard(1,sp,f.u,f.v);return}}
+  // defend when the squad crosses the canal
+  if(threat&&Math.random()<.85){const opts=can.filter(k=>ZCARDS[k].type==='troop'&&!ZCARDS[k].targ);if(opts.length){place(pick(opts),threat.u+50,threat.v+rand(-14,14));return}
+    if(can.includes('nest')){place('nest',threat.u+70,threat.v);return}}
+  // follow a push with support behind the tank
+  if(b.supT>0&&b.t<b.supT){const sup=can.filter(k=>role(k)==='support'||role(k)==='ranged'||role(k)==='swarm');if(sup.length&&Math.random()<.5){place(pick(sup),CL.LEN-95,b.pushLane+rand(-10,10));return}}
   if(en>=b.aiPush){const mine=b.ents.filter(e=>!e.dead&&e.side===0&&e.kind==='tower'),weak=mine.sort((a,c)=>a.hp/a.max-c.hp/c.max)[0],lane=weak?weak.v:pick(CL.BR);
-    const order=['boss','brute','nest','bloater','spitter','walkers','runners'].filter(k=>can.includes(k));if(!order.length)return;const k=Math.random()<.75?order[0]:pick(order),c=ZCARDS[k];
-    const u=c.type==='building'?CL.LEN-120:k==='runners'?CL.RIV+CL.RW+30:CL.LEN-70;playCard(1,k,u,clamp(lane+rand(-12,12),12,CL.WID-12));b.aiPush=rand(5,9.5)-b.tier*.2}}
+    // Rising Dead straight onto a tower that is already hurting
+    if(can.includes('graveyard')&&weak&&weak.hp<weak.max*.85&&Math.random()<.4){playCard(1,'graveyard',weak.u+12,weak.v);b.aiPush=rand(5,9.5)-b.tier*.2;return}
+    const wins=can.filter(k=>role(k)==='win').sort((a,c)=>ZCARDS[c].cost-ZCARDS[a].cost),k=wins.length&&Math.random()<.75?wins[0]:pick(can.filter(k=>ZCARDS[k].type!=='spell')||can);if(!k)return;
+    const c=ZCARDS[k],u=c.type==='building'?CL.LEN-120:role(k)==='fast'||role(k)==='swarm'?R+side+30:CL.LEN-70;
+    if(c.type==='spell')return;place(k,u,lane+rand(-12,12));b.pushLane=lane;b.supT=b.t+6;b.aiPush=rand(5,9.5)-b.tier*.2}}
 function endClash(){const b=B;if(b.over)return;b.over=true;const win=b.crowns[0]>b.crowns[1],draw=b.crowns[0]===b.crowns[1],t=b.tier;
   const r={win,draw,crowns:[...b.crowns],sup:win?60+30*t:draw?20:0,xp:win?80+20*t:draw?40:30,loot:null,up:0,unlocked:false};
   if(!save.god.infSup)save.supplies+=r.sup;r.up=giveXP(r.xp);if(win){save.clash.wins++;if(t===save.clash.tier&&t<CTIERS.length-1){save.clash.tier++;r.unlocked=true}if(Math.random()<.25+(r.unlocked?.25:0))r.loot=grantWeapon(rollWeapon(t/9))}
   else if(!draw)save.clash.losses++;persist();b.result=r;Sfx.play(win?'win':'hurt');
-  setTimeout(()=>{if(B!==b)return;$('#clashHud').hidden=true;state='menu';showScreen('clash')},2200);banner(win?'VICTORY':draw?'DRAW':'DEFEAT',`${b.crowns[0]} - ${b.crowns[1]}`)}
+  setTimeout(()=>{if(B!==b)return;$('#clashHud').hidden=true;document.body.classList.remove('clashing');state='menu';showScreen('clash')},2200);banner(win?'VICTORY':draw?'DRAW':'DEFEAT',`${b.crowns[0]} - ${b.crowns[1]}`)}
 /* ----- Volt Clash view: the arena fits the screen, lanes run left to right in landscape and bottom to top in portrait ----- */
 let CLV={z:1,ox:0,oy:0,port:false,bg:null,bgKey:''};
 function clashLayout(){const f=LW/innerWidth,port=LH>LW,barH=(port?118:88)*f,topH=(port?36:6)*f,aw=(port?CL.WID:CL.LEN)*CS,ah=(port?CL.LEN:CL.WID)*CS,availH=LH-barH-topH;
@@ -3060,6 +3117,8 @@ function renderClash(){const b=B;if(!b)return;clashLayout();ctx.setTransform(K,0
   // deploy zone while a card is chosen
   if(b.sel>=0&&!b.over){const c=CCARDS[b.hand[b.sel]];if(c&&c.type!=='spell'){const[a0,c0]=toW(0,0),[a1,c1]=toW(CL.RIV-CL.RW-2,CL.WID);ctx.fillStyle='rgba(255,225,77,.08)';ctx.fillRect(Math.min(a0,a1)*RZ,Math.min(c0,c1)*RZ,Math.abs(a1-a0)*RZ,Math.abs(c1-c0)*RZ)}}
   const list=b.ents.filter(e=>!e.dead||e.kind==='troop').map(e=>({e,w:toW(e.u,e.v)}));list.sort((a,c)=>a.w[1]-c.w[1]);
+  for(const f of b.fx)if(f.k==='plague'||f.k==='grave'){const[x,y]=toW(f.u,f.v),R=f.r*RZ*CS;ctx.globalAlpha=f.k==='plague'?.26:.2;ctx.fillStyle=f.k==='plague'?'#6a9a2a':'#3a2a1a';ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,R,R*.8,0,0,7);ctx.fill();
+    ctx.globalAlpha=.6;ctx.strokeStyle=f.k==='plague'?'#c6ff4a':'#8a6a4a';ctx.lineWidth=5;ctx.setLineDash([14,10]);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1}
   for(const f of b.fx)if(f.k==='storm'){const[x,y]=toW(f.u,f.v);ctx.globalAlpha=.18;ctx.fillStyle='#9fe8ff';ctx.beginPath();ctx.ellipse(x*RZ,y*RZ,f.r*RZ*CS,f.r*RZ*CS*.8,0,0,7);ctx.fill();ctx.globalAlpha=1}
   for(const{e,w}of list)drawClashEnt(e,w[0],w[1]);
   for(const s of b.shots){const[x,y]=toW(s.u,s.v);ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x*RZ-28,y*RZ-12-28,56,56);ctx.fillStyle=s.kind==='acid'?'#c6ff4a':'#ffffff';ctx.fillRect(x*RZ-5,y*RZ-17,10,10);ctx.globalCompositeOperation='source-over'}
@@ -3084,13 +3143,14 @@ function drawClashEnt(e,x,y){const b=B,a=e.dead?Math.max(0,1-e.deadT/.9):e.deplo
   if(e.kind==='building'){const k=e.k;if(k==='turret'){const tg=e.tgt&&!e.tgt.dead?toW(e.tgt.u,e.tgt.v):null,dir=tg?Math.round(((Math.atan2(tg[1]-y,tg[0]-x)/(Math.PI*2))*16+16))%16:4;drawSpr(turretSprite(dir),x,y,1,e.flash>0)}
     else if(k==='sand'){shadow(x,y,90);drawSpr(sandSprites().h,x-1,y+3,1,e.flash>0)}else if(k==='nest'){const f=NEST[((b.t*4+x)|0)%4];ctx.drawImage(f.r,x*RZ-(f.w>>1),y*RZ-f.h+40);if(e.flash>0){ctx.globalAlpha=.55;ctx.drawImage(f.wr,x*RZ-(f.w>>1),y*RZ-f.h+40)}}
     ctx.globalAlpha=1;clashBar(x,y-18,70,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff');return}
-  const c=e.c,[sx,sy]=CLV.port?[e.dv,-e.du]:[e.du,e.dv],face=sx<0?-1:1;shadow(x,y,c.z==='boss'?120:c.z==='brute'?80:48);
+  const c=e.c,[sx,sy]=CLV.port?[e.dv,-e.du]:[e.du,e.dv],face=sx<0?-1:1;shadow(x,y,c.sc?c.sc*16:c.z==='boss'?120:c.z==='brute'?80:48);
+  if(e.buffT>0&&!e.dead){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.5;ctx.drawImage(glowOf('#c48cff'),x*RZ-50,y*RZ-110,100,100);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
   if(c.z){const dir=dirOf(sx,sy),dr=dir*64;let fr,row;if(e.dead){fr=Math.min(5,e.deadT/.1|0);row=512}else if(e.atk>0){fr=Math.min(5,(1-e.atk/.3)*6|0);row=256+dr}else if(e.mv){fr=1+((b.t*(c.z==='runner'?13:6)+e.seed)|0)%8;row=c.z==='runner'?832+dr:dr}else{fr=((b.t*1.7+e.seed)|0)%2;row=576+dr}
-    if(!drawInfected(e.art,c.z,x,y,fr,row,e.flash>0&&!e.dead)){const zf=ZSPR[c.z][0];drawSpr(zf[((b.t*3)|0)%zf.length],x,y,face,e.flash>0)}}
+    if(!drawInfected(e.art,c.z,x,y,fr,row,e.flash>0&&!e.dead,undefined,c.sc)){const zf=ZSPR[c.z][0];drawSpr(zf[((b.t*3)|0)%zf.length],x,y,face,e.flash>0)}}
   else if(c.hero){const hs=himeSprite(HMAP[c.hero]),v=viewOf(sx,sy),pose=e.dead?'hurt':e.atk>0?'attack':e.mv?'walk':'idle',f=pose==='walk'?(e.anim|0)%8:pose==='attack'?Math.min(3,(1-e.atk/.3)*4|0):pose==='hurt'?1:((b.t*3.2)|0)%4;
     drawSpr(hs.get(v,pose,f),x,y,v==='side'?face:1,e.flash>0&&!e.dead)}
   else{const sp=soldierSprite({cls:c.cls,hair:e.hair}),v=viewOf(sx,sy),pose=e.atk>0?'aim':e.mv?'walk':'idle',f=pose==='walk'?((e.anim|0)%4)*2:0;drawSpr(sp.get(v,pose,f),x,y,v==='side'?face:1,e.flash>0&&!e.dead)}
-  ctx.globalAlpha=1;if(!e.dead&&e.hp<e.max)clashBar(x,y-(c.z==='boss'?44:c.hero?33:28),c.hero||c.z==='boss'||c.z==='brute'?60:36,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff')}
+  ctx.globalAlpha=1;if(!e.dead&&e.hp<e.max)clashBar(x,y-(c.sc>4?50:c.z==='boss'?44:c.hero?33:28),c.hero||c.z==='boss'||c.z==='brute'?60:36,e.hp/e.max,e.side?'#ff5c8a':'#5ab8ff')}
 function drawScaled(f,wx,wy,s,white){ctx.save();ctx.translate(Math.round(wx*RZ),Math.round(wy*RZ));ctx.scale(s,s);ctx.drawImage(white?f.wr:f.r,-(f.w>>1),-f.h);ctx.restore()}
 function clashBar(wx,wy,w,r,c){const x=Math.round(wx*RZ-w/2),y=Math.round(wy*RZ);ctx.fillStyle='#000';ctx.fillRect(x-3,y-3,w+6,13);ctx.fillStyle='#2a1020';ctx.fillRect(x,y,w,7);ctx.fillStyle=c;ctx.fillRect(x,y,Math.max(0,Math.round(w*r)),7)}
 const canDeploy=(k,u,v)=>{const c=CCARDS[k];if(!c)return false;if(u<4||v<4||u>CL.LEN-4||v>CL.WID-4)return false;return c.type==='spell'||u<CL.RIV-CL.RW-4};
@@ -3108,7 +3168,7 @@ function clashHandUI(){const h=$('#chHand');h.innerHTML=B.hand.map((k,i)=>`<butt
   h.querySelectorAll('.ccard').forEach((el,i)=>{const c=cardArt(B.hand[i]),cp=document.createElement('canvas');cp.width=48;cp.height=48;cp.getContext('2d').drawImage(c,0,0);cp.className='px';el.querySelector('.cimg').appendChild(cp)});
   const nx=$('#chNext');nx.innerHTML='<span class="label">Next</span>';const c=cardArt(B.queue[0]),cp=document.createElement('canvas');cp.width=48;cp.height=48;cp.getContext('2d').drawImage(c,0,0);cp.className='px';nx.appendChild(cp)}
 function clashHud(){const b=B,left=Math.max(0,(b.t<CL.TIME?CL.TIME:CL.TIME+CL.OT)-b.t);$('#chTime').textContent=`${b.t>=CL.TIME?'Overtime ':''}${Math.floor(left/60)}:${String(Math.floor(left%60)).padStart(2,'0')}`;
-  $('#chP').textContent=b.crowns[0];$('#chE').textContent=b.crowns[1];$('#chEn').style.width=(b.en[0]*10)+'%';$('#chEnN').textContent=Math.floor(b.en[0]);$('#chDbl').hidden=!(b.t>CL.TIME-60);
+  $('#chP').textContent=b.crowns[0];b.lastZT-=1/60;const cl=$('#chLast');if(b.lastZT>0){cl.hidden=false;cl.textContent='Horde plays '+b.lastZ}else cl.hidden=true;$('#chE').textContent=b.crowns[1];$('#chEn').style.width=(b.en[0]*10)+'%';$('#chEnN').textContent=Math.floor(b.en[0]);$('#chDbl').hidden=!(b.t>CL.TIME-60);
   document.querySelectorAll('#chHand .ccard').forEach((el,i)=>el.classList.toggle('poor',CCARDS[b.hand[i]].cost>b.en[0]))}
 function useCard(i,u,v){const b=B,k=b.hand[i];if(!canDeploy(k,u,v)){toast('Place troops and buildings on your side of the canal');return false}if(CCARDS[k].cost>b.en[0]){toast('Not enough energy');return false}
   if(!playCard(0,k,u,v))return false;b.hand[i]=b.queue.shift();b.queue.push(k);b.sel=-1;b.ghost=null;clashHandUI();return true}
@@ -3121,6 +3181,7 @@ R.clash=()=>{const s=save.clash,deck=clashDeck(),r=B&&B.result,tier=Math.min(s.t
     <div class="bar" style="flex-wrap:wrap;gap:8px"><span class="label">Record ${s.wins} won · ${s.losses} lost</span></div>
     <span class="label">Opponent</span><div class="hpick">${CTIERS.map((n,i)=>`<button class="btn small ${i===pick2?'primary':''}" data-ctier="${i}" ${i>s.tier?'disabled':''}>${i+1}. ${n}</button>`).join('')}</div>
     <button class="btn primary" data-act="cfight" style="width:min(420px,100%)">Battle ${CTIERS[pick2]}</button>
+    <details class="panel bestiary"><summary class="label">The horde's cards (it draws 8 at random every battle)</summary><div class="grid wide" style="margin-top:8px">${Object.keys(ZCARDS).map(k=>`<div class="zrow"><b>${ZCARDS[k].name}</b> <span class="label">${ZCARDS[k].cost} energy${(ZTIER[k]||0)>0?` · from opponent ${ZTIER[k]+1}`:''}</span><br><span class="muted" style="font-size:15px">${ZDESC[k]}</span></div>`).join('')}</div></details>
     <div class="bar"><span class="label">Your deck (8 cards)</span><button class="btn small" data-act="cedit">${editing?'Done':'Edit deck'}</button></div>
     ${editing?`<p class="muted">Tap cards to swap them in and out: 8 cards (${deckRaw().length} chosen). A short deck is filled from the starter cards.</p><div class="grid wide">${Object.keys(CCARDS).map(k=>cardHTML(k,deckRaw().includes(k),'data-ctog')).join('')}</div>`
       :`<div class="grid wide">${deck.map(k=>cardHTML(k,true,'data-cview')).join('')}</div>`}</div>`;
