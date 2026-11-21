@@ -2,6 +2,9 @@ Download **Voltfall.apk** on your Android phone and open it to install. It insta
 
 **Coming from an APK older than v1.0.0?** Copy your progress first with **Save slots → Backup code → Show my code → Copy**, uninstall the old game, install this one, and paste the code under **Restore from code**.
 
+## What's new in v1.3.1
+- Volt Clash difficulty now climbs more gently. The horde's later opponents were a sudden wall; each one is now a smaller step up.
+
 ## What's new in v1.3.0
 
 ### Volt Clash: a fair fight

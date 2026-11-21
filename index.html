@@ -2984,7 +2984,7 @@ let B=null;
 function cardMult(k){const c=CCARDS[k],g=save.god.dmg;if(!c)return 1;if(c.hero)return lvMult(c.hero)*g;if(c.cls)return(1+.12*save.up.train)*g;
   if(c.type==='spell')return(1+.12*save.up.power)*g;return(1+.15*save.up.turret)*g}
 function startClash(tier){Sfx.init();const deck=clashDeck(),q=[...deck].sort(()=>Math.random()-.5);
-  B={tier,t:0,over:false,en:[5,5],hand:q.slice(0,4),queue:q.slice(4),sel:-1,ents:[],shots:[],fx:[],parts:[],crowns:[0,0],aiT:1.5,aiPush:rand(6,9),zmul:1+.12*tier,zdeck:zDeckOf(tier),lastZ:'',lastZT:0,
+  B={tier,t:0,over:false,en:[5,5],hand:q.slice(0,4),queue:q.slice(4),sel:-1,ents:[],shots:[],fx:[],parts:[],crowns:[0,0],aiT:1.5,aiPush:rand(6,9),zmul:1+.09*tier,zdeck:zDeckOf(tier),lastZ:'',lastZT:0,
     ghost:null,shake:0,paused:false,result:null};
   const tower=(side,u,v,king)=>{const m=side?B.zmul:1,e={side,kind:king?'king':'tower',u:side?CL.LEN-u:u,v,r:king?22:16,hp:(king?2600:1500)*m,dmg:(king?48:34)*(side?m:save.god.dmg),rate:king?1:.8,range:king?100:95,t:0,active:!king};e.max=e.hp;B.ents.push(e);return e};
   for(const s of[0,1]){tower(s,84,CL.BR[0]);tower(s,84,CL.BR[1]);tower(s,34,CL.WID/2,true)}
