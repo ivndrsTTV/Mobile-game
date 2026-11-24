@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="vf-edition" content="private">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Voltfall</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -40,6 +41,10 @@ canvas.px{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 .btn:active{transform:translate(2px,2px);box-shadow:inset -3px -3px 0 rgba(0,0,0,.4),1px 1px 0 #000}
 .btn:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 .btn.primary{background:var(--volt);color:#1a1426;border-color:#fff3a8}
+.gem{color:#7fe8ff;text-shadow:0 0 6px #3ab8ff}.cosg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.panel.cos{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;cursor:pointer;font:inherit;color:inherit}.panel.cos.on{outline:3px solid var(--volt)}
+.sw2{width:100%;height:22px;border:2px solid #000;display:block}.dyes{display:flex;flex-wrap:wrap;gap:6px}.dyes button{width:34px;height:34px;border:3px solid #000;padding:0}.dyes button.on{border-color:#fff}
+#styPrev{width:100%;max-width:340px;height:auto;image-rendering:pixelated;background:#100c18;border:3px solid #000;display:block;margin:0 auto}
 .btn.pink{background:var(--sakura);color:#1a0d16;border-color:#ffb3c8}
 .btn.ghost{background:transparent}
 .btn.small{font-size:14px;padding:6px 10px}
@@ -323,7 +328,11 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
           <button class="btn" data-go="armory">Armory</button>
           <button class="btn" data-go="patrol">Patrol<span class="dot" id="patrolDot" hidden></span></button>
         </div>
-        <button class="btn" data-go="god" style="color:var(--volt)">God Mode</button>
+        <div class="row">
+          <button class="btn" data-go="style">Style</button>
+          <button class="btn" data-go="shop"><span class="gem">◆</span> Gems</button>
+        </div>
+        <button class="btn" data-go="god" id="btnGod" style="color:var(--volt)">God Mode</button>
         <div class="row">
           <button class="btn ghost small" data-go="gallery">Gallery</button>
           <button class="btn ghost small" data-go="slots">Save slots</button>
@@ -348,6 +357,8 @@ input[type=range]{width:100%;accent-color:var(--volt);height:28px}
   <section class="screen" id="scr-squad" hidden></section>
   <section class="screen" id="scr-armory" hidden></section>
   <section class="screen" id="scr-god" hidden></section>
+  <section class="screen" id="scr-shop" hidden></section>
+  <section class="screen" id="scr-style" hidden></section>
   <section class="screen" id="scr-pause" hidden></section>
   <section class="screen" id="scr-result" hidden></section>
   <section class="screen" id="scr-credits" hidden></section>
@@ -545,12 +556,39 @@ function defaultGod(){return{infHP:false,noCD:false,oneHit:false,infSup:false,un
 function defaultSave(){return{supplies:150,cleared:{},heroine:'raiko',loadouts:{},
   squad:[{cls:'rifle',name:'Aiko',hair:'#1b1424'},{cls:'rifle',name:'Mei',hair:'#7a4a2a'},{cls:'smg',name:'Rin',hair:'#d9b45a'}],
   up:{power:0,vit:0,size:0,train:0,slots:0,turret:0,sandbag:0},kits:{sand:2,fence:2,trap:2,turret:1},god:defaultGod(),sound:true,autoFire:true,
-  weapons:{},equip:{},xp:{},patrol:null,zoom:1,clash:{wins:0,losses:0,tier:0,deck:null}}}
+  weapons:{},equip:{},xp:{},patrol:null,zoom:1,gems:0,cos:{own:{},eq:{}},clash:{wins:0,losses:0,tier:0,deck:null}}}
+// two editions of the same game: 'private' (God Mode owned, free test gems) and 'public' (store prices, not live yet)
+const EDITION=(document.querySelector('meta[name="vf-edition"]')||{}).content==='public'?'public':'private',IS_PUB=EDITION==='public',GOD_OWNED=!IS_PUB,GOD_PRICE='$5.99';
+// gems are cosmetic only: no power, and God Mode can never create them
+const GEM_PACKS=[{g:120,usd:'$0.99'},{g:650,usd:'$4.99',b:'+8% bonus'},{g:1400,usd:'$9.99',b:'+17% bonus'},{g:3000,usd:'$19.99',b:'+25% bonus'}];
+const COS={
+  skin:{t:'Skins',price:120,per:true,d:'A new colorway for this heroine.',items:{midnight:{n:'Midnight',outfit:'#1c1a2e',accent:'#8a7dff',rib:'#8a7dff',boot:'#141220',stk:'#0e0c18'},
+    sakura:{n:'Sakura',outfit:'#f29ac0',accent:'#ffffff',rib:'#ff5c9a',boot:'#c0507a',stk:'#5a2440'},snow:{n:'Snow Queen',hair:'#e6eef8',outfit:'#e8f0ff',accent:'#7fd4ff',rib:'#7fd4ff',boot:'#9fb8d8',stk:'#3a4a6a'},
+    crimson:{n:'Crimson',outfit:'#7a1424',accent:'#ffcf4a',rib:'#1a0a10',boot:'#2a0a12',stk:'#14060a'},gold:{n:'Volt Gold',hair:'#ffe39a',outfit:'#2a2410',accent:'#ffd23f',rib:'#ffd23f',boot:'#4a3a10',stk:'#1a1406'},
+    toxic:{n:'Toxic',outfit:'#1d3a1a',accent:'#a8ff4a',rib:'#a8ff4a',boot:'#16260f',stk:'#0c160a'}}},
+  dye:{t:'Dye',price:200,per:true,d:'Unlocks free hair and outfit colors for this heroine.'},
+  atk:{t:'Attack color',price:80,d:'Recolors her attacks and glow.',items:{rose:{n:'Rose',c:'#ff5c9a'},cyan:{n:'Cyan',c:'#5ae8ff'},gold:{n:'Gold',c:'#ffd23f'},violet:{n:'Violet',c:'#b07cff'},lime:{n:'Lime',c:'#a8ff4a'},crimson:{n:'Crimson',c:'#ff3b4e'},white:{n:'Pure White',c:'#ffffff'}}},
+  shape:{t:'Attack style',price:120,d:'Her attacks burst into shapes.',items:{heart:{n:'Hearts'},star:{n:'Stars'},petal:{n:'Petals'}}},
+  aura:{t:'Aura',price:150,d:'A glowing aura around her feet.',items:{volt:{n:'Volt',c:'#ffe14d'},sakura:{n:'Sakura',c:'#ff8ac0'},frost:{n:'Frost',c:'#9fe8ff'},inferno:{n:'Inferno',c:'#ff6a2a'},void:{n:'Void',c:'#9a6aff'},gold:{n:'Gold',c:'#ffd84a'}}},
+  trail:{t:'Trail',price:100,d:'Leaves a trail as she moves.',items:{sparkle:{n:'Sparkles',c:['#fff6c0','#ffd84a']},petal:{n:'Petals',c:['#ff9ac8','#ffe0ef']},ember:{n:'Embers',c:['#ff8a2a','#ffd04a']},snow:{n:'Snow',c:['#ffffff','#cfe8ff']}}},
+  motion:{t:'Animation',price:100,d:'Changes how she moves.',items:{hover:{n:'Hover'},bounce:{n:'Bounce'},sway:{n:'Sway'}}}};
+const DYES=['#1b1424','#5a3a2a','#a8643a','#d9b45a','#f4f0e8','#ff8ac0','#e83a5a','#ff9a3a','#7fd4ff','#4a6aff','#8a5aff','#5ad48a','#2a2a30','#c0c4d0'];
+const cosKey=(type,id,hero)=>COS[type].per?type+':'+hero+(id?':'+id:''):type+':'+id;
+const cosOwn=(type,id,hero)=>!!save.cos.own[cosKey(type,id,hero)];
+const cosEq=id=>save.cos&&save.cos.eq[id]||{};
+const SKC={};
+function skinOf(h,q){if(!h||h._sk!==undefined)return h;q=q||cosEq(h.id);const o={},cw=q.skin&&COS.skin.items[q.skin];
+  if(cw)for(const k of['hair','outfit','accent','rib','boot','stk'])if(cw[k])o[k]=cw[k];if(q.hair)o.hair=q.hair;if(q.out)o.outfit=q.out;
+  const ac=q.atk&&COS.atk.items[q.atk];if(ac)o.bolt=ac.c;const sig=Object.keys(o).map(k=>k+o[k]).join('');if(!sig)return h;
+  const key=h.id+'~'+sig;return SKC[key]||(SKC[key]={...h,...o,_sk:sig})}
+function cosClear(){if(typeof GS!=='undefined')GS.cache={};if(typeof PS!=='undefined')PS.hf={};if(typeof FCAM!=='undefined')FCAM.cache={}}
+// the public edition cannot carry God Mode settings or gems it did not buy
+function edSan(x){if(!x)return x;if(!GOD_OWNED)x.god=defaultGod();if(!x.cos||typeof x.cos!=='object')x.cos={own:{},eq:{}};x.gems=Math.max(0,+x.gems||0);return x}
 function merge(base,s){for(const k in s){if(base[k]&&typeof base[k]==='object'&&!Array.isArray(base[k])&&s[k]&&typeof s[k]==='object')merge(base[k],s[k]);else base[k]=s[k]}return base}
 // three independent save slots; the pre-slots save becomes slot 1
 const SLOTS=3,SLOT_KEY=n=>'voltfall.slot.'+n,ACTIVE_KEY='voltfall.activeSlot';
 let activeSlot=1;
-function readSlot(n){try{const s=JSON.parse(localStorage.getItem(SLOT_KEY(n)));if(s)return merge(defaultSave(),s)}catch(e){}return null}
+function readSlot(n){try{const s=JSON.parse(localStorage.getItem(SLOT_KEY(n)));if(s)return edSan(merge(defaultSave(),s))}catch(e){}return null}
 function loadSave(){try{activeSlot=clamp(+localStorage.getItem(ACTIVE_KEY)||1,1,SLOTS);
     if(!localStorage.getItem(SLOT_KEY(1))){const old=localStorage.getItem(SAVE_KEY);if(old)localStorage.setItem(SLOT_KEY(1),old)}}catch(e){}
   return readSlot(activeSlot)||defaultSave()}
@@ -559,9 +597,9 @@ function useSlot(n){persist();activeSlot=n;save=readSlot(n)||defaultSave();persi
 // a backup code is the save as base64 text, so it can be copied to a note and pasted back after a reinstall
 const saveCode=()=>'VF1:'+btoa(unescape(encodeURIComponent(JSON.stringify(save))));
 function readCode(t){try{t=String(t||'').trim();if(!t.startsWith('VF1:'))return null;const o=JSON.parse(decodeURIComponent(escape(atob(t.slice(4)))));
-  if(!o||typeof o!=='object'||typeof o.heroine!=='string'||!HMAP[o.heroine])return null;return merge(defaultSave(),o)}catch(e){return null}}
+  if(!o||typeof o!=='object'||typeof o.heroine!=='string'||!HMAP[o.heroine])return null;if(IS_PUB){delete o.gems;delete o.cos}return edSan(merge(defaultSave(),o))}catch(e){return null}}
 function deleteSlot(n){try{localStorage.removeItem(SLOT_KEY(n))}catch(e){}if(n===activeSlot){save=defaultSave();persist()}}
-let save=loadSave();
+let save=edSan(loadSave());
 const squadCap=()=>4+save.up.size+save.god.squadBonus;
 const upCost=l=>Math.round(80*Math.pow(1.5,l));
 const slotCount=()=>3+(save.up.slots||0);
@@ -1374,25 +1412,25 @@ function renderGirl(L,p,o){
 const PX=2,HS_S=.5,HFW=Math.ceil(GW*HS_S)+2,HFH=Math.ceil(GH*HS_S)+2,HFOOT=(Math.round(GFB*HS_S)+1)*PX,POR_S=1;
 const HROWS=[['front','idle',4],['front','idle',4,1],['front','walk',8],['front','attack',4],['front','cast',4],['front','hurt',2],['front','victory',4],['front','defeat',4],
   ['side','idle',4],['side','idle',4,1],['side','walk',8],['side','attack',4],['side','cast',4],['side','hurt',2],['back','idle',4],['back','walk',8],['back','attack',4],['back','cast',4],['back','hurt',2]];
-const heroLook=h=>({...h.look,kind:'hero',orn:h.look.hs==='hime'?h.id:undefined}),heroGirlPal=h=>({...heroPal(h),out:h.outfit,glow:h.bolt});
+const heroLook=h=>({...h.look,kind:'hero',orn:h.look.hs==='hime'?h.id:undefined}),heroGirlPal=h0=>{const h=skinOf(h0);return{...heroPal(h),out:h.outfit,glow:h.bolt}};
 // portrait: the head drawn at a larger pixel size and shown at 3x; full: the sprite itself at 3x
-function heroPortrait(h){const c=renderGirl(heroLook(h),heroGirlPal(h),{view:'front',pose:'idle',S:POR_S}),p=document.createElement('canvas');p.width=p.height=126;const x=p.getContext('2d');x.imageSmoothingEnabled=false;
+function heroPortrait(h){h=skinOf(h);const c=renderGirl(heroLook(h),heroGirlPal(h),{view:'front',pose:'idle',S:POR_S}),p=document.createElement('canvas');p.width=p.height=126;const x=p.getContext('2d');x.imageSmoothingEnabled=false;
   // heroines with animal ears are framed a little higher so the ears show above the hair
   x.drawImage(c,Math.round(c.hx-21),Math.round(c.hy-(h.look.ears?25:20)),42,42,0,0,126,126);return p}
-const heroFull=h=>upscale(renderGirl(heroLook(h),heroGirlPal(h),{view:'front',pose:'idle',S:HS_S}),3);
+const heroFull=h=>(h=skinOf(h),upscale(renderGirl(heroLook(h),heroGirlPal(h),{view:'front',pose:'idle',S:HS_S}),3));
 const HSPR={};
-function himeSprite(h){if(HSPR[h.id])return HSPR[h.id];const look=heroLook(h),pal=heroGirlPal(h),cache={},img={};
+function himeSprite(h0,q){const h=skinOf(h0,q),hk=h.id+(h._sk?'~'+h._sk:'');if(HSPR[hk])return HSPR[hk];const look=heroLook(h),pal=heroGirlPal(h),cache={},img={};
   const load=(k,file)=>{const i=new Image();i.onload=()=>{img[k]=i;if(k==='sheet')for(const q in cache)delete cache[q]};i.src='assets/heroines/'+file};
   // a canvas filled from the pre-rendered image when it arrives, or drawn live if it is missing
   const art=(k,file,w,h2,live)=>{const c=document.createElement('canvas');c.width=w;c.height=h2;const put=src=>{c.width=src.width;c.height=src.height;c.getContext('2d').drawImage(src,0,0)};
-    if(img[k])put(img[k]);else{const i=new Image();i.onload=()=>{img[k]=i;put(i)};i.onerror=()=>put(live());i.src='assets/heroines/'+file}return c};
+    if(img[k])put(img[k]);else if(h._sk)put(live());else{const i=new Image();i.onload=()=>{img[k]=i;put(i)};i.onerror=()=>put(live());i.src='assets/heroines/'+file}return c};
   const get=(view,pose,f=0,blink=false)=>{if(view==='back'||pose!=='idle')blink=false;const k=view+pose+f+(blink?'b':'');if(cache[k])return cache[k];
     let c;const r=HROWS.findIndex(q=>q[0]===view&&q[1]===pose&&!!q[3]===blink);
     if(img.sheet&&r>=0){c=document.createElement('canvas');c.width=HFW;c.height=HFH;c.getContext('2d').drawImage(img.sheet,(f%HROWS[r][2])*HFW,r*HFH,HFW,HFH,0,0,HFW,HFH)}
     else c=renderGirl(look,pal,{view,pose,f,blink,S:HS_S});
     const fr=mkC(c,PX);fr.foot=HFOOT;return cache[k]=fr};
-  load('sheet',h.id+'.png');
-  return HSPR[h.id]={get,portrait:()=>art('portrait',h.id+'-portrait.png',126,126,()=>heroPortrait(h)),full:()=>art('full',h.id+'-full.png',HFW*3,HFH*3,()=>heroFull(h))}}
+  if(!h._sk)load('sheet',h.id+'.png');
+  return HSPR[hk]={get,portrait:()=>art('portrait',h.id+'-portrait.png',126,126,()=>heroPortrait(h)),full:()=>art('full',h.id+'-full.png',HFW*3,HFH*3,()=>heroFull(h))}}
 // facing from a direction: back when heading up, front when heading down, otherwise the side view (mirrored for left)
 const viewOf=(dx,dy)=>Math.abs(dy)>Math.abs(dx)*1.15?(dy<0?'back':'front'):'side';
 // squad girls are drawn live, a frame or two per animation frame, showing their idle pose until a frame is ready
@@ -1852,7 +1890,7 @@ function startMission(idx,sandbox){
   const map=city.map?genUnder(city,seed):genMap(city,seed);prepMapArt(map);map.mini=renderMini(map);
   const h=HMAP[save.heroine];
   const sx=map.spawn.x*TILE+8,sy=map.spawn.y*TILE+8;
-  G={city,idx,sandbox,map,hime:h,slots:slotCount(),zombies:[],nests:[],squad:[],builds:[],clones:[],fx:[],parts:[],shots:[],pshots:[],corpses:[],timers:[],trail:[],ward:null,encore:0,regenT:0,speedT:0,
+  G={city,idx,sandbox,map,hime:skinOf(h),cos:cosEq(h.id),slots:slotCount(),zombies:[],nests:[],squad:[],builds:[],clones:[],fx:[],parts:[],shots:[],pshots:[],corpses:[],timers:[],trail:[],ward:null,encore:0,regenT:0,speedT:0,
      time:0,kills:0,earned:0,xp:0,loot:[],nestsTotal:0,quests:[],surv:[],crates:[],lightsOn:false,slowT:0,storm:null,orbs:null,shake:0,hurtFlash:0,ended:false,finalWave:false,flowT:0,flow:new Int16Array(map.W*map.H),
      tier:1+.12*Math.max(0,idx),squadMode:'follow',hold:{x:sx,y:sy},formA:0,holdFlow:null,heroSpd:h.spd,cam:{x:0,y:0},hudT:0,
      p:{x:sx,y:sy,r:4,hp:0,maxHp:0,spd:h.spd,face:-1,dirx:-1,diry:0,ax:0,ay:1,view:'front',hurtT:0,anim:0,moving:false,atkT:0,inv:0,cds:[0,0,0,0,0],cdMax:[1,1,1,1,1],locked:false,trailT:0,kind:'p'}};
@@ -2073,11 +2111,11 @@ function fireAimed(p,dx,dy){const wid=equipped();if(wid!=='innate'){weaponAttack
   const h=G.hime,ak=h.auto||'bolt',dmg=h.atk*pm()*1.1;p.ax=dx;p.ay=dy;p.castKind='attack';p.castT=Math.max(p.castT,.16);if(Math.abs(dx)>.1)p.face=dx<0?-1:1;
   if(ak==='bolt'){p.atkT=.32;const R=150;let best=null,bt=R;
     for(const e of enemiesIn(p.x,p.y,R+10)){const ex=e.x-p.x,ey=e.y-p.y,t=ex*dx+ey*dy;if(t<0||t>bt)continue;const off=Math.abs(ex*dy-ey*dx);if(off<(e.kind==='n'?12:8)&&los(p.x,p.y-4,e.x,e.y-4)){bt=t;best=e}}
-    const ex=best?best.x:p.x+dx*R,ey=best?best.y-6:p.y-17+dy*R;addBolt(p.x+p.face*4,p.y-17,ex,ey,h.bolt,1.4,.12,3);if(best){hurt(best,dmg);sparks(best.x,best.y-5,h.bolt,4)}Sfx.play('zap')}
-  else if(MELEE[ak]){p.atkT=ak==='blade'?.24:.2;const a0=Math.atan2(dy,dx),cx=p.x+dx*30,cy=p.y+dy*30;G.fx.push({k:'claw',x:cx,y:cy-6,a:a0,c:h.bolt,t:.18,max:.18,big:ak==='claw'?1:1.3});
+    const ex=best?best.x:p.x+dx*R,ey=best?best.y-6:p.y-17+dy*R;addBolt(p.x+p.face*4,p.y-17,ex,ey,h.bolt,1.4,.12,3);if(G.cos&&G.cos.shape)G.fx.push({k:'shp',x:ex,y:ey,s:G.cos.shape,c:h.bolt,t:.45,max:.45});if(best){hurt(best,dmg);sparks(best.x,best.y-5,h.bolt,4)}Sfx.play('zap')}
+  else if(MELEE[ak]){p.atkT=ak==='blade'?.24:.2;const a0=Math.atan2(dy,dx),cx=p.x+dx*30,cy=p.y+dy*30;G.fx.push({k:'claw',x:cx,y:cy-6,a:a0,c:h.bolt,t:.18,max:.18,big:ak==='claw'?1:1.3});if(G.cos&&G.cos.shape)G.fx.push({k:'shp',x:cx,y:cy-6,s:G.cos.shape,c:h.bolt,t:.45,max:.45});
     for(const e of enemiesIn(p.x,p.y,64)){const da=Math.abs(((Math.atan2(e.y-p.y,e.x-p.x)-a0+Math.PI*3)%(Math.PI*2))-Math.PI);if(da<.9)meleeHit(e,dmg,ak)}Sfx.play('hit')}
   else{const A=SHOTS[ak]||SHOTS.fox;p.atkT=A.rate;
-    G.pshots.push({x:p.x+dx*6,y:p.y-17+dy*6,vx:dx*A.sp,vy:dy*A.sp,t:.75*(A.life||1),dmg,kind:ak,home:0,pierce:A.pierce||0,hit:new Set(),c:h.bolt,slow:A.slow,charm:A.charm,heal:A.heal,burst:A.burst});Sfx.play(A.snd||'zap')}}
+    G.pshots.push({x:p.x+dx*6,y:p.y-17+dy*6,vx:dx*A.sp,vy:dy*A.sp,t:.75*(A.life||1),dmg,kind:ak,home:0,pierce:A.pierce||0,hit:new Set(),c:h.bolt,shape:G.cos&&G.cos.shape,slow:A.slow,charm:A.charm,heal:A.heal,burst:A.burst});Sfx.play(A.snd||'zap')}}
 function autoAttack(p){const wid=equipped();
   if(wid!=='innate'){const W=WEAPONS[wid],t=nearestEnemy(p.x,p.y,W.kind==='slash'||W.kind==='quake'?W.range+18:Math.min(150,W.range),null,true);if(!t){p.atkT=.06;return}
     const dx=t.x-p.x,dy=t.y-p.y,l=Math.hypot(dx,dy)||1;weaponAttack(p,wid,dx/l,dy/l,t);return}
@@ -2087,7 +2125,7 @@ function autoAttack(p){const wid=equipped();
   if(ak==='bolt'){p.atkT=.32;addBolt(p.x+p.face*4,p.y-17,t.x,t.y-(t.kind==='n'?2:6),h.bolt,1,.1,3);hurt(t,dmg);sparks(t.x,t.y-5,h.bolt,3);Sfx.play('zap')}
   else if(MELEE[ak]){p.atkT=ak==='blade'?.24:.2;G.fx.push({k:'claw',x:t.x,y:t.y-6,a:Math.atan2(t.y-p.y,t.x-p.x),c:h.bolt,t:.18,max:.18,big:ak==='claw'?1:1.3});for(const e of enemiesIn(t.x,t.y,ak==='kick'?20:16))meleeHit(e,e===t?dmg:dmg*.6,ak);sparks(t.x,t.y-5,'#ffffff',4);Sfx.play('hit')}
   else{const A=SHOTS[ak]||SHOTS.fox,a=Math.atan2(t.y-6-(p.y-17),t.x-p.x),sp=A.sp*.9;p.atkT=A.rate;
-    G.pshots.push({x:p.x+p.face*4,y:p.y-17,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:1.2*(A.life||1),dmg,kind:ak,home:A.home,pierce:A.pierce||0,hit:new Set(),c:h.bolt,slow:A.slow,charm:A.charm,heal:A.heal,burst:A.burst});Sfx.play(A.snd||'zap')}}
+    G.pshots.push({x:p.x+p.face*4,y:p.y-17,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:1.2*(A.life||1),dmg,kind:ak,home:A.home,pierce:A.pierce||0,hit:new Set(),c:h.bolt,shape:G.cos&&G.cos.shape,slow:A.slow,charm:A.charm,heal:A.heal,burst:A.burst});Sfx.play(A.snd||'zap')}}
 // equipped weapons replace the heroine's basic attack; t is the auto-fire target, or null when aimed by hand
 function weaponAttack(p,id,dx,dy,t){const W=WEAPONS[id],h=G.hime,dmg=h.atk*pm()*W.dmg*wMult(id),a0=Math.atan2(dy,dx);
   p.ax=dx;p.ay=dy;p.castKind='attack';p.castT=Math.max(p.castT,.16);if(Math.abs(dx)>.1)p.face=dx<0?-1:1;p.atkT=W.rate;
@@ -2441,6 +2479,20 @@ const SX=wx=>Math.round(wx*RZ-OX),SY=wy=>Math.round(wy*RZ-OY);
 function drawSpr(fr,wx,wy,face,white,alpha){const img=face<0?(white?fr.wl:fr.l):(white?fr.wr:fr.r);if(alpha!==undefined)ctx.globalAlpha=alpha;
   ctx.drawImage(img,SX(wx)-(fr.w>>1),SY(wy)-(fr.foot??fr.h-2*fr.art));ctx.globalAlpha=1}
 const SHAD={};
+// cosmetic helpers (missions and the Style preview)
+function cosOffset(m,t,anim,moving){return m==='hover'?-5-Math.sin(t*3)*2.5:m==='bounce'&&moving?-Math.abs(Math.sin(anim*.8))*6:m==='bounce'?-Math.abs(Math.sin(t*2.5))*2:0}
+function cosAura(id,wx,wy,t,motes){const A=id&&COS.aura.items[id];if(!A)return;const cx=SX(wx),cy=SY(wy),pu=.75+Math.sin(t*4)*.2;
+  ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.5*pu;ctx.drawImage(glowOf(A.c),cx-80,cy-120,160,160);ctx.globalAlpha=.85;ctx.strokeStyle=A.c;ctx.lineWidth=4;
+  ctx.beginPath();ctx.ellipse(cx,cy,34+Math.sin(t*4)*4,12,0,0,7);ctx.stroke();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+  if(motes&&G&&Math.random()<.35)G.parts.push({x:wx+rand(-9,9),y:wy-rand(0,4),vx:0,vy:-rand(60,110),t:rand(.4,.8),c:A.c,s:1})}
+function cosTrail(id,wx,wy){const T=COS.trail.items[id];if(!T||!G)return;const up=id==='ember'||id==='sparkle';
+  G.parts.push({x:wx+rand(-6,6),y:wy-rand(2,14),vx:rand(-20,20),vy:up?-rand(40,80):rand(20,50),t:rand(.5,.9),c:T.c[Math.random()<.5?0:1],s:id==='petal'?2:1})}
+function drawShape(k,x,y,c,rot,al,sc,g=ctx){sc=sc||1;g.save();g.globalAlpha=al;g.globalCompositeOperation='lighter';g.drawImage(glowOf(c),x-34*sc,y-34*sc,68*sc,68*sc);g.globalCompositeOperation='source-over';
+  g.translate(x,y);g.scale(sc,sc);g.fillStyle=c;g.beginPath();
+  if(k==='heart'){g.moveTo(0,10);g.bezierCurveTo(-16,-2,-8,-14,0,-5);g.bezierCurveTo(8,-14,16,-2,0,10)}
+  else if(k==='star'){g.rotate(rot);for(let i=0;i<10;i++){const r=i%2?5:13,a=i/10*6.283-1.571;g.lineTo(Math.cos(a)*r,Math.sin(a)*r)}g.closePath()}
+  else{g.rotate(rot);g.ellipse(0,0,11,5,0,0,7)}
+  g.fill();g.lineWidth=3;g.strokeStyle='#000';g.globalAlpha=al*.6;g.stroke();g.globalAlpha=al;g.fillStyle='#ffffff';g.fillRect(-4,-5,4,4);g.restore()}
 function shadow(wx,wy,w){w=Math.max(8,(w/2|0)*2);let s=SHAD[w];if(!s){const h=Math.max(4,w/3|0);s=document.createElement('canvas');s.width=w;s.height=h;const x=s.getContext('2d');
     for(let j=0;j<h;j++)for(let i=0;i<w;i++){const dx=(i+.5-w/2)/(w/2),dy=(j+.5-h/2)/(h/2),d=dx*dx+dy*dy;if(d<=1&&(d<.6||((i+j)&1))){x.fillStyle='rgba(6,2,14,.42)';x.fillRect(i,j,1,1)}}SHAD[w]=s}
   ctx.drawImage(s,SX(wx)-(s.width>>1),SY(wy)-(s.height>>1))}
@@ -2505,9 +2557,11 @@ function render(){if(state==='play'&&G)updFaceCam();
       shadow(e.x,e.y,60);const rc=e.muzzle>0?-.8:0;drawSpr(f,e.x+cs*rc,e.y+sn*rc,face,e.flash>0);
       if(e.muzzle>0&&v!=='back'){const t=f.tip||[0,-14],mx=SX(e.x+t[0]*face+cs*rc),my=SY(e.y+t[1]+sn*rc);ctx.fillStyle='#fff4c0';ctx.fillRect(mx-6,my-6,12,12);ctx.fillStyle='#ffb35a';ctx.fillRect(mx-3,my-11,6,22);ctx.fillRect(mx-11,my-3,22,6)}
       if(e.hp<e.max)hpBar(e.x,e.y-26,56,e.hp/e.max,'#7dff8a')}
-    else if(e.kind==='p'){const f=hs.get(hp.v,hp.pose,hp.f,hp.blink);shadow(p.x,p.y,64);
+    else if(e.kind==='p'){const f=hs.get(hp.v,hp.pose,hp.f,hp.blink),cq=G.cos||{},oy=cosOffset(cq.motion,G.time,p.anim,p.moving);shadow(p.x,p.y,oy<-2?52:64);
+      cosAura(cq.aura,p.x,p.y,G.time,true);if(cq.trail&&p.moving&&Math.random()<.5)cosTrail(cq.trail,p.x,p.y);
       if(G.storm||G.slowT>0){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(h.bolt),SX(p.x)-90,SY(p.y-8)-90,180,180);ctx.globalCompositeOperation='source-over'}
-      drawSpr(f,p.x,p.y,hp.face,p.inv>0&&((G.time*30|0)%2===0));
+      if(cq.motion==='sway'){ctx.save();ctx.translate(SX(p.x),SY(p.y));ctx.rotate(Math.sin(G.time*3)*.06);ctx.translate(-SX(p.x),-SY(p.y))}
+      drawSpr(f,p.x,p.y+oy,hp.face,p.inv>0&&((G.time*30|0)%2===0));if(cq.motion==='sway')ctx.restore();
       if(Math.random()<.3)sparks(p.x+rand(-7,7),p.y-rand(3,15),h.bolt,1,20)}
     else if(e.kind==='v'){const sc=e.st==='shelter'&&e.scare>0,v=viewOf(e.dirx,e.diry),f=sc?e.fr.get('front','defeat',1):e.mv?e.fr.get(v,'walk',((e.anim|0)%4)*2):e.fr.get(e.st==='wait'?'front':v,'idle',((G.time*2+e.x)|0)%2*2);
       shadow(e.x,e.y,56);drawSpr(f,e.x,e.y,v==='side'&&!sc&&e.mv?(e.dirx<0?-1:1):1,e.flash>0);
@@ -2526,7 +2580,8 @@ function render(){if(state==='play'&&G)updFaceCam();
     for(let k=0;k<n;k++){if(k%3===0)continue;const a=k/n*6.283+off;ctx.fillRect(Math.round(cx+Math.cos(a)*R)-3,Math.round(cy+Math.sin(a)*R*.8)-3,6,6)}ctx.globalAlpha=1}
   for(const s of G.shots){const x=SX(s.x),y=SY(s.y);ctx.fillStyle='#3a6a10';ctx.fillRect(x-10,y-10,20,20);ctx.fillStyle='#c6ff4a';ctx.fillRect(x-7,y-7,14,14);ctx.fillStyle='#f4ffd0';ctx.fillRect(x-4,y-6,6,3)}
   for(const s of G.pshots){const x=SX(s.x),y=SY(s.y),a=Math.atan2(s.vy,s.vx),ca=Math.cos(a),sa=Math.sin(a);
-    if(s.kind==='knife'){ctx.lineCap='butt';ctx.strokeStyle='#4a3a5a';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(x-ca*16,y-sa*16);ctx.lineTo(x-ca*5,y-sa*5);ctx.stroke();
+    if(s.shape)drawShape(s.shape,x,y,s.c,G.time*6,1,1);
+    else if(s.kind==='knife'){ctx.lineCap='butt';ctx.strokeStyle='#4a3a5a';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(x-ca*16,y-sa*16);ctx.lineTo(x-ca*5,y-sa*5);ctx.stroke();
       ctx.strokeStyle='#e8ecf2';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x-ca*5,y-sa*5);ctx.lineTo(x+ca*15,y+sa*15);ctx.stroke();ctx.fillStyle='#ffffff';ctx.fillRect(x+ca*9-2,y+sa*9-2,3,3)}
     else if(s.kind==='note'){ctx.globalCompositeOperation='lighter';ctx.drawImage(glowOf(s.c),x-40,y-40,80,80);ctx.globalCompositeOperation='source-over';ctx.fillStyle='#ffffff';ctx.beginPath();ctx.ellipse(x-4,y+6,7,5,-.4,0,7);ctx.fill();
       ctx.fillRect(x+1,y-14,4,20);ctx.fillRect(x+1,y-14,12,4);ctx.fillStyle=s.c;ctx.fillRect(x+5,y-10,8,3)}
@@ -2585,6 +2640,7 @@ function render(){if(state==='play'&&G)updFaceCam();
 }
 function drawFx(){ctx.lineJoin='bevel';ctx.lineCap='square';
   for(const f of G.fx){const a=f.t/f.max;
+    if(f.k==='shp'){drawShape(f.s,SX(f.x),SY(f.y)-(1-a)*30,f.c,(1-a)*4,a,1+(1-a)*.6);continue}
     if(f.k==='bolt'){ctx.globalCompositeOperation='lighter';ctx.beginPath();f.pts.forEach((q,i)=>{const x=SX(q[0]),y=SY(q[1]);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});
       ctx.globalAlpha=a*.35;ctx.strokeStyle=f.c;ctx.lineWidth=(f.w+2)*6;ctx.stroke();ctx.globalAlpha=a*.8;ctx.lineWidth=(f.w+1)*3;ctx.stroke();
       ctx.globalAlpha=a;ctx.strokeStyle='#ffffff';ctx.lineWidth=Math.max(2,f.w*1.6);ctx.stroke();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
@@ -2687,6 +2743,20 @@ function hydrate(root){root.querySelectorAll('[data-spr]').forEach(n=>{const[k,i
 const wIconHTML=(id,sc=1,locked)=>`<span class="wic" data-spr="w:${id}:${sc}"${locked?' data-locked="1"':''}></span>`;
 const head=(title,back='title')=>`<div class="bar"><button class="btn small" data-go="${back}">Back</button><h2>${title}</h2><span class="sup">${save.god.infSup?'∞':save.supplies} supplies</span></div>`;
 let returnTo='title';
+const STY={hero:'raiko',tab:'skin',raf:0,parts:[],shots:[],t:0,last:0};
+function styLoop(){cancelAnimationFrame(STY.raf);const cv=$('#styPrev');if(!cv)return;const x=cv.getContext('2d');STY.last=performance.now();
+  const step=now=>{if($('#scr-style').hidden||!document.body.contains(cv))return;const dt=Math.min(.05,(now-STY.last)/1000);STY.last=now;STY.t+=dt;const t=STY.t,h=HMAP[STY.hero],q=cosEq(STY.hero),hs=himeSprite(h);
+    x.imageSmoothingEnabled=false;x.fillStyle='#100c18';x.fillRect(0,0,340,300);x.fillStyle='#1c1828';x.fillRect(0,210,340,90);
+    const walk=(t%6)>3,f=hs.get('front',walk?'walk':'idle',walk?(t*8|0)%8:(t*3|0)%4),sc=1,cx=170,cy=232,oy=cosOffset(q.motion,t,t*10,walk)*sc;
+    const A=q.aura&&COS.aura.items[q.aura];if(A){x.globalCompositeOperation='lighter';x.globalAlpha=.55+Math.sin(t*4)*.15;x.drawImage(glowOf(A.c),cx-120,cy-210,240,240);x.globalAlpha=.9;x.strokeStyle=A.c;x.lineWidth=4;x.beginPath();x.ellipse(cx,cy,60+Math.sin(t*4)*6,18,0,0,7);x.stroke();x.globalAlpha=1;x.globalCompositeOperation='source-over';if(Math.random()<.4)STY.parts.push({x:cx+rand(-40,40),y:cy,vx:0,vy:-rand(60,120),t:rand(.6,1.1),c:A.c})}
+    const T=q.trail&&COS.trail.items[q.trail];if(T&&Math.random()<.6){const up=q.trail==='ember'||q.trail==='sparkle';STY.parts.push({x:cx+rand(-30,30),y:cy-rand(10,120),vx:rand(-30,30),vy:up?-rand(40,90):rand(30,70),t:rand(.6,1.2),c:T.c[Math.random()<.5?0:1]})}
+    x.fillStyle='rgba(0,0,0,.35)';x.beginPath();x.ellipse(cx,cy,40,9,0,0,7);x.fill();
+    x.save();x.translate(cx,cy+oy);if(q.motion==='sway')x.rotate(Math.sin(t*3)*.06);const k2=190/f.h;x.scale(k2,k2);x.drawImage(f.r,-(f.w>>1),-f.h);x.restore();
+    if((t*1.2|0)!==(STY.st|0)){STY.st=t*1.2;STY.shots.push({x:cx+30,y:cy-110,t:0})}
+    const col=skinOf(h,q).bolt;for(const s of STY.shots){s.t+=dt;const sx=s.x+s.t*220,sy=s.y;if(q.shape)drawShape(q.shape,sx,sy,col,t*6,1,1.2,x);else{x.globalCompositeOperation='lighter';x.drawImage(glowOf(col),sx-24,sy-24,48,48);x.globalCompositeOperation='source-over';x.fillStyle='#fff';x.fillRect(sx-4,sy-4,8,8)}}
+    STY.shots=STY.shots.filter(s=>s.t<.8);
+    for(const p of STY.parts){p.t-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;x.fillStyle=p.c;x.fillRect(p.x,p.y,5,5)}STY.parts=STY.parts.filter(p=>p.t>0&&STY.parts.length<300);
+    STY.raf=requestAnimationFrame(step)};STY.raf=requestAnimationFrame(step)}
 function showScreen(id,keep){const prev=keep?$('#scr-'+id).scrollTop:0;document.querySelectorAll('.screen').forEach(s=>s.hidden=true);if(!id)return;
   if(R[id])R[id]();const el=$('#scr-'+id);el.hidden=false;el.scrollTop=prev;hydrate(el)}
 // re-render the screen in place (after a purchase or a toggle) without jumping back to the top
@@ -2702,7 +2772,7 @@ function cityCard(c,i,mode){const th=THEMES[c.theme],cl=!!save.cleared[c.id],loc
     <p class="muted" style="font-size:15px;margin:0">${questLine(c)}</p>
     <span class="pips">THREAT ${'■'.repeat(threat)}${'□'.repeat(5-threat)}</span></button>`}
 const R={
-  title(){$('#btnZoom').textContent='View: '+zoomOf().n;$('#patrolDot').hidden=!patrolReady();$('#titleSup').textContent=`Slot ${activeSlot} · ${save.god.infSup?'∞':save.supplies} supplies`;$('#titleProg').textContent=`${CITIES.filter(c=>save.cleared[c.id]).length}/${CITIES.length} cities liberated`;
+  title(){$('#btnZoom').textContent='View: '+zoomOf().n;$('#patrolDot').hidden=!patrolReady();$('#titleSup').textContent=`Slot ${activeSlot} · ${save.god.infSup?'∞':save.supplies} supplies · ${save.gems} gems`;$('#btnGod').textContent=GOD_OWNED?'God Mode':'God Mode · '+GOD_PRICE;$('#titleProg').textContent=`${CITIES.filter(c=>save.cleared[c.id]).length}/${CITIES.length} cities liberated`;
     $('#btnSound').textContent='Sound: '+(save.sound?'on':'off');
     const l=$('#lineup');l.innerHTML=HEROINES.map(h=>`<div class="h"><span data-spr="h:${h.id}:.3333"></span><span class="n">${h.name}</span></div>`).join('')},
   map(){$('#scr-map').innerHTML=`<div class="wrap">${head('Liberate the cities')}<p class="muted">Destroy every nest, then survive the final wave. Each city unlocks the next.</p>
@@ -2757,15 +2827,37 @@ const R={
     <h2 class="label" style="font-size:14px;margin:8px 0 0">Upgrades</h2>
     <div class="grid">${upRow('turret','Turret Power','+25% turret and trap damage, +10% turret range, +20% turret health')}${upRow('sandbag','Reinforced Barricades','+30% sandbag and fence health')}</div></div>`},
   god(){const g=save.god;
+    if(!GOD_OWNED){$('#scr-god').innerHTML=`<div class="wrap">${head('God Mode',returnTo)}<div class="panel" style="text-align:center"><h3 style="color:var(--volt)">God Mode</h3>
+      <p class="muted">Infinite health, no cooldowns, one-hit kills, infinite supplies, every city unlocked, and sliders for damage, size, speed and more. A one-time purchase. It never gives gems.</p>
+      <p style="font-size:28px;margin:10px 0">${GOD_PRICE}</p><button class="btn primary" data-act="buygod">Buy for ${GOD_PRICE}</button></div></div>`;return}
     const tog=(k,t,d)=>`<button class="panel tog ${g[k]?'on':''}" data-tog="${k}"><div style="text-align:left"><b>${t}</b><div class="muted" style="font-size:17px">${d}</div></div><span class="sw"></span></button>`;
     const sl=(k,t,min,max,step,fmt)=>`<div class="panel sl"><div class="top"><b>${t}</b><output id="o-${k}">${fmt(g[k])}</output></div><input type="range" id="r-${k}" data-sl="${k}" min="${min}" max="${max}" step="${step}" value="${g[k]}"></div>`;
     const x=v=>'×'+(+v).toFixed(v<10?(v%1?2:0):0);
-    $('#scr-god').innerHTML=`<div class="wrap">${head('God Mode',returnTo)}<p class="muted">Bend the rules however you like. Changes apply instantly, even mid-mission.</p>
+    $('#scr-god').innerHTML=`<div class="wrap">${head('God Mode',returnTo)}<p class="muted"><span class="chip" style="color:var(--toxic)">Owned · ${GOD_PRICE}</span> Bend the rules however you like. Changes apply instantly, even mid-mission. God Mode never gives gems.</p>
     <div class="grid gm">${tog('infHP','Infinite Health','You and your squad take no damage.')}${tog('noCD','No Cooldowns','Hold a power button to spam it.')}
       ${tog('oneHit','One-Hit Kills','Every hit deletes its target.')}${tog('infSup','Infinite Supplies','Recruit and upgrade for free.')}${tog('unlock','Unlock All Cities','Deploy to any district.')}</div>
     <div class="grid gm">${sl('dmg','Power Damage',1,100,1,x)}${sl('size','Power Size',1,4,.25,x)}${sl('speed','Move Speed',.5,3,.25,x)}${sl('atk','Attack Speed',1,10,.5,x)}
       ${sl('cd','Cooldown Length',.1,1,.05,x)}${sl('zDensity','Infected Density',.25,4,.25,x)}${sl('zSpeed','Infected Speed',.25,2,.25,x)}${sl('squadBonus','Bonus Squad Slots',0,40,1,v=>'+'+v)}</div>
     <div class="bar"><button class="btn small" data-act="resetgod">Reset to normal</button><button class="btn small primary" data-act="maxgod">Max everything</button></div></div>`},
+  shop(){const note=IS_PUB?'The store is not open yet. These are the planned prices; nothing can be bought or charged.':'Test edition: every purchase here is free and fake. No money is involved.';
+    $('#scr-shop').innerHTML=`<div class="wrap">${head('Gem Shop')}<div class="panel"><h3><span class="gem">◆</span> ${save.gems} gems</h3><p class="muted">Gems are only for looks: skins, dyes, auras, trails, animations and attack styles. They never make you stronger, and God Mode can't make them.</p><p class="muted">${note}</p></div>
+      <div class="cosg">${GEM_PACKS.map((k,i)=>`<div class="panel cos"><b><span class="gem">◆</span> ${k.g} gems</b><span class="muted">${k.b||'&nbsp;'}</span><button class="btn small ${IS_PUB?'':'primary'}" data-buygem="${i}">${IS_PUB?k.usd:'Get free (test) · '+k.usd}</button></div>`).join('')}</div>
+      <div class="panel"><h3 style="color:var(--volt)">God Mode · ${GOD_PRICE}</h3><p class="muted">${GOD_OWNED?'Owned in this edition.':'A one-time purchase that unlocks the God Mode menu.'}</p>${GOD_OWNED?'<span class="chip" style="color:var(--toxic)">Owned</span>':`<button class="btn small" data-act="buygod">Buy for ${GOD_PRICE}</button>`}</div>
+      <div class="bar"><button class="btn primary" data-go="style">Customize heroines</button></div></div>`},
+  style(){const id=STY.hero,h=HMAP[id],q=cosEq(id),T=COS[STY.tab],tabs=Object.keys(COS).map(k=>`<button class="btn small ${k===STY.tab?'primary':''}" data-stytab="${k}">${COS[k].t}</button>`).join('');
+    const price=k=>`<span class="gem">◆</span> ${COS[k].price}`;let body='';
+    if(STY.tab==='dye'){const own=cosOwn('dye','',id);
+      body=own?`<p class="muted">Hair</p><div class="dyes">${DYES.map(c=>`<button style="background:${c}" class="${q.hair===c?'on':''}" data-dye="hair:${c}"></button>`).join('')}</div>
+        <p class="muted">Outfit</p><div class="dyes">${DYES.map(c=>`<button style="background:${c}" class="${q.out===c?'on':''}" data-dye="out:${c}"></button>`).join('')}</div><div class="bar"><button class="btn small" data-dye="reset:">Reset colors</button></div>`
+        :`<div class="panel cos"><b>Dye kit for ${h.name}</b><span class="muted">${T.d}</span><button class="btn small primary" data-cos="dye:">${price('dye')}</button></div>`}
+    else{const cur=q[STY.tab];body=`<div class="cosg"><button class="panel cos ${cur?'':'on'}" data-cos="${STY.tab}:"><b>Default</b><span class="muted">${cur?'Equip':'Equipped'}</span></button>`+
+      Object.entries(T.items).map(([k,it])=>{const own=cosOwn(STY.tab,k,id),on=cur===k,col=it.c?(Array.isArray(it.c)?it.c[0]:it.c):it.outfit;
+        return`<button class="panel cos ${on?'on':''}" data-cos="${STY.tab}:${k}">${col?`<span class="sw2" style="background:${col}${it.accent?`;border-bottom:6px solid ${it.accent}`:''}"></span>`:''}<b>${it.n}</b><span class="muted">${on?'Equipped':own?'Equip':price(STY.tab)}</span></button>`}).join('')+'</div>'}
+    $('#scr-style').innerHTML=`<div class="wrap"><div class="bar"><button class="btn small" data-go="title">Back</button><h2>Style</h2><span class="sup"><span class="gem">◆</span> ${save.gems}</span></div>
+      <div class="bar" style="justify-content:center"><button class="btn small" data-styhero="-1">◀</button><b style="min-width:150px;text-align:center">${h.name}</b><button class="btn small" data-styhero="1">▶</button></div>
+      <canvas id="styPrev" width="340" height="300"></canvas><p class="muted" style="text-align:center">${T.d} ${T.per?'For '+h.name+' only.':'Unlock once, use on any heroine.'}</p>
+      <div class="bar" style="flex-wrap:wrap;gap:6px">${tabs}</div>${body}<div class="bar"><button class="btn small" data-go="shop"><span class="gem">◆</span> Get gems</button></div></div>`;
+    styLoop()},
   slots(){const cards=[];for(let n=1;n<=SLOTS;n++){const s=n===activeSlot?save:readSlot(n),act=n===activeSlot;
       if(!s){cards.push(`<div class="panel slotcard"><div class="top"><span class="label">Slot ${n}</span><span class="chip">Empty</span></div><p class="muted">No game saved here yet.</p>
         <button class="btn small primary" data-slotuse="${n}">Start new game</button></div>`);continue}
@@ -3294,8 +3386,15 @@ const CLASH_PICK={t:undefined,edit:false};
 /* ---------------- INPUT ---------------- */
 const gameEl=$('#game');
 gameEl.addEventListener('click',e=>{Sfx.init();const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.go){Sfx.play('ui');const go=b.dataset.go;if(go==='slots')delConfirm=0;if(go==='god'&&state!=='play')returnTo='title';if(go==='pause'){showScreen('pause');return}if(go==='title'||state!=='play'){G=state==='play'?G:null}showScreen(go);return}
+  if(b.dataset.go){Sfx.play('ui');const go=b.dataset.go;if(go==='slots')delConfirm=0;if(go==='style')STY.hero=save.heroine;if(go==='god'&&state!=='play')returnTo='title';if(go==='pause'){showScreen('pause');return}if(go==='title'||state!=='play'){G=state==='play'?G:null}showScreen(go);return}
   if(b.dataset.city!==undefined){const i=+b.dataset.city;if(b.dataset.mode==='map'&&!unlocked(i)){toast('Liberate the previous city first');return}startMission(i,b.dataset.mode==='sandbox');return}
+  if(b.dataset.buygem!==undefined){Sfx.play('ui');if(IS_PUB){toast('Purchases are not available yet');return}const k=GEM_PACKS[+b.dataset.buygem];save.gems+=k.g;persist();toast(`+${k.g} gems (free test purchase)`);refresh('shop');return}
+  if(b.dataset.stytab){STY.tab=b.dataset.stytab;Sfx.play('ui');refresh('style');return}
+  if(b.dataset.styhero){const i=HEROINES.findIndex(h=>h.id===STY.hero),n=HEROINES.length;STY.hero=HEROINES[(i+(+b.dataset.styhero)+n)%n].id;Sfx.play('ui');refresh('style');return}
+  if(b.dataset.dye!==undefined){const[k,c]=b.dataset.dye.split(':'),q=save.cos.eq[STY.hero]=save.cos.eq[STY.hero]||{};if(k==='reset'){delete q.hair;delete q.out}else q[k]=c;cosClear();persist();Sfx.play('ui');refresh('style');return}
+  if(b.dataset.cos!==undefined){const[t,id]=b.dataset.cos.split(':'),hero=STY.hero,q=save.cos.eq[hero]=save.cos.eq[hero]||{};
+    if(t==='dye'||id&&!cosOwn(t,id,hero)){const pr=COS[t].price;if(save.gems<pr){toast(`Needs ${pr} gems. Get more in the Gem Shop`);return}save.gems-=pr;save.cos.own[cosKey(t,id,hero)]=true;Sfx.play('win');toast(`Unlocked ${t==='dye'?'the dye kit':COS[t].items[id].n}`)}else Sfx.play('ui');
+    if(t!=='dye'){if(id)q[t]=id;else delete q[t]}cosClear();persist();refresh('style');return}
   if(b.dataset.hero){save.heroine=b.dataset.hero;persist();Sfx.play('ui');refresh('heroines');return}
   if(b.dataset.ctier!==undefined){CLASH_PICK.t=+b.dataset.ctier;Sfx.play('ui');refresh('clash');return}
   if(b.dataset.ctog){const d=deckRaw(),k=b.dataset.ctog,j=d.indexOf(k);if(j>=0)d.splice(j,1);else if(d.length<8)d.push(k);else{toast('The deck is full: take a card out first');return}save.clash.deck=d;persist();Sfx.play('ui');refresh('clash');return}
@@ -3320,6 +3419,7 @@ gameEl.addEventListener('click',e=>{Sfx.init();const b=e.target.closest('button'
   const a=b.dataset.act;if(!a)return;
   if(a==='resume'){paused=false;showScreen(null);$('#hud').hidden=false}
   else if(a==='pgod'){returnTo='pause';showScreen('god')}
+  else if(a==='buygod'){toast(IS_PUB?'Purchases are not available yet':'God Mode is already owned')}
   else if(a==='sound'){save.sound=!save.sound;persist();showScreen('pause')}
   else if(a==='pstart'){const lib=CITIES.map((c,i)=>i).filter(i=>save.cleared[CITIES[i].id]);startPatrol(patrolPick.hero||save.heroine,lib.includes(patrolPick.city)?patrolPick.city:(lib[0]||0));lastClaim=null;Sfx.play('ui');toast('Patrol started');refresh('patrol')}
   else if(a==='pclaim'||a==='precall'){const r=claimPatrol(a==='precall');if(r){lastClaim=r;Sfx.play(r.loot.length||r.up?'win':'ui');toast(`+${r.sup} supplies · +${r.xp} XP`)}refresh('patrol')}

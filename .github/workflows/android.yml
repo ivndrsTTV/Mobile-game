@@ -29,47 +29,46 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # GitHub's Ubuntu runners ship with the Android SDK (ANDROID_HOME is preset)
-      - name: Wrap the game in a Capacitor Android project
-        run: |
-          mkdir -p build/www
-          cp index.html manifest.webmanifest sw.js icon-192.png icon-512.png build/www/
-          cp -r assets build/www/
-          cd build
-          npm init -y > /dev/null
-          npm install --no-audit --no-fund @capacitor/core@6.2.0 @capacitor/cli@6.2.0 @capacitor/android@6.2.0
-          npx cap init "Voltfall" com.ivndrs.voltfall --web-dir www
-          npx cap add android
-          npx cap sync android
-          # Use the game's pixel icon as the launcher icon
-          RES=android/app/src/main/res
-          rm -rf $RES/mipmap-anydpi-v26
-          for d in $RES/mipmap-*dpi; do
-            cp www/icon-192.png $d/ic_launcher.png
-            cp www/icon-192.png $d/ic_launcher_round.png
-          done
-
-      # Every build signs with the same key (tools/android/debug.keystore), so a new APK installs
-      # over the old one and keeps your saves. The version comes from the VERSION file.
-      - name: Fixed signing key and version number
+      # GitHub's Ubuntu runners ship with the Android SDK (ANDROID_HOME is preset).
+      # Two separate apps from the same game: the private edition (God Mode owned, free test gems)
+      # and the public edition (store prices shown, no purchases yet). Different app IDs, so both
+      # can be installed side by side. Every build signs with tools/android/debug.keystore, so a
+      # new APK installs over the old one and keeps your saves. The version comes from VERSION.
+      - name: Build both editions
         run: |
           mkdir -p ~/.android
           cp tools/android/debug.keystore ~/.android/debug.keystore
           VER=$(tr -d ' \n' < VERSION)
-          sed -i "s/versionCode 1$/versionCode ${{ github.run_number }}/; s/versionName \"1.0\"/versionName \"$VER\"/" build/android/app/build.gradle
-          grep -n "versionCode\|versionName" build/android/app/build.gradle
-
-      - name: Build debug APK
-        working-directory: build/android
-        run: ./gradlew assembleDebug --no-daemon
-
-      - name: Collect APK
-        run: cp build/android/app/build/outputs/apk/debug/app-debug.apk Voltfall.apk
+          build() { # edition, app id, app name, output apk
+            D=build-$1
+            mkdir -p $D/www
+            cp index.html manifest.webmanifest sw.js icon-192.png icon-512.png $D/www/
+            cp -r assets $D/www/
+            sed -i "s/<meta name=\"vf-edition\" content=\"private\">/<meta name=\"vf-edition\" content=\"$1\">/" $D/www/index.html
+            grep -q "vf-edition\" content=\"$1\"" $D/www/index.html
+            (cd $D && npm init -y > /dev/null \
+              && npm install --no-audit --no-fund @capacitor/core@6.2.0 @capacitor/cli@6.2.0 @capacitor/android@6.2.0 \
+              && npx cap init "$3" $2 --web-dir www && npx cap add android && npx cap sync android)
+            RES=$D/android/app/src/main/res
+            rm -rf $RES/mipmap-anydpi-v26
+            for d in $RES/mipmap-*dpi; do
+              cp $D/www/icon-192.png $d/ic_launcher.png
+              cp $D/www/icon-192.png $d/ic_launcher_round.png
+            done
+            sed -i "s/versionCode 1$/versionCode ${{ github.run_number }}/; s/versionName \"1.0\"/versionName \"$VER\"/" $D/android/app/build.gradle
+            grep -n "versionCode\|versionName\|applicationId" $D/android/app/build.gradle
+            (cd $D/android && ./gradlew assembleDebug --no-daemon)
+            cp $D/android/app/build/outputs/apk/debug/app-debug.apk $4
+          }
+          build private com.ivndrs.voltfall "Voltfall" Voltfall.apk
+          build public com.ivndrs.voltfall.pub "Voltfall Public" Voltfall-Public.apk
 
       - uses: actions/upload-artifact@v4
         with:
           name: Voltfall-apk
-          path: Voltfall.apk
+          path: |
+            Voltfall.apk
+            Voltfall-Public.apk
 
       - name: Publish APK to the "apk-latest" release
         if: (github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')) || github.event_name == 'workflow_dispatch'
@@ -78,7 +77,9 @@ jobs:
           tag_name: apk-latest
           name: Voltfall – latest Android build
           prerelease: true
-          files: Voltfall.apk
+          files: |
+            Voltfall.apk
+            Voltfall-Public.apk
           body: |
             Download **Voltfall.apk** on your Android phone and open it to install.
             Android will ask you to allow installs from your browser or file manager the first time.
@@ -106,7 +107,9 @@ jobs:
           name: Voltfall ${{ steps.ver.outputs.tag }}
           prerelease: false
           make_latest: true
-          files: Voltfall.apk
+          files: |
+            Voltfall.apk
+            Voltfall-Public.apk
           body_path: RELEASE_NOTES.md
 
       # a version tag (v1.0.0, v1.1.0, ...) becomes a full release with its own APK
@@ -118,7 +121,9 @@ jobs:
           name: Voltfall ${{ github.ref_name }}
           prerelease: false
           make_latest: true
-          files: Voltfall.apk
+          files: |
+            Voltfall.apk
+            Voltfall-Public.apk
           body: |
             Download **Voltfall.apk** on your Android phone and open it to install.
             Android will ask you to allow installs from your browser or file manager the first time.

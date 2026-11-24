@@ -1,5 +1,5 @@
 // Offline cache so the installed game runs without a connection.
-const CACHE = 'voltfall-v13';
+const CACHE = 'voltfall-v14';
 const INFECTED = ['walker1', 'walker2', 'walker3', 'walker4', 'runner', 'spitter', 'bloater', 'brute', 'boss'].map(n => './assets/infected/' + n + '.png');
 const HEROINES = ['raiko', 'hayate', 'shiden', 'kurenai', 'mikan', 'shizuku', 'hoshimi', 'kohaku', 'erika', 'rei', 'akane', 'sayo', 'shion', 'marin', 'kaguya', 'misaki'].flatMap(n => ['', '-portrait', '-full'].map(k => './assets/heroines/' + n + k + '.png'));
 const FONTS = ['pixelify-sans', 'tiny5', 'vt323'].map(n => './assets/fonts/' + n + '.woff2');

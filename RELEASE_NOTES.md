@@ -1,6 +1,27 @@
-Download **Voltfall.apk** on your Android phone and open it to install. It installs over v1.0.0 or later and keeps your saves.
+There are now **two separate apps**:
+- **Voltfall.apk**: the private edition, for you. It installs over your current game and keeps your saves.
+- **Voltfall-Public.apk**: the public edition, kept for the future. It installs as a separate app called "Voltfall Public" with its own saves.
 
 **Coming from an APK older than v1.0.0?** Copy your progress first with **Save slots → Backup code → Show my code → Copy**, uninstall the old game, install this one, and paste the code under **Restore from code**.
+
+## What's new in v1.4.0
+
+### Gems and Style
+- **Gems** are a new currency used only for looks. They never make you stronger, and God Mode can't make them.
+- **Style screen** (on the title screen) with a live preview of each heroine:
+  - **Skins:** six colorways per heroine (Midnight, Sakura, Snow Queen, Crimson, Volt Gold, Toxic). 120 gems each.
+  - **Dye kit:** pick any of 14 hair and outfit colors for one heroine. 200 gems.
+  - **Attack color:** seven colors for her attacks and glow. 80 gems.
+  - **Attack style:** hearts, stars or petals. 120 gems.
+  - **Aura:** Volt, Sakura, Frost, Inferno, Void or Gold. 150 gems.
+  - **Trail:** sparkles, petals, embers or snow. 100 gems.
+  - **Animation:** hover, bounce or sway. 100 gems.
+  - Skins and dye kits are per heroine. Everything else is unlocked once and works on any heroine.
+- **Gem Shop:** 120 gems for $0.99, 650 for $4.99, 1400 for $9.99, 3000 for $19.99.
+
+### Two editions
+- **Private edition:** God Mode is already owned and shown as $5.99. Gem packs are free test purchases; no money is involved.
+- **Public edition:** God Mode shows a $5.99 price and gem packs show their prices, but the store isn't open yet. Nothing can be bought and no payment system is included. Backup codes from the private edition don't bring gems, cosmetics or God Mode into it.
 
 ## What's new in v1.3.1
 - Volt Clash difficulty now climbs more gently. The horde's later opponents were a sudden wall; each one is now a smaller step up.
